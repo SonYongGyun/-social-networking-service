@@ -63,4 +63,4 @@
 1. 프로젝트를 클론합니다.
 
    ```shell
-   git clone https://github.com/your-username/your-project.git
+   git clone https://github.com/SonYongGyun/social-networking-service.git
