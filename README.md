@@ -1,4 +1,4 @@
-# SNS 서비스 (프로젝트명)
+# SNS
 
 프로젝트는 SNS (Social Networking Service) 서비스를 제공하는 Java 기반의 Spring Boot 프로젝트입니다.
 
@@ -54,13 +54,6 @@
 
 ### 요구 사항
 
-- Java (버전 X 이상)
-- Spring Boot (버전 X 이상)
-- 기타 필요한 의존성 라이브러리들
-
-### 설치 및 실행
-
-1. 프로젝트를 클론합니다.
-
-   ```shell
-   git clone https://github.com/SonYongGyun/social-networking-service.git
+- Java (17 이상)
+- Spring Boot (3.1.1 이상)
+- Gradle (8.1.1)
