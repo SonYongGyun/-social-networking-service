@@ -4,3 +4,6 @@ spring:
     url: jdbc:mysql://172.90.6.183:3306/sns
     username: sns
     password: sns!
+  jpa:
+    hibernate:
+      ddl-auto: none

@@ -1,13 +1,20 @@
 package kr.co.mz.sns.entity;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,6 +47,11 @@ public class UserEntity {
   @Basic
   @Column(name = "modified_at")
   private Timestamp modifiedAt;
+
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinTable(name = "User_role", joinColumns = @JoinColumn(name = "user_seq", referencedColumnName = "seq"),
+      inverseJoinColumns = @JoinColumn(name = "role_seq", referencedColumnName = "seq"))
+  private List<RoleEntity> roles = new ArrayList<>();
 
   public int getSeq() {
     return seq;
