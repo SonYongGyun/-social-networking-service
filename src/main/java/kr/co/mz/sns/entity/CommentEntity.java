@@ -9,9 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Objects;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Comment", schema = "sns", catalog = "")
+@Data
+@NoArgsConstructor
 public class CommentEntity {
 
   @GeneratedValue(strategy = GenerationType.IDENTITY)
