@@ -17,10 +17,13 @@ public class SecurityConfig {
 
   private final JWTService jwtService;
   private final CustomUserDetailService customUserDetailService;
+  private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
-  public SecurityConfig(JWTService jwtService, CustomUserDetailService customUserDetailService) {
+  public SecurityConfig(JWTService jwtService, CustomUserDetailService customUserDetailService,
+      JwtAuthEntryPoint jwtAuthEntryPoint) {
     this.jwtService = jwtService;
     this.customUserDetailService = customUserDetailService;
+    this.jwtAuthEntryPoint = jwtAuthEntryPoint;
   }
 
   @Bean
@@ -33,7 +36,15 @@ public class SecurityConfig {
                 .permitAll()
                 .anyRequest()
                 .authenticated()
-        );
+//                .requestMatchers("/login/*")
+//                .permitAll()
+//                .anyRequest()
+//                .authenticated()
+        ).exceptionHandling(
+            (exceptionHandlingConfigurer) -> exceptionHandlingConfigurer.authenticationEntryPoint(
+                jwtAuthEntryPoint))
+
+    ;
     return http.build();
   }
 

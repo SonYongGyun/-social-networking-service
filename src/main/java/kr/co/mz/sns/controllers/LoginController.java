@@ -60,6 +60,10 @@ public class LoginController {
     return new ResponseEntity<>("User registered Success!", HttpStatus.OK);
   }
 
+  @RequestMapping("after")
+  public ResponseEntity<String> afterLogin(@RequestBody String a) {
+    return new ResponseEntity<>("와! 로그인이 되었어요!", HttpStatus.OK);
+  }
 }
 /*
 유저가 들어오면 필터체인거쳐서 들어온다.
