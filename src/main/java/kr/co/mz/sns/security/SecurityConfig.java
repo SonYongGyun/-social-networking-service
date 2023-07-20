@@ -18,34 +18,37 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {//이건그냥 설정이다.
-    http
-        .csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(
-            authorize -> authorize
-                .requestMatchers(HttpMethod.GET, "/*")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-        )
-        .httpBasic(Customizer.withDefaults())
-    ;
-    return http.build();
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {//이건그냥 설정이다.
+      http
+          .csrf(AbstractHttpConfigurer::disable)
+          .authorizeHttpRequests(
+              authorize -> authorize
+                  .requestMatchers(HttpMethod.GET, "/user/login")
+                  .permitAll()
+                  .requestMatchers(HttpMethod.GET,"/board/write")
+                  .authenticated()
+                  .anyRequest()
+                  .authenticated()
+          )
+          .httpBasic(Customizer.withDefaults())
+      ;
+      return http.build();
   }
 
 
-  @Bean
-  public UserDetailsService users() {
-    UserDetails admin = User.builder()
-        .username("admin")
-        .password("1")
-        .roles("ADMIN")
-        .build();
-    UserDetails user = User.builder()
-        .username("user")
-        .password("password")
-        .roles("USER")
-        .build();
-    return new InMemoryUserDetailsManager(admin, user);
-  }
+//  @Bean
+//  public UserDetailsService users() {
+//    UserDetails admin = User.builder()
+//        .username("admin")
+//        .password("1")
+//        .roles("ADMIN")
+//        .build();
+//    UserDetails user = User.builder()
+//        .username("user")
+//        .password("password")
+//        .roles("USER")
+//        .build();
+//    return new InMemoryUserDetailsManager(admin, user);
+//  }
+
 }
