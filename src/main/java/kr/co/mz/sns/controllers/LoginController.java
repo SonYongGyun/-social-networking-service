@@ -1,13 +1,12 @@
 package kr.co.mz.sns.controllers;
 
-import java.util.Collections;
 import kr.co.mz.sns.dto.AuthResponseDto;
 import kr.co.mz.sns.dto.LoginDto;
 import kr.co.mz.sns.dto.RegisterDto;
 import kr.co.mz.sns.entity.UserEntity;
-import kr.co.mz.sns.repository.RoleRepository;
+import kr.co.mz.sns.enums.Role;
 import kr.co.mz.sns.repository.UserRepository;
-import kr.co.mz.sns.security.JWTGenerator;
+import kr.co.mz.sns.security.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,60 +14,52 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth/")
-public class AuthController {
+@RequestMapping("/")
+public class LoginController {
 
-  private AuthenticationManager authenticationManager;
-  private UserRepository userRepository;
-  private RoleRepository roleRepository;
-  private PasswordEncoder passwordEncoder;
-  private JWTGenerator jwtGenerator;
+  private final AuthenticationManager authenticationManager;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final JWTService jwtService;
 
   @Autowired
-  public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository,
-      RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTGenerator jwtGenerator) {
+  public LoginController(AuthenticationManager authenticationManager, UserRepository userRepository,
+      PasswordEncoder passwordEncoder, JWTService jwtService) {
     this.authenticationManager = authenticationManager;
     this.userRepository = userRepository;
-    this.roleRepository = roleRepository;
     this.passwordEncoder = passwordEncoder;
-    this.jwtGenerator = jwtGenerator;
+    this.jwtService = jwtService;
   }
 
 
-  @PostMapping("login")
+  @RequestMapping("login")
   public ResponseEntity<AuthResponseDto> login(@RequestBody LoginDto loginDto) {
-    //ahthenticationManager 사용해야함
     var authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             loginDto.getUserName(), loginDto.getPassword()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
-    String token = jwtGenerator.generateToken(authentication);
+    var token = jwtService.generateToken(authentication);
     return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
   }
 
-  @PostMapping("register")//등록이니까 저장되지 멍충아...
+  @RequestMapping("register")//등록이니까 저장되지 멍충아...
   public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
     if (userRepository.existsByName(registerDto.getUserName())) {
       return new ResponseEntity<>("UserName is taken!", HttpStatus.BAD_REQUEST);
     }
-
     var user = new UserEntity();
     user.setName(registerDto.getUserName());
     user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-
-    var roles = roleRepository.findByName("ADMIN").get();
-    user.setRoles(Collections.singletonList(roles));
-
+    user.setRole(Role.ROLE_MEMBER.toString());
     userRepository.save(user);
-
     return new ResponseEntity<>("User registered Success!", HttpStatus.OK);
   }
+
 }
 /*
 유저가 들어오면 필터체인거쳐서 들어온다.

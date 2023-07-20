@@ -1,10 +1,9 @@
 package kr.co.mz.sns.security;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
 import java.util.stream.Collectors;
-import kr.co.mz.sns.entity.RoleEntity;
-import kr.co.mz.sns.entity.UserEntity;
 import kr.co.mz.sns.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
 
   @Autowired
   public CustomUserDetailService(UserRepository userRepository) {
@@ -27,14 +26,14 @@ public class CustomUserDetailService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    UserEntity user = userRepository.findByName(username)
+    var user = userRepository.findByName(username)
         .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-
-    return new User(user.getName(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+    return new User(user.getName(), user.getPassword(),
+        mapRolesToAuthorities(Collections.singleton(user.getRole())));
   }
 
-  private Collection<GrantedAuthority> mapRolesToAuthorities(List<RoleEntity> roles) {
-    return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+  private Collection<GrantedAuthority> mapRolesToAuthorities(Set<String> roles) {
+    return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
   }
 
 }

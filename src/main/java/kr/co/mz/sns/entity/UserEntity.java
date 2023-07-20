@@ -4,23 +4,19 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "User", schema = "sns", catalog = "")
+@Table(name = "User", schema = "sns")
 @Data
 @NoArgsConstructor
 public class UserEntity {
@@ -47,67 +43,13 @@ public class UserEntity {
   @Basic
   @Column(name = "modified_at")
   private Timestamp modifiedAt;
+  @Basic
+  @Column
+  private String role;
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  @JoinTable(name = "User_role", joinColumns = @JoinColumn(name = "user_seq", referencedColumnName = "seq"),
-      inverseJoinColumns = @JoinColumn(name = "role_seq", referencedColumnName = "seq"))
-  private List<RoleEntity> roles = new ArrayList<>();
-
-  public int getSeq() {
-    return seq;
-  }
-
-  public void setSeq(int seq) {
-    this.seq = seq;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public Timestamp getLastLoginAt() {
-    return lastLoginAt;
-  }
-
-  public void setLastLoginAt(Timestamp lastLoginAt) {
-    this.lastLoginAt = lastLoginAt;
-  }
-
-  public Timestamp getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(Timestamp createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public Timestamp getModifiedAt() {
-    return modifiedAt;
-  }
-
-  public void setModifiedAt(Timestamp modifiedAt) {
-    this.modifiedAt = modifiedAt;
-  }
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "seq", referencedColumnName = "User_seq")
+  private UserDetailEntity userDetail;
 
   @Override
   public boolean equals(Object o) {
@@ -117,14 +59,15 @@ public class UserEntity {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UserEntity that = (UserEntity) o;
+    var that = (UserEntity) o;
     return seq == that.seq && Objects.equals(email, that.email) && Objects.equals(name, that.name)
         && Objects.equals(password, that.password) && Objects.equals(lastLoginAt, that.lastLoginAt)
-        && Objects.equals(createdAt, that.createdAt) && Objects.equals(modifiedAt, that.modifiedAt);
+        && Objects.equals(createdAt, that.createdAt) && Objects.equals(modifiedAt, that.modifiedAt)
+        && Objects.equals(role, that.role);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(seq, email, name, password, lastLoginAt, createdAt, modifiedAt);
+    return Objects.hash(seq, email, name, password, lastLoginAt, role, createdAt, modifiedAt);
   }
 }

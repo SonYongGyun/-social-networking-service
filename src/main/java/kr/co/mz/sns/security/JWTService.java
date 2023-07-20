@@ -2,7 +2,6 @@ package kr.co.mz.sns.security;
 
 import static kr.co.mz.sns.security.SecurityConstants.JWT_EXPIRATION;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -13,10 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JWTGenerator {
+public class JWTService {
 
   // 토큰은 3가지 부분으로 나눠지기 떄문에 필요한 부분들 작성하는거 만들어줬다.
-  SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+  private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
   public String generateToken(Authentication authentication) {
     var userName = authentication.getName();
@@ -46,7 +45,7 @@ public class JWTGenerator {
    * @return
    */
   public String getUserNameFromJWT(String token) {
-    Claims claims = Jwts.parserBuilder().setSigningKey(key)
+    var claims = Jwts.parserBuilder().setSigningKey(key)
         .build()
         .parseClaimsJws(token)
         .getBody();

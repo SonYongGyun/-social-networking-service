@@ -1,11 +1,8 @@
 package kr.co.mz.sns.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,49 +15,30 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-  private JwtAuthEntryPoint authEntryPoint;
-  private CustomUserDetailService userDetailService;
+  private final JWTService jwtService;
+  private final CustomUserDetailService customUserDetailService;
 
-
-  @Autowired
-  public SecurityConfig(JwtAuthEntryPoint authEntryPoint, CustomUserDetailService userDetailService) {
-    this.authEntryPoint = authEntryPoint;
-    this.userDetailService = userDetailService;
+  public SecurityConfig(JWTService jwtService, CustomUserDetailService customUserDetailService) {
+    this.jwtService = jwtService;
+    this.customUserDetailService = customUserDetailService;
   }
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {//이건그냥 설정이다.
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
-        .exceptionHandling((exceptionhandling) -> exceptionhandling.accessDeniedPage("/error/401"))
         .authorizeHttpRequests(
             authorize -> authorize
-                .requestMatchers(HttpMethod.POST, "/api/auth/**")
+                .requestMatchers("/login")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
-        )
-        .httpBasic(Customizer.withDefaults());
+        );
     return http.build();
   }
 
-//  @Bean
-//  public UserDetailsService users() {
-//    UserDetails admin = User.builder()
-//        .username("admin")
-//        .password("1")
-//        .roles("ADMIN")
-//        .build();
-//    UserDetails user = User.builder()
-//        .username("user")
-//        .password("2")
-//        .roles("USER")
-//        .build();
-//    return new InMemoryUserDetailsManager(admin, user);
-//  }
-
   @Bean
-  public AuthenticationManager authenticationManager(//일단 개발용이니까 뭐 아무런권한없이 만들어준다.
+  public AuthenticationManager authenticationManager(
       AuthenticationConfiguration authenticationConfiguration) throws Exception {
     return authenticationConfiguration.getAuthenticationManager();
   }
@@ -72,7 +50,7 @@ public class SecurityConfig {
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter();
+    return new JwtAuthenticationFilter(jwtService, customUserDetailService);
   }
 
 }
