@@ -35,46 +35,6 @@ public class FriendEntity {
   @Column(name = "User_seq")
   private int userSeq;
 
-  public int getSeq() {
-    return seq;
-  }
-
-  public void setSeq(int seq) {
-    this.seq = seq;
-  }
-
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-  public Timestamp getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(Timestamp createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public Timestamp getModifiedAt() {
-    return modifiedAt;
-  }
-
-  public void setModifiedAt(Timestamp modifiedAt) {
-    this.modifiedAt = modifiedAt;
-  }
-
-  public int getUserSeq() {
-    return userSeq;
-  }
-
-  public void setUserSeq(int userSeq) {
-    this.userSeq = userSeq;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -83,7 +43,7 @@ public class FriendEntity {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    FriendEntity that = (FriendEntity) o;
+    var that = (FriendEntity) o;
     return seq == that.seq && userSeq == that.userSeq && Objects.equals(status, that.status)
         && Objects.equals(createdAt, that.createdAt) && Objects.equals(modifiedAt, that.modifiedAt);
   }
