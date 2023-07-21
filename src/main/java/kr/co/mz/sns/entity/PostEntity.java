@@ -38,54 +38,6 @@ public class PostEntity {
   @Column(name = "User_seq")
   private int userSeq;
 
-  public int getSeq() {
-    return seq;
-  }
-
-  public void setSeq(int seq) {
-    this.seq = seq;
-  }
-
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
-  }
-
-  public Integer getLikes() {
-    return likes;
-  }
-
-  public void setLikes(Integer likes) {
-    this.likes = likes;
-  }
-
-  public Timestamp getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(Timestamp createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public Timestamp getModifiedAt() {
-    return modifiedAt;
-  }
-
-  public void setModifiedAt(Timestamp modifiedAt) {
-    this.modifiedAt = modifiedAt;
-  }
-
-  public int getUserSeq() {
-    return userSeq;
-  }
-
-  public void setUserSeq(int userSeq) {
-    this.userSeq = userSeq;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -94,7 +46,7 @@ public class PostEntity {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PostEntity that = (PostEntity) o;
+    var that = (PostEntity) o;
     return seq == that.seq && userSeq == that.userSeq && Objects.equals(content, that.content)
         && Objects.equals(likes, that.likes) && Objects.equals(createdAt, that.createdAt)
         && Objects.equals(modifiedAt, that.modifiedAt);
