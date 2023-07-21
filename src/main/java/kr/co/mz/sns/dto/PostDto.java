@@ -1,18 +1,16 @@
 package kr.co.mz.sns.dto;
 
 import java.sql.Timestamp;
-import java.util.Date;
+import lombok.Data;
 
-public record PostDto(
-    int seq,
-    String content,
-    Timestamp createdAt,
-    int likes,
-    Timestamp modifiedAt,
-    int userSeq
-) {
+@Data
+public class PostDto {
+    private int seq;
+    private String content;
+    private Integer likes;
+    private Timestamp createdAt;
+    private Timestamp modifiedAt;
 
-  public PostDto() {
-    this(1, "", new Timestamp(new Date().getTime()), 0, new Timestamp(new Date().getTime()), 0);
-  }
+    private int userSeq;
+
 }

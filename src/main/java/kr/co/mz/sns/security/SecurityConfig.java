@@ -18,14 +18,10 @@ public class SecurityConfig {
 
   private final JWTService jwtService;
   private final CustomUserDetailService customUserDetailService;
-//  private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
-  public SecurityConfig(JWTService jwtService, CustomUserDetailService customUserDetailService
-//      , JwtAuthEntryPoint jwtAuthEntryPoint
-  ) {
+  public SecurityConfig(JWTService jwtService, CustomUserDetailService customUserDetailService) {
     this.jwtService = jwtService;
     this.customUserDetailService = customUserDetailService;
-//    this.jwtAuthEntryPoint = jwtAuthEntryPoint;
   }
 
   @Bean
@@ -54,11 +50,6 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter(jwtService, customUserDetailService);
   }
 
 }

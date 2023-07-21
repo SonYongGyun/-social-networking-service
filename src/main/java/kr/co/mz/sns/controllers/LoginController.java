@@ -45,11 +45,11 @@ public class LoginController {
     SecurityContextHolder.getContext().setAuthentication(authentication);
     var token = jwtService.generateToken(authentication);
     var headers = new HttpHeaders();
-    headers.add("Authorization", "Bearer " + token);
-    return new ResponseEntity<>("new AuthResponseDto(token) is registerd", headers, HttpStatus.OK);
+    headers.add("Authorization","Bearer " + token);
+    return ResponseEntity.ok().headers(headers).body("Log-In Succeed");
   }
 
-  @RequestMapping("register")//등록이니까 저장되지 멍충아...
+  @RequestMapping("register")
   public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
     if (userRepository.existsByName(registerDto.getUserName())) {
       return new ResponseEntity<>("UserName is taken!", HttpStatus.BAD_REQUEST);
@@ -57,15 +57,16 @@ public class LoginController {
     var user = new UserEntity();
     user.setName(registerDto.getUserName());
     user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-    user.setRole(Role.MEMBER.toString());
+    user.setRole(Role.ANONYMOUS.toString());
     userRepository.save(user);
     return new ResponseEntity<>("User registered Success!", HttpStatus.OK);
   }
 
-  @RequestMapping("after")
-  public ResponseEntity<String> afterLogin(@RequestBody String a) {
-    return new ResponseEntity<>("와! 로그인이 되었어요!", HttpStatus.OK);
+  @RequestMapping("/auth")
+  public ResponseEntity<String> auth() {
+    return new ResponseEntity<>("Successful", HttpStatus.OK);
   }
+
 }
 /*
 유저가 들어오면 필터체인거쳐서 들어온다.
