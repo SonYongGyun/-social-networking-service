@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -27,12 +28,14 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
+        .addFilterBefore(new JwtAuthenticationFilter(jwtService, customUserDetailService),
+            UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(
             authorize -> authorize
-                .requestMatchers("/login")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+                .requestMatchers("/login","/register").permitAll()
+                .requestMatchers("/post/get").hasAnyRole("ANONYMOUS","MEMBER")
+                .requestMatchers("/post/write").hasRole("MEMBER")
+                .anyRequest().authenticated()
         );
     return http.build();
   }
@@ -46,11 +49,6 @@ public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter(jwtService, customUserDetailService);
   }
 
 }

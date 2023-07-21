@@ -1,6 +1,5 @@
 package kr.co.mz.sns.controllers;
 
-import kr.co.mz.sns.dto.AuthResponseDto;
 import kr.co.mz.sns.dto.LoginDto;
 import kr.co.mz.sns.dto.RegisterDto;
 import kr.co.mz.sns.entity.UserEntity;
@@ -8,6 +7,7 @@ import kr.co.mz.sns.enums.Role;
 import kr.co.mz.sns.repository.UserRepository;
 import kr.co.mz.sns.security.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,16 +38,18 @@ public class LoginController {
 
 
   @RequestMapping("login")
-  public ResponseEntity<AuthResponseDto> login(@RequestBody LoginDto loginDto) {
+  public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
     var authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             loginDto.getUserName(), loginDto.getPassword()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
     var token = jwtService.generateToken(authentication);
-    return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
+    var headers = new HttpHeaders();
+    headers.add("Authorization","Bearer " + token);
+    return ResponseEntity.ok().headers(headers).body("Log-In Succeed");
   }
 
-  @RequestMapping("register")//등록이니까 저장되지 멍충아...
+  @RequestMapping("register")
   public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
     if (userRepository.existsByName(registerDto.getUserName())) {
       return new ResponseEntity<>("UserName is taken!", HttpStatus.BAD_REQUEST);
@@ -55,9 +57,14 @@ public class LoginController {
     var user = new UserEntity();
     user.setName(registerDto.getUserName());
     user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-    user.setRole(Role.ROLE_MEMBER.toString());
+    user.setRole(Role.ANONYMOUS.toString());
     userRepository.save(user);
     return new ResponseEntity<>("User registered Success!", HttpStatus.OK);
+  }
+
+  @RequestMapping("/auth")
+  public ResponseEntity<String> auth() {
+    return new ResponseEntity<>("Successful", HttpStatus.OK);
   }
 
 }
