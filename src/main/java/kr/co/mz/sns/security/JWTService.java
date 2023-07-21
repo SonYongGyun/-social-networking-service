@@ -17,6 +17,7 @@ public class JWTService {
   // 토큰은 3가지 부분으로 나눠지기 떄문에 필요한 부분들 작성하는거 만들어줬다.
   private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
+
   public String generateToken(Authentication authentication) {
     var userName = authentication.getName();
     var currentDate = new Date();
