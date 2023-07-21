@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -17,33 +18,29 @@ public class SecurityConfig {
 
   private final JWTService jwtService;
   private final CustomUserDetailService customUserDetailService;
-  private final JwtAuthEntryPoint jwtAuthEntryPoint;
+//  private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
-  public SecurityConfig(JWTService jwtService, CustomUserDetailService customUserDetailService,
-      JwtAuthEntryPoint jwtAuthEntryPoint) {
+  public SecurityConfig(JWTService jwtService, CustomUserDetailService customUserDetailService
+//      , JwtAuthEntryPoint jwtAuthEntryPoint
+  ) {
     this.jwtService = jwtService;
     this.customUserDetailService = customUserDetailService;
-    this.jwtAuthEntryPoint = jwtAuthEntryPoint;
+//    this.jwtAuthEntryPoint = jwtAuthEntryPoint;
   }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
+        .addFilterBefore(new JwtAuthenticationFilter(jwtService, customUserDetailService)
+            , UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(
             authorize -> authorize
-                .requestMatchers("/login")
+                .requestMatchers("/login", "/register", "/post")
                 .permitAll()
-                .anyRequest()
+                .requestMatchers("/post/**")
                 .authenticated()
-//                .requestMatchers("/login/*")
-//                .permitAll()
-//                .anyRequest()
-//                .authenticated()
-        ).exceptionHandling(
-            (exceptionHandlingConfigurer) -> exceptionHandlingConfigurer.authenticationEntryPoint(
-                jwtAuthEntryPoint))
-
+        )
     ;
     return http.build();
   }

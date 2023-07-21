@@ -35,9 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       var userName = jwtService.getUserNameFromJWT(token);
       var userDetails = customUserDetailService.loadUserByUsername(userName);
       var authenticationToken
-          = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getAuthorities());
+          = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),
+          userDetails.getAuthorities());
       authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+      System.out.println("필터 된 토큰");
     }
     filterChain.doFilter(request, response);
   }
