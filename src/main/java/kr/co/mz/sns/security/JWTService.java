@@ -7,7 +7,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -17,6 +16,7 @@ public class JWTService {
 
   // 토큰은 3가지 부분으로 나눠지기 떄문에 필요한 부분들 작성하는거 만들어줬다.
   private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
   public String generateToken(Authentication authentication) {
     var userName = authentication.getName();
     var currentDate = new Date();
@@ -29,6 +29,7 @@ public class JWTService {
         .signWith(key)
         .compact();
   }
+
 
   /**
    * 제시하신 getUserNameFromJWT 메서드는 JWT 토큰에서 'subject'라는 클레임을 추출하는 역할을 합니다. 이 'subject' 클레임은 일반적으로 사용자의 고유 식별자(예를 들어 사용자
