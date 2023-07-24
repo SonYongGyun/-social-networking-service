@@ -24,7 +24,7 @@ public class UserDetailEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
   @Column(name = "seq")
-  private int seq;
+  private Long seq;
   @Basic
   @Column(name = "profile_picture")
   private String profilePicture;
@@ -39,7 +39,7 @@ public class UserDetailEntity {
   private Timestamp modifiedAt;
   @Basic
   @Column(name = "User_seq")
-  private int userSeq;
+  private Long userSeq;
 
   @OneToOne(mappedBy = "userDetail", cascade = CascadeType.ALL)
   @PrimaryKeyJoinColumn

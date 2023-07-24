@@ -21,7 +21,7 @@ public class FriendEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
   @Column(name = "seq")
-  private int seq;
+  private Long seq;
   @Basic
   @Column(name = "status")
   private String status;
@@ -33,7 +33,7 @@ public class FriendEntity {
   private Timestamp modifiedAt;
   @Basic
   @Column(name = "User_seq")
-  private int userSeq;
+  private Long userSeq;
 
   @Override
   public boolean equals(Object o) {
