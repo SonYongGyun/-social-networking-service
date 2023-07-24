@@ -19,12 +19,12 @@ public class JWTService {
 
 
   public String generateToken(Authentication authentication) {
-    var userName = authentication.getName();
+    var email = authentication.getName();
     var currentDate = new Date();
     var expireDate = new Date(currentDate.getTime() + JWT_EXPIRATION);
 
     return Jwts.builder()
-        .setSubject(userName)
+        .setSubject(email)
         .setIssuedAt(new Date())
         .setExpiration(expireDate)
         .signWith(key)
@@ -45,7 +45,7 @@ public class JWTService {
    * @param token
    * @return
    */
-  public String getUserNameFromJWT(String token) {
+  public String getEmailJWT(String token) {
     var claims = Jwts.parserBuilder().setSigningKey(key)
         .build()
         .parseClaimsJws(token)

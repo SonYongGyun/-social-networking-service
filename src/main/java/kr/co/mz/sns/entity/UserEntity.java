@@ -8,9 +8,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,6 +53,9 @@ public class UserEntity {
   @JoinColumn(name = "seq", referencedColumnName = "User_seq")
   private UserDetailEntity userDetail;
 
+  @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
+  private List<PostEntity> posts;
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -60,7 +65,7 @@ public class UserEntity {
       return false;
     }
     var that = (UserEntity) o;
-    return seq == that.seq && Objects.equals(email, that.email) && Objects.equals(name, that.name)
+    return Objects.equals(seq, that.seq) && Objects.equals(email, that.email) && Objects.equals(name, that.name)
         && Objects.equals(password, that.password) && Objects.equals(lastLoginAt, that.lastLoginAt)
         && Objects.equals(createdAt, that.createdAt) && Objects.equals(modifiedAt, that.modifiedAt)
         && Objects.equals(role, that.role);

@@ -6,14 +6,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Objects;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Entity
-@Table(name = "Post", schema = "sns", catalog = "")
+@Table(name = "Post", schema = "sns")
 @Data
 @NoArgsConstructor
 public class PostEntity {
@@ -23,20 +24,25 @@ public class PostEntity {
   @Column(name = "seq")
   private Long seq;
   @Basic
-  @Column(name = "content")
+  @Column(name = "content", nullable = false)
   private String content;
   @Basic
-  @Column(name = "likes")
+  @Column(name = "likes", columnDefinition = "int DEFAULT 0")
   private Integer likes;
   @Basic
-  @Column(name = "created_at")
+  @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
   private Timestamp createdAt;
   @Basic
-  @Column(name = "modified_at")
+  @Column(name = "modified_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
   private Timestamp modifiedAt;
-  @Basic
-  @Column(name = "User_seq")
-  private Long userSeq;
+  @ManyToOne
+  @JoinColumn(name="user_seq", nullable = false)
+  private UserEntity userEntity;
+
+  public void setUsers(UserEntity userEntity){
+      this.userEntity = userEntity;
+      userEntity.getPosts().add(this);
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -47,13 +53,13 @@ public class PostEntity {
       return false;
     }
     var that = (PostEntity) o;
-    return Objects.equals(seq, that.seq) && Objects.equals(userSeq, that.userSeq) && Objects.equals(content, that.content)
+    return Objects.equals(seq, that.seq) && Objects.equals(userEntity, that.userEntity) && Objects.equals(content, that.content)
         && Objects.equals(likes, that.likes) && Objects.equals(createdAt, that.createdAt)
         && Objects.equals(modifiedAt, that.modifiedAt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(seq, content, likes, createdAt, modifiedAt, userSeq);
+    return Objects.hash(seq, content, likes, createdAt, modifiedAt, userEntity);
   }
 }

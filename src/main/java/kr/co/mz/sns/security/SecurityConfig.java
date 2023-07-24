@@ -33,8 +33,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             authorize -> authorize
                 .requestMatchers("/api/unauth/*").permitAll()
-                .requestMatchers("/api/public/*").hasAnyRole("ANONYMOUS","MEMBER")
-                .requestMatchers("/api/auth/*").hasRole("MEMBER")
+                .requestMatchers("/api/auth/*").hasAuthority("MEMBER")
                 .anyRequest().authenticated()
         );
     return http.build();
