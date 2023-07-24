@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/public")
+@RequestMapping("/api/public/")
 public class PublicController {
     private final PostService postService;
     @Autowired
     public PublicController(PostService postService) {
         this.postService = postService;
     }
-    @GetMapping("/posts")
+    @GetMapping("posts")
     public ResponseEntity<List<PostDto>> getAll(){
         var posts = postService.findAll();
         return ResponseEntity.ok(posts);
     }
-    @GetMapping("/posts/{id}")
+    @GetMapping("posts/{id}")
     public ResponseEntity<PostDto> getById(@PathVariable Long id){
         var post = postService.findById(id);
         return ResponseEntity.ok(post);
