@@ -24,7 +24,7 @@ public class UserEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
   @Column(name = "seq")
-  private int seq;
+  private Long seq;
   @Basic
   @Column(name = "email")
   private String email;

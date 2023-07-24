@@ -21,7 +21,7 @@ public class PostEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
   @Column(name = "seq")
-  private int seq;
+  private Long seq;
   @Basic
   @Column(name = "content")
   private String content;
@@ -36,7 +36,7 @@ public class PostEntity {
   private Timestamp modifiedAt;
   @Basic
   @Column(name = "User_seq")
-  private int userSeq;
+  private Long userSeq;
 
   @Override
   public boolean equals(Object o) {

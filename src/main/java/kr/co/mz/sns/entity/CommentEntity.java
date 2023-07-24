@@ -21,7 +21,7 @@ public class CommentEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id
   @Column(name = "seq")
-  private int seq;
+  private Long seq;
   @Basic
   @Column(name = "content")
   private String content;
@@ -33,10 +33,10 @@ public class CommentEntity {
   private Timestamp modifiedAt;
   @Basic
   @Column(name = "User_seq")
-  private int userSeq;
+  private Long userSeq;
   @Basic
   @Column(name = "Post_seq")
-  private int postSeq;
+  private Long postSeq;
 
   @Override
   public boolean equals(Object o) {
