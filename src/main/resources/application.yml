@@ -1,7 +1,4 @@
 spring:
-  mvc:
-    throw-exception-if-no-handler-found: true
-    static-path-pattern:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://172.90.6.183:3306/sns
@@ -13,6 +10,6 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
-        use_sql_comments: true
+      format_sql: true
+      use_sql_comments: true
       show-sql: true
