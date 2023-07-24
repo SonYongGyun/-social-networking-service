@@ -32,8 +32,8 @@ public class SecurityConfig {
             UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(
             authorize -> authorize
-                .requestMatchers("/api/public/*").permitAll()
-                .requestMatchers("/api/home/*").hasAnyRole("ANONYMOUS","MEMBER")
+                .requestMatchers("/api/unauth/*").permitAll()
+                .requestMatchers("/api/public/*").hasAnyRole("ANONYMOUS","MEMBER")
                 .requestMatchers("/api/auth/*").hasRole("MEMBER")
                 .anyRequest().authenticated()
         );

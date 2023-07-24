@@ -26,7 +26,7 @@ public class PostService {
         try{
             var postEntityList = postRepository.findAll();
             return postEntityList.stream().map(post -> modelMapper.map(post, PostDto.class)).toList();
-        } catch (RuntimeException re){
+        } catch (DataAccessException dae){
             throw new PostNotFoundException("Unable to load post list");
         }
     }
