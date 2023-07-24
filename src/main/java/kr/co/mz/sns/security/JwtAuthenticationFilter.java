@@ -20,7 +20,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final CustomUserDetailService customUserDetailService;
 
   @Autowired
-
   public JwtAuthenticationFilter(JWTService jwtService, CustomUserDetailService customUserDetailService) {
     this.jwtService = jwtService;
     this.customUserDetailService = customUserDetailService;
@@ -39,7 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       var userDetails = customUserDetailService.loadUserByUsername(userName);
       // 사용자의 인증 정보를 나타내는 인터페이스 생성 : principal(사용자주체), credentials(자격증명)
       var authenticationToken
-          = new UsernamePasswordAuthenticationToken(userDetails,userDetails.getPassword(), userDetails.getAuthorities());
+          = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),
+          userDetails.getAuthorities());
       // IP주소, 브라우저 정보, 인증 시간 등과 같은 웹 기반 인증에 필요한 정보를 담음
       authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
       // 이후의 보안 관련 작업에서 해당 사용자의 정보를 사용할 수 있도록 사용자 인증 정보 셋팅

@@ -14,12 +14,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/unauth/")
 public class LoginController {
 
   private final AuthenticationManager authenticationManager;
@@ -37,7 +39,7 @@ public class LoginController {
   }
 
 
-  @RequestMapping("login")
+  @GetMapping("login")
   public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
     var authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
@@ -45,17 +47,18 @@ public class LoginController {
     SecurityContextHolder.getContext().setAuthentication(authentication);
     var token = jwtService.generateToken(authentication);
     var headers = new HttpHeaders();
-    headers.add("Authorization","Bearer " + token);
+    headers.add("Authorization", "Bearer " + token);
     return ResponseEntity.ok().headers(headers).body("Log-In Succeed");
   }
 
-  @RequestMapping("register")
+  @PostMapping("register")
   public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
     if (userRepository.existsByName(registerDto.getUserName())) {
       return new ResponseEntity<>("UserName is taken!", HttpStatus.BAD_REQUEST);
     }
     var user = new UserEntity();
     user.setName(registerDto.getUserName());
+    user.setEmail(registerDto.getUserName());
     user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
     user.setRole(Role.ANONYMOUS.toString());
     userRepository.save(user);
