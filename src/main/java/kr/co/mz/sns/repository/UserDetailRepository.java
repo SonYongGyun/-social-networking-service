@@ -6,8 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserDetailRepository extends JpaRepository<UserDetailEntity, Long> {
 
-  Optional<UserDetailEntity> findById(Long id);
+  Optional<UserDetailEntity> findByUserSeq(Long userSeq);
 
-  boolean existsById(Long id);
+  boolean existsByUserSeq(Long userSeq);
+
+  void deleteByUserSeq(Long userSeq);
+
 
 }
