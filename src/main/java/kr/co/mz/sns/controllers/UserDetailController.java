@@ -35,7 +35,7 @@ public class UserDetailController {
     return ResponseEntity.status(HttpStatus.OK).body(userDetailService.saveOne(userDetailDto));
   }
 
-  @PatchMapping("{userSeq}")
+  @PatchMapping("")
   public ResponseEntity<UserDetailDto> update(@RequestBody UserDetailDto
       userDetailDto) {
     return ResponseEntity.status(HttpStatus.OK).body(userDetailService.saveOne(userDetailDto));
@@ -43,6 +43,7 @@ public class UserDetailController {
 
   @DeleteMapping("{userSeq}")
   public ResponseEntity<String> delete(@PathVariable Long userSeq) {
-    return ResponseEntity.status(HttpStatus.OK).body("Your detail is deleted Successfully.");
+    var result = userDetailService.deleteByUserSeq(userSeq);
+    return ResponseEntity.status(HttpStatus.OK).body("Your detail is deleted Successfully for :" + result + " rows.");
   }
 }

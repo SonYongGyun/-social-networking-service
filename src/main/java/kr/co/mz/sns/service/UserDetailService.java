@@ -1,5 +1,6 @@
 package kr.co.mz.sns.service;
 
+import jakarta.transaction.Transactional;
 import kr.co.mz.sns.dto.UserDetailDto;
 import kr.co.mz.sns.entity.UserDetailEntity;
 import kr.co.mz.sns.repository.UserDetailRepository;
@@ -35,7 +36,7 @@ public class UserDetailService {
   }
 
   public UserDetailDto updateByUserSeq(UserDetailDto userDetailDto) {
-    if (!userDetailRepository.existsByUserSeq(userDetailDto.getUser_seq())) {
+    if (!userDetailRepository.existsByUserSeq(userDetailDto.getUserSeq())) {
       throw new EmptyResultDataAccessException("Expected 1 result, but none returned.", 1);
     }
     var userDetailEntity = modelMapper.map(userDetailDto, UserDetailEntity.class);
@@ -43,8 +44,9 @@ public class UserDetailService {
     return modelMapper.map(updatedEntity, UserDetailDto.class);
   }
 
-  public void deleteById(Long userSeq) {
-    userDetailRepository.deleteById(userSeq);//empty result data exception 발생.
+  @Transactional
+  public long deleteByUserSeq(Long userSeq) {
+    return userDetailRepository.deleteByUserSeq(userSeq);
   }
 
   public UserDetailDto updateUserDetail(UserDetailDto userDetailDto) {
