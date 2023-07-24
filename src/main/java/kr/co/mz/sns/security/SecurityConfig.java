@@ -36,8 +36,7 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers("/post/**")
                 .authenticated()
-        )
-    ;
+        );
     return http.build();
   }
 
