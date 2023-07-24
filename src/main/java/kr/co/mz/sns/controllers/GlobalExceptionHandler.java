@@ -1,5 +1,7 @@
 package kr.co.mz.sns.controllers;
 import kr.co.mz.sns.dto.ErrorDto;
+import kr.co.mz.sns.exception.PostNotFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,5 +24,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleAccessDeniedException(AccessDeniedException e) {
         ErrorDto errorDto = new ErrorDto("응~안돼~ 돌아가~: " + e.getMessage());
         return new ResponseEntity<>(errorDto, HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<ErrorDto> handlePostNotFoundException(PostNotFoundException pnfe) {
+        ErrorDto errorDto = new ErrorDto(pnfe.getMessage());
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
     }
 }

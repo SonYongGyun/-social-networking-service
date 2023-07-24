@@ -28,16 +28,15 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
-        .addFilterBefore(new JwtAuthenticationFilter(jwtService, customUserDetailService)
-            , UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(new JwtAuthenticationFilter(jwtService, customUserDetailService),
+            UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(
             authorize -> authorize
-                .requestMatchers("/login", "/register", "/post")
-                .permitAll()
-                .requestMatchers("/post/**")
-                .authenticated()
-        )
-    ;
+                .requestMatchers("/api/public/*").permitAll()
+                .requestMatchers("/api/home/*").hasAnyRole("ANONYMOUS","MEMBER")
+                .requestMatchers("/api/auth/*").hasRole("MEMBER")
+                .anyRequest().authenticated()
+        );
     return http.build();
   }
 

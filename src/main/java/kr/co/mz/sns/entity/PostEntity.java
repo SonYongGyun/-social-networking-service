@@ -47,7 +47,7 @@ public class PostEntity {
       return false;
     }
     var that = (PostEntity) o;
-    return seq == that.seq && userSeq == that.userSeq && Objects.equals(content, that.content)
+    return Objects.equals(seq, that.seq) && Objects.equals(userSeq, that.userSeq) && Objects.equals(content, that.content)
         && Objects.equals(likes, that.likes) && Objects.equals(createdAt, that.createdAt)
         && Objects.equals(modifiedAt, that.modifiedAt);
   }
