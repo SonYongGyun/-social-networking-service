@@ -20,6 +20,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final CustomUserDetailService customUserDetailService;
 
   @Autowired
+
   public JwtAuthenticationFilter(JWTService jwtService, CustomUserDetailService customUserDetailService) {
     this.jwtService = jwtService;
     this.customUserDetailService = customUserDetailService;
