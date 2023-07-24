@@ -1,6 +1,7 @@
 package kr.co.mz.sns.service;
 
 import kr.co.mz.sns.dto.UserDetailDto;
+import kr.co.mz.sns.entity.UserDetailEntity;
 import kr.co.mz.sns.repository.UserDetailRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,20 @@ public class UserDetailService {
 
   public UserDetailDto findById(Long id) {
     return modelMapper.map(userDetailRepository.findById(id), UserDetailDto.class);
+  }
+
+  public UserDetailDto saveOne(UserDetailDto userDetailDto) {
+    var userDetailEntity = modelMapper.map(userDetailDto, UserDetailEntity.class);
+    var savedEntity = userDetailRepository.save(userDetailEntity);
+    return modelMapper.map(savedEntity, UserDetailDto.class);
+  }
+
+//  public void deleteById(Long id) {
+//
+//  }
+
+  public UserDetailDto toDto(UserDetailEntity userDetailEntity) {
+    return modelMapper.map(userDetailEntity, UserDetailDto.class);
   }
 
 }
