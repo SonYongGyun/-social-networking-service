@@ -34,8 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     var token = getJWTFromRequest(request).orElseGet(() -> "");
     if (StringUtils.hasText(token) && jwtService.validateToken(token)) {
       // 이 토큰을 key 로 파싱을 진행하여 사용자 이름을 얻음
-      var email = jwtService.getEmailJWT(token);
-      var userDetails = customUserDetailService.loadUserByUsername(email);
+      var userName = jwtService.getEmailJWT(token);
+      var userDetails = customUserDetailService.loadUserByUsername(userName);
       // 사용자의 인증 정보를 나타내는 인터페이스 생성 : principal(사용자주체), credentials(자격증명)
       var authenticationToken
           = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),
@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
       // 이후의 보안 관련 작업에서 해당 사용자의 정보를 사용할 수 있도록 사용자 인증 정보 셋팅
       SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+      response.setHeader("Authorization",request.getHeader("Authorization"));
     }
     filterChain.doFilter(request, response);
   }
@@ -57,3 +58,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     return Optional.ofNullable(token);
   }
 }
+
