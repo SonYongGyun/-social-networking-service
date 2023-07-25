@@ -47,7 +47,7 @@ public class CommentEntity {
       return false;
     }
     var that = (CommentEntity) o;
-    return seq == that.seq && userSeq == that.userSeq && postSeq == that.postSeq && Objects.equals(content,
+    return Objects.equals(seq, that.seq) && Objects.equals(userSeq, that.userSeq) && Objects.equals(postSeq, that.postSeq) && Objects.equals(content,
         that.content) && Objects.equals(createdAt, that.createdAt) && Objects.equals(modifiedAt,
         that.modifiedAt);
   }
