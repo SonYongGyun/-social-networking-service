@@ -10,7 +10,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
   Optional<UserEntity> findByEmail(String email);
 
-  Boolean existsByName(String name);
+  Boolean existsByEmail(String name);
   /*
    * SELECT * FROM user
    * WHERE 'email' like '%?%'  어떤 인자를 받고 그 인자에 검색어를 설정

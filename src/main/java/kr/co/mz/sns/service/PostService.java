@@ -6,11 +6,13 @@ import kr.co.mz.sns.dto.PostDto;
 import kr.co.mz.sns.entity.PostEntity;
 import kr.co.mz.sns.exception.InsertFailedException;
 import kr.co.mz.sns.exception.PostNotFoundException;
+import kr.co.mz.sns.principal.MyCustomPrincipal;
 import kr.co.mz.sns.repository.PostRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,7 +29,7 @@ public class PostService {
             var postEntityList = postRepository.findAll();
             return postEntityList.stream().map(post -> modelMapper.map(post, PostDto.class)).toList();
         } catch (DataAccessException dae){
-            throw new PostNotFoundException("Unable to load post list");
+            throw new PostNotFoundException("Unable to load post list : " + dae.getMessage());
         }
     }
     public PostDto findById(Long id){
@@ -37,11 +39,14 @@ public class PostService {
     }
     public PostDto saveOne(PostDto postDto){
         var postEntity = modelMapper.map(postDto,PostEntity.class);
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var principal = (MyCustomPrincipal)authentication.getPrincipal();
+        String email = principal.getUsername();
         try{
             postRepository.save(postEntity);
         }
         catch(DataAccessException de){
-            throw new InsertFailedException("Failed to write post");
+            throw new InsertFailedException("Failed to write post : " + de.getMessage());
         }
         return postDto;
     }
@@ -57,7 +62,7 @@ public class PostService {
         try {
             postRepository.deleteById(id);
         }catch (EmptyResultDataAccessException erdae){
-            throw new PostNotFoundException("This post has already been deleted");
+            throw new PostNotFoundException("This post has already been deleted : " + erdae.getMessage());
         }
     }
 }

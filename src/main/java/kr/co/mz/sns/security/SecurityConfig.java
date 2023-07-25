@@ -1,6 +1,5 @@
 package kr.co.mz.sns.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +19,6 @@ public class SecurityConfig {
   private final JWTService jwtService;
   private final CustomUserDetailService customUserDetailService;
 
-  @Autowired
   public SecurityConfig(JWTService jwtService, CustomUserDetailService customUserDetailService) {
     this.jwtService = jwtService;
     this.customUserDetailService = customUserDetailService;
@@ -35,8 +33,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             authorize -> authorize
                 .requestMatchers("/api/unauth/*").permitAll()
-                .requestMatchers("/api/public/*").hasAnyRole("ANONYMOUS", "MEMBER")
-                .requestMatchers("/api/auth/*").hasRole("MEMBER")
+                .requestMatchers("/api/auth/*").hasAuthority("MEMBER")
                 .anyRequest().authenticated()
         );
     return http.build();

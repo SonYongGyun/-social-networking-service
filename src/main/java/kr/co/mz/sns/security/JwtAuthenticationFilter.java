@@ -34,8 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     var token = getJWTFromRequest(request).orElseGet(() -> "");
     if (StringUtils.hasText(token) && jwtService.validateToken(token)) {
       // 이 토큰을 key 로 파싱을 진행하여 사용자 이름을 얻음
-      var userName = jwtService.getUserNameFromJWT(token);
-      var userDetails = customUserDetailService.loadUserByUsername(userName);
+      var email = jwtService.getEmailJWT(token);
+      var userDetails = customUserDetailService.loadUserByUsername(email);
       // 사용자의 인증 정보를 나타내는 인터페이스 생성 : principal(사용자주체), credentials(자격증명)
       var authenticationToken
           = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),

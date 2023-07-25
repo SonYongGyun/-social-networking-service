@@ -14,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,37 +38,32 @@ public class LoginController {
   }
 
 
-  @GetMapping("login")
+  @PostMapping("login")
   public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
+    System.out.println(loginDto.getEmail());
+    System.out.println(loginDto.getPassword());
     var authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
-            loginDto.getUserName(), loginDto.getPassword()));
+            loginDto.getEmail(), loginDto.getPassword()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
     var token = jwtService.generateToken(authentication);
     var headers = new HttpHeaders();
-    headers.add("Authorization", "Bearer " + token);
+    headers.add("Authorization","Bearer " + token);
     return ResponseEntity.ok().headers(headers).body("Log-In Succeed");
   }
 
   @PostMapping("register")
   public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
-    if (userRepository.existsByName(registerDto.getUserName())) {
-      return new ResponseEntity<>("UserName is taken!", HttpStatus.BAD_REQUEST);
+    if (userRepository.existsByEmail(registerDto.getEmail())) {
+      return new ResponseEntity<>("Email is taken!", HttpStatus.BAD_REQUEST);
     }
     var user = new UserEntity();
-    user.setName(registerDto.getUserName());
-    user.setEmail(registerDto.getUserName());
+    user.setEmail(registerDto.getEmail());
     user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
     user.setRole(Role.ANONYMOUS.toString());
     userRepository.save(user);
     return new ResponseEntity<>("User registered Success!", HttpStatus.OK);
   }
-
-  @RequestMapping("/auth")
-  public ResponseEntity<String> auth() {
-    return new ResponseEntity<>("Successful", HttpStatus.OK);
-  }
-
 }
 /*
 유저가 들어오면 필터체인거쳐서 들어온다.
