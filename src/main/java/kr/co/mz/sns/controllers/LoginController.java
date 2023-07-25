@@ -36,8 +36,6 @@ public class LoginController {
     this.passwordEncoder = passwordEncoder;
     this.jwtService = jwtService;
   }
-
-
   @PostMapping("login")
   public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
     System.out.println(loginDto.getEmail());
