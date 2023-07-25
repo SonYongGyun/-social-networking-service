@@ -6,6 +6,7 @@ import kr.co.mz.sns.entity.UserDetailEntity;
 import kr.co.mz.sns.repository.UserDetailRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -30,6 +31,10 @@ public class UserDetailService {
   }
 
   public UserDetailDto saveOne(UserDetailDto userDetailDto) {
+    Long userSeq = userDetailDto.getUserSeq();
+    if (userDetailRepository.existsByUserSeq(userSeq)) {
+      throw new DataIntegrityViolationException("UserDetail with user_seq " + userSeq + " already exists.");
+    }
     var userDetailEntity = modelMapper.map(userDetailDto, UserDetailEntity.class);
     var savedEntity = userDetailRepository.save(userDetailEntity);
     return modelMapper.map(savedEntity, UserDetailDto.class);

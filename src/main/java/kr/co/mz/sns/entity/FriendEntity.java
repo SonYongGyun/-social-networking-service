@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Friend", schema = "sns", catalog = "")
+@Table(name = "Friend", schema = "sns")
 @Data
 @NoArgsConstructor
 public class FriendEntity {
@@ -32,7 +32,7 @@ public class FriendEntity {
   @Column(name = "modified_at")
   private Timestamp modifiedAt;
   @Basic
-  @Column(name = "User_seq")
+  @Column(name = "user_seq")
   private Long userSeq;
 
   @Override

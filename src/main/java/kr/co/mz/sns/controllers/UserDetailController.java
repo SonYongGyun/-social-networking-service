@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/public/user_detail/")
 public class UserDetailController {
 
-  private UserDetailService userDetailService;
+  private final UserDetailService userDetailService;
 
   public UserDetailController(UserDetailService userDetailService) {
     this.userDetailService = userDetailService;
@@ -25,8 +25,10 @@ public class UserDetailController {
 
   @GetMapping("{userSeq}")
   public ResponseEntity<UserDetailDto> findByUserSeq(@PathVariable Long userSeq) {
-    var optionalUserDetailDto = userDetailService.findById(userSeq);
+    if (userSeq == null || userSeq < 1) {
 
+    }
+    var optionalUserDetailDto = userDetailService.findById(userSeq);
     return ResponseEntity.status(HttpStatus.OK).body(optionalUserDetailDto);
   }
 
