@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,12 +27,11 @@ public class PostService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public PostService(PostRepository postRepository, UserRepository userRepository, ModelMapper modelMapper,
-        UserDetails userDetails) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, ModelMapper modelMapper) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
-        this.userDetails = userDetails;
+        this.userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     public List<PostDto> findAll() {
