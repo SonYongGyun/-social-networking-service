@@ -24,60 +24,60 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserEntity {
 
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Id
-  @Column(name = "seq")
-  private Long seq;
-  @Basic
-  @Column(name = "email")
-  private String email;
-  @Basic
-  @Column(name = "name")
-  private String name;
-  @Basic
-  @Column(name = "password")
-  private String password;
-  @Basic
-  @Column(name = "last_login_at")
-  private Timestamp lastLoginAt;
-  @Basic
-  @Column(name = "created_at")
-  private Timestamp createdAt;
-  @Basic
-  @Column(name = "modified_at")
-  private Timestamp modifiedAt;
-  @Basic
-  @Column
-  private String role;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "seq")
+    private Long seq;
+    @Basic
+    @Column(name = "email")
+    private String email;
+    @Basic
+    @Column(name = "name")
+    private String name;
+    @Basic
+    @Column(name = "password")
+    private String password;
+    @Basic
+    @Column(name = "last_login_at")
+    private Timestamp lastLoginAt;
+    @Basic
+    @Column(name = "created_at")
+    private Timestamp createdAt;
+    @Basic
+    @Column(name = "modified_at")
+    private Timestamp modifiedAt;
+    @Basic
+    @Column
+    private String role;
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "seq", referencedColumnName = "User_seq")
-  private UserDetailEntity userDetail;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "seq", referencedColumnName = "user_seq")
+    private UserDetailEntity userDetail;
 
-  @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
-  private List<PostEntity> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private List<PostEntity> posts = new ArrayList<>();
 
-  @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
-  private List<CommentEntity> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+    private List<CommentEntity> comments = new ArrayList<>();
 
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        var that = (UserEntity) o;
+        return Objects.equals(seq, that.seq) && Objects.equals(email, that.email) && Objects.equals(name, that.name)
+            && Objects.equals(password, that.password) && Objects.equals(lastLoginAt, that.lastLoginAt)
+            && Objects.equals(createdAt, that.createdAt) && Objects.equals(modifiedAt, that.modifiedAt)
+            && Objects.equals(role, that.role);
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    var that = (UserEntity) o;
-    return Objects.equals(seq, that.seq) && Objects.equals(email, that.email) && Objects.equals(name, that.name)
-        && Objects.equals(password, that.password) && Objects.equals(lastLoginAt, that.lastLoginAt)
-        && Objects.equals(createdAt, that.createdAt) && Objects.equals(modifiedAt, that.modifiedAt)
-        && Objects.equals(role, that.role);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(seq, email, name, password, lastLoginAt, role, createdAt, modifiedAt);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, email, name, password, lastLoginAt, role, createdAt, modifiedAt);
+    }
 }

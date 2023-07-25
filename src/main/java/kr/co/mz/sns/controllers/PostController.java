@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth/posts")
+@RequestMapping("/api/auth/posts/")
 public class PostController {
 
     private final PostService postService;
@@ -33,20 +33,24 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
+    @DeleteMapping("{seq}")
+    public ResponseEntity<String> delete(@PathVariable Long seq) {
         try {
-            postService.deleteById(id);
-            return ResponseEntity.ok("Post with ID " + id + " has been successfully deleted");
-        } catch (NumberFormatException nfe) {
-            throw new InvalidPathVariableFormatException("Invalid ID format : " + id + " : " + nfe.getMessage());
+            postService.deleteBySeq(seq);
+            return ResponseEntity.ok("Post with ID " + seq + " has been successfully deleted");
+        } catch (NumberFormatException | NullPointerException nfe) {
+            throw new InvalidPathVariableFormatException("Invalid ID format : " + seq + " : " + nfe.getMessage());
         }
     }
 
-    @PatchMapping("{id}")
-    public ResponseEntity<PostDto> updatePost(@PathVariable Long id, @RequestBody PostDto postDto) {
-        RequestParamValidation.validate(postDto);
-        var updatedPost = postService.updateById(id, postDto);
-        return ResponseEntity.ok(updatedPost);
+    @PatchMapping("{seq}")
+    public ResponseEntity<PostDto> updatePost(@PathVariable Long seq, @RequestBody PostDto postDto) {
+        try {
+            RequestParamValidation.validate(postDto);
+            var updatedPost = postService.updateBySeq(seq, postDto);
+            return ResponseEntity.ok(updatedPost);
+        } catch (NumberFormatException | NullPointerException nfe) {
+            throw new InvalidPathVariableFormatException("Invalid ID format : " + seq + " : " + nfe.getMessage());
+        }
     }
 }
