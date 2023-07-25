@@ -26,38 +26,33 @@ public class CommentEntity {
   @Basic
   @Column(name = "modified_at")
   private Timestamp modifiedAt;
-  @Basic
-  @Column(name = "User_seq")
-  private Long userSeq;
-  @Basic
-  @Column(name = "Post_seq")
-  private Long postSeq;
 
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "User_seq")
+  @ManyToOne
+  @JoinColumn(name = "user_seq")
   private UserEntity userEntity;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "Post_seq")
+  @ManyToOne
+  @JoinColumn(name = "post_seq")
   private PostEntity postEntity;
+
+  public void setPosts(PostEntity postEntity){
+    this.postEntity = postEntity;
+    postEntity.getComments().add(this);
+  }
+  public void setUsers(UserEntity userEntity){
+    this.userEntity = userEntity;
+    userEntity.getComments().add(this);
+  }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    var that = (CommentEntity) o;
-    return Objects.equals(seq, that.seq) && Objects.equals(userSeq, that.userSeq) && Objects.equals(postSeq, that.postSeq) && Objects.equals(content,
-        that.content) && Objects.equals(createdAt, that.createdAt) && Objects.equals(modifiedAt,
-        that.modifiedAt);
+    if (this == o) return true;
+    if (!(o instanceof CommentEntity that)) return false;
+    return Objects.equals(getSeq(), that.getSeq()) && Objects.equals(getContent(), that.getContent()) && Objects.equals(getCreatedAt(), that.getCreatedAt()) && Objects.equals(getModifiedAt(), that.getModifiedAt()) && Objects.equals(getUserEntity(), that.getUserEntity()) && Objects.equals(getPostEntity(), that.getPostEntity());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(seq, content, createdAt, modifiedAt, userSeq, postSeq);
+    return Objects.hash(getSeq(), getContent(), getCreatedAt(), getModifiedAt(), getUserEntity(), getPostEntity());
   }
 }
