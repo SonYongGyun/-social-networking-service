@@ -20,9 +20,10 @@ public class UserDetailService {
   public UserDetailService(UserDetailRepository userDetailRepository, ModelMapper modelMapper) {
     this.userDetailRepository = userDetailRepository;
     this.modelMapper = modelMapper;
+
   }
 
-  public UserDetailDto findById(Long userSeq) {
+  public UserDetailDto findByUserSeq(Long userSeq) {
     if (!userDetailRepository.existsByUserSeq(userSeq)) {
       throw new EmptyResultDataAccessException("Expected 1 result, but none returned.", 1);
     }
@@ -30,13 +31,23 @@ public class UserDetailService {
         UserDetailDto.class);
   }
 
+//  public UserDetailDto findByEmail(String email) {
+//
+//    if (!userDetailRepository.existsByEmail(userSeq)) {
+//      throw new EmptyResultDataAccessException("Expected 1 result, but none returned.", 1);
+//    }
+//    return modelMapper.map(userDetailRepository.findById(userSeq).orElseGet(UserDetailEntity::new),
+//        UserDetailDto.class);
+//  }
+
+
   public UserDetailDto saveOne(UserDetailDto userDetailDto) {
-    Long userSeq = userDetailDto.getUserSeq();
+    var userSeq = userDetailDto.getUserSeq();
     if (userDetailRepository.existsByUserSeq(userSeq)) {
       throw new DataIntegrityViolationException("UserDetail with user_seq " + userSeq + " already exists.");
     }
     var userDetailEntity = modelMapper.map(userDetailDto, UserDetailEntity.class);
-    var savedEntity = userDetailRepository.save(userDetailEntity);
+    var savedEntity = userDetailRepository.save(userDetailEntity);//todo insertfailed exception
     return modelMapper.map(savedEntity, UserDetailDto.class);
   }
 
@@ -54,16 +65,8 @@ public class UserDetailService {
     return userDetailRepository.deleteByUserSeq(userSeq);
   }
 
-  public UserDetailDto updateUserDetail(UserDetailDto userDetailDto) {
-    var userDetailEntity = modelMapper.map(userDetailDto, UserDetailEntity.class);
-    var updatedUserDetailEntity = userDetailRepository.save(userDetailEntity);
-    // 완벽하게 dto 랑 맞지 않으니까.왜? default 로 생성되는 db설정들 외 기타 요인들 떄문.
-    // 업데이트 후 업데이트 된 entitiy 를 다시 dto로 만들어서 보내준다.
-    return modelMapper.map(updatedUserDetailEntity, UserDetailDto.class);
-  }
+  // 완벽하게 dto 랑 맞지 않으니까.왜? default 로 생성되는 db설정들 외 기타 요인들 떄문.
+  // 업데이트 후 업데이트 된 entitiy 를 다시 dto로 만들어서 보내준다.
 
-  public UserDetailDto toDto(UserDetailEntity userDetailEntity) {
-    return modelMapper.map(userDetailEntity, UserDetailDto.class);
-  }
 
 }
