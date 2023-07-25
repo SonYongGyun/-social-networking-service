@@ -1,7 +1,7 @@
 package kr.co.mz.sns.controllers;
 
 import kr.co.mz.sns.dto.ErrorDto;
-import kr.co.mz.sns.exception.PostNotFoundException;
+import kr.co.mz.sns.exception.NotFoundException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +31,8 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorDto, HttpStatus.FORBIDDEN);
   }
 
-  @ExceptionHandler(PostNotFoundException.class)
-  public ResponseEntity<ErrorDto> handlePostNotFoundException(PostNotFoundException pnfe) {
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<ErrorDto> handlePostNotFoundException(NotFoundException pnfe) {
     ErrorDto errorDto = new ErrorDto(pnfe.getMessage());
     return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
   }

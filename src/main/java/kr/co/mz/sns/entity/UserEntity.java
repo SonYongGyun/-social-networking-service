@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Data;
@@ -54,7 +55,7 @@ public class UserEntity {
   private UserDetailEntity userDetail;
 
   @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
-  private List<PostEntity> posts;
+  private List<PostEntity> posts = new ArrayList<>();
 
   @Override
   public boolean equals(Object o) {
@@ -76,3 +77,4 @@ public class UserEntity {
     return Objects.hash(seq, email, name, password, lastLoginAt, role, createdAt, modifiedAt);
   }
 }
+
