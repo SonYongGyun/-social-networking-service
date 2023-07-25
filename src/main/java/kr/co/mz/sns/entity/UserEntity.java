@@ -50,10 +50,10 @@ public class UserEntity {
   private String role;
 
   @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "seq", referencedColumnName = "User_seq")
+  @JoinColumn(name = "seq", referencedColumnName = "user_seq")
   private UserDetailEntity userDetail;
 
-  @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
   private List<PostEntity> posts;
 
   @Override

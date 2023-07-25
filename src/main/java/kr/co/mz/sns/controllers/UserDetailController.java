@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/public/user_detail/")
 public class UserDetailController {
 
-  private UserDetailService userDetailService;
+  private final UserDetailService userDetailService;
 
   public UserDetailController(UserDetailService userDetailService) {
     this.userDetailService = userDetailService;
