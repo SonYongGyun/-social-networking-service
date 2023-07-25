@@ -1,18 +1,14 @@
 package kr.co.mz.sns.entity;
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Objects;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
+
 @Entity
 @Table(name = "Post", schema = "sns")
 @Data
@@ -35,9 +31,14 @@ public class PostEntity {
   @Basic
   @Column(name = "modified_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
   private Timestamp modifiedAt;
+
   @ManyToOne
   @JoinColumn(name="user_seq", nullable = false)
   private UserEntity userEntity;
+
+  @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<CommentEntity> comments = new ArrayList<>();
+
 
   public void setUsers(UserEntity userEntity){
       this.userEntity = userEntity;
