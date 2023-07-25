@@ -55,9 +55,9 @@ public class UserEntity {
   private UserDetailEntity userDetail;
 
   @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
-  private List<PostEntity> posts;
+  private List<PostEntity> posts = new ArrayList<>();
 
-  @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
   private List<CommentEntity> comments = new ArrayList<>();
 
 

@@ -36,7 +36,7 @@ public class PostEntity {
   @JoinColumn(name="user_seq", nullable = false)
   private UserEntity userEntity;
 
-  @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL)
   private List<CommentEntity> comments = new ArrayList<>();
 
 
