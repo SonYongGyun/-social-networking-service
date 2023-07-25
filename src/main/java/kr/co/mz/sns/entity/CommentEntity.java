@@ -1,12 +1,7 @@
 package kr.co.mz.sns.entity;
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.sql.Timestamp;
 import java.util.Objects;
 import lombok.Data;
@@ -37,6 +32,15 @@ public class CommentEntity {
   @Basic
   @Column(name = "Post_seq")
   private Long postSeq;
+
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "User_seq")
+  private UserEntity userEntity;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "Post_seq")
+  private PostEntity postEntity;
 
   @Override
   public boolean equals(Object o) {

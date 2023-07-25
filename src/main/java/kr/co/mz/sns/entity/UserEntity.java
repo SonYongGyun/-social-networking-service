@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Data;
@@ -55,6 +56,10 @@ public class UserEntity {
 
   @OneToMany(mappedBy = "userEntity",cascade = CascadeType.ALL)
   private List<PostEntity> posts;
+
+  @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<CommentEntity> comments = new ArrayList<>();
+
 
   @Override
   public boolean equals(Object o) {
