@@ -11,9 +11,4 @@ public class AppConfig {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-
-//    @Bean
-//    public AuditorAware<UserDto> auditorAware() {
-//        return new AuditorAwareImpl();
-//    }
 }
