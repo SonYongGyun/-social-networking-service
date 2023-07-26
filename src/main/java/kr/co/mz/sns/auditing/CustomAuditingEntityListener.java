@@ -4,7 +4,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import java.util.Optional;
 import kr.co.mz.sns.config.security.CustomUserDetails;
-import kr.co.mz.sns.entity.CommentEntity;
 import kr.co.mz.sns.entity.PostEntity;
 import kr.co.mz.sns.entity.UserEntity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,15 +21,8 @@ public class CustomAuditingEntityListener extends AuditingEntityListener {
                 postEntity.setUserEntity(userEntity);
             }
         }
-
-        else if (target instanceof CommentEntity commentEntity) {
-            if (getCurrentUserId().isPresent()) {
-                var userEntity = new UserEntity();
-                userEntity.setSeq(getCurrentUserId().get());
-                commentEntity.setUserEntity(userEntity);
-            }
-        }
     }
+
     @PreUpdate
     public void preUpdate(Object target) {
         if (target instanceof PostEntity postEntity) {
@@ -38,13 +30,6 @@ public class CustomAuditingEntityListener extends AuditingEntityListener {
                 var userEntity = new UserEntity();
                 userEntity.setSeq(getCurrentUserId().get());
                 postEntity.setUserEntity(userEntity);
-            }
-        }
-        else if (target instanceof CommentEntity commentEntity) {
-            if (getCurrentUserId().isPresent()) {
-                var userEntity = new UserEntity();
-                userEntity.setSeq(getCurrentUserId().get());
-                commentEntity.setUserEntity(userEntity);
             }
         }
     }
