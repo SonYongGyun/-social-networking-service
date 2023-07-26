@@ -16,7 +16,6 @@ public class UserDetailService {
 
   private final UserDetailRepository userDetailRepository;
   private final ModelMapper modelMapper;
-
   private final UserService userService;
 
   @Autowired
