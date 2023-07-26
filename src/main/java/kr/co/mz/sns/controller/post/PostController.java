@@ -1,9 +1,10 @@
 package kr.co.mz.sns.controller.post;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import kr.co.mz.sns.dto.post.FindPostDto;
 import kr.co.mz.sns.dto.post.PostLikeDto;
+import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.service.PostLikeService;
 import kr.co.mz.sns.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -20,39 +21,47 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/auth/posts")
 @RequiredArgsConstructor
+@RequestMapping("/api/auth/posts")
 public class PostController {
 
-  private final PostService postService;
-  private final PostLikeService postLikeService;
+    private final PostService postService;
+    private final PostLikeService postLikeService;
 
-  @PostMapping
-  public ResponseEntity<FindPostDto> write(@Valid @RequestBody FindPostDto findPostDto) {
-    var createdPost = postService.insert(findPostDto);
-    return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
-  }
+    @PostMapping
+    public ResponseEntity<SelectPostDto> write(@Valid @RequestBody SelectPostDto selectPostDto) {
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(
+                postService.insert(selectPostDto)
+            );
+    }
 
-  @DeleteMapping("/{seq}")
-  public ResponseEntity<String> delete(@PathVariable Long seq) {
-    postService.deleteBySeq(seq);
-    return ResponseEntity.ok("Post with ID " + seq + " has been successfully deleted");
-  }
+    @DeleteMapping("/{seq}")
+    public ResponseEntity<String> delete(@NotNull @PathVariable Long seq) {
+        postService.deleteBySeq(seq);
+        return ResponseEntity.ok(
+            "Post with ID " + seq + " has been successfully deleted"
+        );
+    }
 
-  @PutMapping("/{seq}")
-  public ResponseEntity<FindPostDto> update(@PathVariable Long seq, @Valid @RequestBody FindPostDto findPostDto) {
-    return ResponseEntity.ok(
-        postService.updateBySeq(seq, findPostDto)
-    );
-  }
+    @PutMapping("/{seq}")
+    public ResponseEntity<SelectPostDto> update(@NotNull @PathVariable Long seq,
+        @Valid @RequestBody SelectPostDto selectPostDto) {
+        return ResponseEntity.ok(
+            postService.updateBySeq(seq, selectPostDto)
+        );
+    }
 
-  @PostMapping("/{seq}/like")
-  public ResponseEntity<List<PostLikeDto>> like(@PathVariable Long seq) {
-    var insertedPostLikeDto = postService.like(seq);
-    log.debug("PostLike inserted:: {}", insertedPostLikeDto);
-
-    var postLikeDtos = postLikeService.findAll(seq);
-    return ResponseEntity.status(HttpStatus.CREATED).body(postLikeDtos);
-  }
+    @PostMapping("/{seq}/like")
+    public ResponseEntity<List<PostLikeDto>> like(@NotNull @PathVariable Long seq) {
+        var insertedPostLikeDto = postService.like(seq);
+        log.debug("PostLike inserted:: {}", insertedPostLikeDto);
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(
+                postLikeService.findAll(seq)
+            );
+    }
 
 }

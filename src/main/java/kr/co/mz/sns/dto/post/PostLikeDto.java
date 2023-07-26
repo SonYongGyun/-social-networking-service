@@ -5,12 +5,8 @@ import lombok.Data;
 
 @Data
 public class PostLikeDto {
-
-  private Long seq;
-
-  private Long userSeq;
-
-  private Long postSeq;
-
-  private LocalDateTime createdAt;
+  
+    private Long userSeq;
+    private Long postSeq;
+    private LocalDateTime createdAt;
 }

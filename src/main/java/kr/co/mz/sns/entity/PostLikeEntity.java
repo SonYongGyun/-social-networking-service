@@ -14,21 +14,22 @@ import org.springframework.data.annotation.CreatedBy;
 @Entity
 @EntityListeners(AuditorAwareImpl.class)
 @Table(name = "post_like")
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 public class PostLikeEntity {
 
-  @Id
-  @Column(name = "seq")
-  private Long seq;
+    @Id
+    @Column(name = "seq")
+    private Long seq;
 
-  @CreatedBy
-  @Column(name = "user_seq")
-  private Long userSeq;
+    @CreatedBy
+    @Column(name = "user_seq")
+    private Long userSeq;
 
-  @Column(name = "post_seq")
-  private Long postSeq;
+    @Column(name = "post_seq")
+    private Long postSeq;
 
-  @Column(name = "create_at", nullable = false)
-  private LocalDateTime createdAt;
+    @Column(name = "create_at", nullable = false)
+    private LocalDateTime createdAt;
 }
+

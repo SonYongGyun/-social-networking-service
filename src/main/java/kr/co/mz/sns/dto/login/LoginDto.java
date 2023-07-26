@@ -1,10 +1,16 @@
 package kr.co.mz.sns.dto.login;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class LoginDto {
 
-  private String email;
-  private String password;
+    @NotNull
+    @NotEmpty
+    private String email;
+    @NotNull
+    @NotEmpty
+    private String password;
 }

@@ -1,21 +1,21 @@
 package kr.co.mz.sns.config.security;
 
 import java.util.Collection;
-import kr.co.mz.sns.dto.user.UserDto;
+import kr.co.mz.sns.dto.user.GenericUserDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 public class CustomUserDetails extends User {
 
-  private final UserDto userDto;
+    private final GenericUserDto genericUserDto;
 
-  public CustomUserDetails(UserDto userDto, Collection<? extends GrantedAuthority> authorities) {
-    super(userDto.getEmail(), userDto.getPassword(), authorities);
-    this.userDto = userDto;
-  }
+    public CustomUserDetails(GenericUserDto genericUserDto, Collection<? extends GrantedAuthority> authorities) {
+        super(genericUserDto.getEmail(), genericUserDto.getPassword(), authorities);
+        this.genericUserDto = genericUserDto;
+    }
 
-  public UserDto getUserDto() {
-    System.out.println("userDto : " + userDto);
-    return userDto;
-  }
+    public GenericUserDto getUserDto() {
+        System.out.println("userDto : " + genericUserDto);
+        return genericUserDto;
+    }
 }
