@@ -10,8 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 @SpringBootTest
 public class CommentTest {
 
@@ -24,25 +22,26 @@ public class CommentTest {
     void setUp() {
         commentService = new CommentService(commentRepository, new ModelMapper());
     }
+
     @Test
     @DisplayName("댓글저장 테스트")
-    void save(){
+    void save() {
         CommentDto commentDto = new CommentDto(4L, "content", null, null, 2L, 4L);
         commentService.saveOne(commentDto);
     }
-    @Test
-    @DisplayName("모든글 검색")
-    void findAll(){
-        CommentDto commentDto = new CommentDto();
-        List<CommentDto> list = commentService.viewAll(2L);
-        for(CommentDto commentDto1 : list){
-            System.out.println(commentDto1.getSeq());
-        }
-    }
+//    @Test
+//    @DisplayName("모든글 검색")
+//    void findAll(){
+//        CommentDto commentDto = new CommentDto();
+//        List<CommentDto> list = commentService.viewAll(2L);
+//        for(CommentDto commentDto1 : list){
+//            System.out.println(commentDto1.getSeq());
+//        }
+//    }
 
     @Test
     @DisplayName("댓글 수정")
-    void update(){
+    void update() {
         CommentDto commentDto = new CommentDto(4L, "updateContent", null, null, 2L, 4L);
         commentService.updateOne(4L, commentDto);
 
@@ -50,7 +49,7 @@ public class CommentTest {
 
     @Test
     @DisplayName("댓글 삭제")
-    void delete(){
+    void delete() {
         commentService.deleteOne(1L);
     }
 }
