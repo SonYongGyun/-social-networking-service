@@ -1,56 +1,42 @@
 package kr.co.mz.sns.controllers;
 
-import kr.co.mz.sns.dto.PostDto;
-import kr.co.mz.sns.exception.InvalidPathVariableFormatException;
+import jakarta.validation.Valid;
+import kr.co.mz.sns.dto.FindPostDto;
 import kr.co.mz.sns.service.PostService;
-import kr.co.mz.sns.valid.RequestParamValidation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth/posts/")
+@RequestMapping("/api/auth/posts")
+@RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
-    @Autowired
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
-
-    @PostMapping("")
-    public ResponseEntity<PostDto> write(@RequestBody PostDto postDto) {
-        RequestParamValidation.validate(postDto);
-        var createdPost = postService.saveOne(postDto);
+    @PostMapping
+    public ResponseEntity<FindPostDto> write(@Valid @RequestBody FindPostDto findPostDto) {
+        var createdPost = postService.insert(findPostDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
     }
 
-    @DeleteMapping("{seq}")
+    @DeleteMapping("/{seq}")
     public ResponseEntity<String> delete(@PathVariable Long seq) {
-        try {
-            postService.deleteBySeq(seq);
-            return ResponseEntity.ok("Post with ID " + seq + " has been successfully deleted");
-        } catch (NumberFormatException | NullPointerException nfe) {
-            throw new InvalidPathVariableFormatException("Invalid ID format : " + seq + " : " + nfe.getMessage());
-        }
+        postService.deleteBySeq(seq);
+        return ResponseEntity.ok("Post with ID " + seq + " has been successfully deleted");
     }
 
-    @PatchMapping("{seq}")
-    public ResponseEntity<PostDto> updatePost(@PathVariable Long seq, @RequestBody PostDto postDto) {
-        try {
-            RequestParamValidation.validate(postDto);
-            var updatedPost = postService.updateBySeq(seq, postDto);
-            return ResponseEntity.ok(updatedPost);
-        } catch (NumberFormatException | NullPointerException nfe) {
-            throw new InvalidPathVariableFormatException("Invalid ID format : " + seq + " : " + nfe.getMessage());
-        }
+    @PutMapping("/{seq}")
+    public ResponseEntity<FindPostDto> update(@PathVariable Long seq, @Valid @RequestBody FindPostDto findPostDto) {
+        return ResponseEntity.ok(
+            postService.updateBySeq(seq, findPostDto)
+        );
     }
 }

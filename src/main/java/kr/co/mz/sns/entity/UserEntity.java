@@ -49,7 +49,6 @@ public class UserEntity {
     @Basic
     @Column
     private String role;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "seq", referencedColumnName = "user_seq")
     private UserDetailEntity userDetail;

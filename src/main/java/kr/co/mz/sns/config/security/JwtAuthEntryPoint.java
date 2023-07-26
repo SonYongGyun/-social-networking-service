@@ -1,4 +1,4 @@
-package kr.co.mz.sns.security;
+package kr.co.mz.sns.config.security;
 
 //@Component
 //public class JwtAuthEntryPoint implements AuthenticationEntryPoint {

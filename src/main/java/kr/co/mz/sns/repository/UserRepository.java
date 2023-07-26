@@ -6,11 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-  Optional<UserEntity> findByName(String name);
+    Optional<UserEntity> findByName(String name);
 
-  Optional<UserEntity> findByEmail(String email);
+    Optional<UserEntity> findByEmail(String email);
 
-  Boolean existsByEmail(String name);
+    Boolean existsByEmail(String name);
   /*
    * SELECT * FROM user
    * WHERE 'email' like '%?%'  어떤 인자를 받고 그 인자에 검색어를 설정
