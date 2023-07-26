@@ -49,4 +49,3 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return Optional.ofNullable(token);
     }
 }
-

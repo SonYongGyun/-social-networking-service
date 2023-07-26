@@ -1,55 +1,39 @@
 package kr.co.mz.sns.entity;
 
-import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.sql.Timestamp;
-import java.util.Objects;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "Friend", schema = "sns")
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "Friend")
 @Data
 @NoArgsConstructor
 public class FriendEntity {
 
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Id
-  @Column(name = "seq")
-  private Long seq;
-  @Basic
-  @Column(name = "status")
-  private String status;
-  @Basic
-  @Column(name = "created_at")
-  private Timestamp createdAt;
-  @Basic
-  @Column(name = "modified_at")
-  private Timestamp modifiedAt;
-  @Basic
-  @Column(name = "user_seq")
-  private Long userSeq;
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    var that = (FriendEntity) o;
-    return seq == that.seq && userSeq == that.userSeq && Objects.equals(status, that.status)
-        && Objects.equals(createdAt, that.createdAt) && Objects.equals(modifiedAt, that.modifiedAt);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(seq, status, createdAt, modifiedAt, userSeq);
-  }
+    @Id
+    @Column(name = "seq")
+    private Long seq;
+    @Column(name = "status", nullable = false)
+    private String status;
+    @CreatedBy
+    @Column(name = "createBy", nullable = false)
+    private Long createBy;
+    @Column(name = "friend_seq", nullable = false)
+    private Long friendSeq;
+    @CreatedDate
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
 }

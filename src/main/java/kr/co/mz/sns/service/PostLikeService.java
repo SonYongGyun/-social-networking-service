@@ -11,27 +11,27 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 @RequiredArgsConstructor
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class PostLikeService {
 
-  private final PostLikeRepository postLikeRepository;
-  private final ModelMapper modelMapper;
+    private final PostLikeRepository postLikeRepository;
+    private final ModelMapper modelMapper;
 
-  @Transactional
-  public PostLikeDto insert(Long postSeq) {
-    var postLikeEntity = new PostLikeEntity();
-    postLikeEntity.setPostSeq(postSeq);
+    @Transactional
+    public PostLikeDto insert(Long postSeq) {
+        var postLikeEntity = new PostLikeEntity();
+        postLikeEntity.setPostSeq(postSeq);
 
-    return modelMapper.map(
-        postLikeRepository.save(postLikeEntity),
-        PostLikeDto.class
-    );
-  }
+        return modelMapper.map(
+            postLikeRepository.save(postLikeEntity),
+            PostLikeDto.class
+        );
+    }
 
-  public List<PostLikeDto> findAll(Long postSeq) {
-    return postLikeRepository.findByPostSeq(postSeq).stream()
-        .map(entity -> modelMapper.map(entity, PostLikeDto.class))
-        .toList();
-  }
+    public List<PostLikeDto> findAll(Long postSeq) {
+        return postLikeRepository.findByPostSeq(postSeq).stream()
+            .map(entity -> modelMapper.map(entity, PostLikeDto.class))
+            .toList();
+    }
 }

@@ -1,6 +1,8 @@
 package kr.co.mz.sns.dto;
+
 public record ErrorDto(
-    String message
-)
-{
+    String message,
+    Integer errorCode
+) {
+
 }
