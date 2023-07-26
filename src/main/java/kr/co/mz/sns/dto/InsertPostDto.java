@@ -12,7 +12,7 @@ public class InsertPostDto {
     @NotNull
     @NotEmpty
     private String content;
-    private Integer likes;
+    private Integer likes = 0;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
 }

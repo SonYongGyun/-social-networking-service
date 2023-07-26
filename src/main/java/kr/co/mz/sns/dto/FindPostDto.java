@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import kr.co.mz.sns.entity.CommentEntity;
-import kr.co.mz.sns.entity.UserEntity;
 import lombok.Data;
 
 @Data
@@ -19,6 +18,6 @@ public class FindPostDto {
     private Integer likes;
     private Timestamp createdAt;
     private Timestamp modifiedAt;
-    private UserEntity userEntity;
+    private Long userSeq;
     private List<CommentEntity> comments = new ArrayList<>();
 }

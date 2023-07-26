@@ -7,15 +7,11 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import kr.co.mz.sns.auditing.CustomAuditingEntityListener;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
@@ -25,7 +21,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@EntityListeners({CustomAuditingEntityListener.class, AuditingEntityListener.class})
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "Post", schema = "sns")
 @Data
 @NoArgsConstructor
@@ -47,34 +43,7 @@ public class PostEntity {
     private Timestamp modifiedAt;
     @CreatedBy
     @LastModifiedBy
-    @ManyToOne
-    @JoinColumn(name = "user_seq", nullable = false)
-    private UserEntity userEntity;
+    private Long userSeq;
     @OneToMany(mappedBy = "postEntity", cascade = CascadeType.ALL)
     private List<CommentEntity> comments = new ArrayList<>();
-
-    public void setUsers(UserEntity userEntity) {
-        this.userEntity = userEntity;
-        userEntity.getPosts().add(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        var that = (PostEntity) o;
-        return Objects.equals(seq, that.seq) && Objects.equals(userEntity, that.userEntity) && Objects.equals(content,
-            that.content)
-            && Objects.equals(likes, that.likes) && Objects.equals(createdAt, that.createdAt)
-            && Objects.equals(modifiedAt, that.modifiedAt);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(seq, content, likes, createdAt, modifiedAt, userEntity);
-    }
 }
