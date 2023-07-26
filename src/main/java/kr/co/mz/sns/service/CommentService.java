@@ -6,6 +6,7 @@ import kr.co.mz.sns.entity.CommentEntity;
 import kr.co.mz.sns.exception.CommentNotFoundException;
 import kr.co.mz.sns.exception.InsertFailedException;
 import kr.co.mz.sns.repository.CommentRepository;
+import kr.co.mz.sns.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -16,18 +17,15 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
+
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, ModelMapper modelMapper) {
+    public CommentService(CommentRepository commentRepository, ModelMapper modelMapper, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
     }
-
-//    public List<CommentDto> viewAll(Long postSeq) {
-//        Optional<List<CommentEntity>> optional = commentRepository.findByPostEntityPostSeq(postSeq);
-//        var commentEntityList = optional.orElseThrow(() -> new CommentNotFoundException("It is not existed comment."));
-//        return commentEntityList.stream().map(comment -> modelMapper.map(comment, CommentDto.class)).toList();
-//    }
 
     public CommentDto saveOne(CommentDto commentDto) {
         try {
@@ -44,11 +42,11 @@ public class CommentService {
         commentRepository.delete(commentEntity);
     }
 
-    public void updateOne(Long commentSeq, CommentDto commentDto) {
-        Optional<CommentEntity> optional = commentRepository.findBySeq(commentSeq);
+    public void updateOne(CommentDto commentDto) {
+        Optional<CommentEntity> optional = commentRepository.findBySeq(commentDto.getSeq());
         var commentEntity = optional.orElseThrow(() -> new CommentNotFoundException("It is not exist comment"));
-        var updateCommentEntity = commentRepository.save(modelMapper.map(commentDto, CommentEntity.class));
-        commentRepository.save(updateCommentEntity);
+        commentEntity.setContent(commentDto.getContent());
+        commentRepository.save(commentEntity);
     }
 
 

@@ -1,20 +1,20 @@
 package kr.co.mz.sns.entity;
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.sql.Timestamp;
 import java.util.Objects;
+
+import kr.co.mz.sns.auditing.CustomAuditingEntityListener;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
+@EntityListeners(CustomAuditingEntityListener.class)
 @Table(name = "Comment", schema = "sns", catalog = "")
 @Data
 @NoArgsConstructor
@@ -27,13 +27,17 @@ public class CommentEntity {
     @Basic
     @Column(name = "content")
     private String content;
+    @CreatedDate
     @Basic
     @Column(name = "created_at")
     private Timestamp createdAt;
+    @LastModifiedDate
     @Basic
     @Column(name = "modified_at")
     private Timestamp modifiedAt;
 
+    @CreatedBy
+    @LastModifiedBy
     @ManyToOne
     @JoinColumn(name = "user_seq")
     private UserEntity userEntity;
