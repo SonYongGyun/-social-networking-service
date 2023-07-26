@@ -2,7 +2,6 @@ package kr.co.mz.sns.controllers;
 
 import kr.co.mz.sns.dto.ErrorDto;
 import kr.co.mz.sns.exception.InvalidPathVariableFormatException;
-import kr.co.mz.sns.exception.LoadingFailedException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,12 +29,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDto> handleAccessDeniedException(AccessDeniedException e) {
         ErrorDto errorDto = new ErrorDto("응~안돼~ 돌아가~: " + e.getMessage());
         return new ResponseEntity<>(errorDto, HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(LoadingFailedException.class)
-    public ResponseEntity<ErrorDto> handleLoadingFailedException(LoadingFailedException pnfe) {
-        ErrorDto errorDto = new ErrorDto(pnfe.getMessage());
-        return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(InvalidPathVariableFormatException.class)
