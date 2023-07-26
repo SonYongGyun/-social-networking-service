@@ -10,6 +10,7 @@ public interface UserDetailRepository extends JpaRepository<UserDetailEntity, Lo
 
   boolean existsByUserSeq(Long userSeq);
 
+
   long deleteByUserSeq(Long userSeq);
 
 

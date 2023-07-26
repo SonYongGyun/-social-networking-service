@@ -1,9 +1,11 @@
-package kr.co.mz.sns.dto;
+package kr.co.mz.sns.dto.user;
 
 import java.sql.Timestamp;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class UserDetailDto {
 
   private Long userSeq;

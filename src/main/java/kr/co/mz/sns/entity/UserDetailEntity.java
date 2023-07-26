@@ -3,14 +3,17 @@ package kr.co.mz.sns.entity;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Objects;
+import kr.co.mz.sns.auditing.CustomAuditingEntityListener;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@EntityListeners(CustomAuditingEntityListener.class)
 @Table(name = "user_detail", schema = "sns")
 @Data
 @NoArgsConstructor
