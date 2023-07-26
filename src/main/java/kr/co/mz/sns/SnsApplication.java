@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaAuditing
 public class SnsApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SnsApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(SnsApplication.class, args);
+  }
 }
