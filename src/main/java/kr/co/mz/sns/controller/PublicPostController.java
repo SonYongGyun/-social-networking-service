@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/public")
+@RequestMapping("/api/public/posts")
 public class PublicPostController {
 
     private final PostService postService;
 
-    @GetMapping("/posts")
+    @GetMapping
     public ResponseEntity<List<SelectPostDto>> getAll(@RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size, PostSearchDto postSearchDto) {
         List<SelectPostDto> posts;
@@ -35,7 +35,7 @@ public class PublicPostController {
             .ok(posts);
     }
 
-    @GetMapping("/posts/{seq}")
+    @GetMapping("/{seq}")
     public ResponseEntity<SelectPostDto> getById(@NotNull @PathVariable Long seq) {
         return ResponseEntity
             .ok(
