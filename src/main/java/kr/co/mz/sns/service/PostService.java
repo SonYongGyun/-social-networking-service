@@ -2,11 +2,13 @@ package kr.co.mz.sns.service;
 
 import java.util.List;
 import kr.co.mz.sns.dto.FindPostDto;
+import kr.co.mz.sns.dto.PostLikeDto;
 import kr.co.mz.sns.dto.PostSearchDto;
 import kr.co.mz.sns.entity.PostEntity;
+import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,17 +16,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class PostService {
 
     private final PostRepository postRepository;
+    private final PostLikeService postLikeService;
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public PostService(PostRepository postRepository, ModelMapper modelMapper) {
-        this.postRepository = postRepository;
-        this.modelMapper = modelMapper;
-    }
 
     public List<FindPostDto> findByKeyword(PostSearchDto postSearchDto, Pageable pageable) {
         return postRepository.findByContentContaining(postSearchDto.getKeyword(), pageable).stream()
@@ -106,5 +104,13 @@ public class PostService {
 //        var postEntity = optionalPostEntity.orElseThrow(
 //            () -> new EmptyResultDataAccessException("Post with ID " + seq + "not found", 1));
 //        postRepository.delete(postEntity);
+    }
+
+    @Transactional
+    public PostLikeDto like(Long seq) {
+        var postEntity = postRepository.findById(seq).orElseThrow(() -> new NotFoundException("Post Not Found"));
+        postEntity.setLikes(postEntity.getLikes() + 1);
+
+        return postLikeService.insert(seq);
     }
 }

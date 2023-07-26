@@ -24,21 +24,21 @@ public class CommentController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> write(@RequestBody CommentDto commentDto) {
-        commentService.saveOne(commentDto);
+    public ResponseEntity<String> insert(@RequestBody CommentDto commentDto) {
+        commentService.insert(commentDto);
         return ResponseEntity.ok("Success!");
     }
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<String> delete(@PathVariable("commentId") Long commentId) {
-        commentService.deleteOne(commentId);
+        commentService.delete(commentId);
         return ResponseEntity.ok("Success!");
     }
 
     @PatchMapping("/{commentId}")
     public ResponseEntity<String> update(@PathVariable("commentId") Long commentId,
         @RequestBody CommentDto commentDto) {
-        commentService.updateOne(commentId, commentDto);
+        commentService.update(commentId, commentDto);
         return ResponseEntity.ok("Success!");
     }
 }

@@ -4,24 +4,21 @@ import java.util.Optional;
 import kr.co.mz.sns.dto.CommentDto;
 import kr.co.mz.sns.entity.CommentEntity;
 import kr.co.mz.sns.exception.CommentNotFoundException;
-import kr.co.mz.sns.exception.InsertFailedException;
 import kr.co.mz.sns.repository.CommentRepository;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final PostService postService;
     private final ModelMapper modelMapper;
-
-    @Autowired
-    public CommentService(CommentRepository commentRepository, ModelMapper modelMapper) {
-        this.commentRepository = commentRepository;
-        this.modelMapper = modelMapper;
-    }
 
 //    public List<CommentDto> viewAll(Long postSeq) {
 //        Optional<List<CommentEntity>> optional = commentRepository.findByPostEntityPostSeq(postSeq);
@@ -29,27 +26,34 @@ public class CommentService {
 //        return commentEntityList.stream().map(comment -> modelMapper.map(comment, CommentDto.class)).toList();
 //    }
 
-    public CommentDto saveOne(CommentDto commentDto) {
-        try {
-            CommentEntity commentEntity = commentRepository.save(modelMapper.map(commentDto, CommentEntity.class));
-            return modelMapper.map(commentEntity, CommentDto.class);
-        } catch (DataAccessException dae) {
-            throw new InsertFailedException("Commenting is failed");
+    @Transactional
+    public CommentDto insert(CommentDto commentDto) {
+        if (commentDto.isLike()) {
+            postService.like(commentDto.getPostSeq());
         }
+
+        CommentEntity commentEntity = commentRepository.save(modelMapper.map(commentDto, CommentEntity.class));
+        return modelMapper.map(commentEntity, CommentDto.class);
     }
 
-    public void deleteOne(Long commentSeq) {
+    @Transactional
+    public void delete(Long commentSeq) {
         Optional<CommentEntity> optional = commentRepository.findBySeq(commentSeq);
         var commentEntity = optional.orElseThrow(() -> new CommentNotFoundException("It is not exist comment"));
+
         commentRepository.delete(commentEntity);
     }
 
-    public void updateOne(Long commentSeq, CommentDto commentDto) {
-        Optional<CommentEntity> optional = commentRepository.findBySeq(commentSeq);
-        var commentEntity = optional.orElseThrow(() -> new CommentNotFoundException("It is not exist comment"));
-        var updateCommentEntity = commentRepository.save(modelMapper.map(commentDto, CommentEntity.class));
-        commentRepository.save(updateCommentEntity);
-    }
+    @Transactional
+    public void update(Long commentSeq, CommentDto commentDto) {
+        var optionalComment = commentRepository.findBySeq(commentSeq);
+        var commentEntity = optionalComment.orElseThrow(() -> new CommentNotFoundException("It is not exist comment"));
 
+        if (commentDto.isLike()) {
+            postService.like(commentDto.getPostSeq());
+        }
+
+        commentEntity.setContent(commentDto.getContent());
+    }
 
 }
