@@ -1,4 +1,4 @@
-package kr.co.mz.sns.controllers;
+package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.Valid;
 import kr.co.mz.sns.dto.user.UserDetailDto;

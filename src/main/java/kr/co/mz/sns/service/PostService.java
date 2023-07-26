@@ -1,9 +1,9 @@
 package kr.co.mz.sns.service;
 
 import java.util.List;
-import kr.co.mz.sns.dto.FindPostDto;
-import kr.co.mz.sns.dto.PostLikeDto;
-import kr.co.mz.sns.dto.PostSearchDto;
+import kr.co.mz.sns.dto.post.FindPostDto;
+import kr.co.mz.sns.dto.post.PostLikeDto;
+import kr.co.mz.sns.dto.post.PostSearchDto;
 import kr.co.mz.sns.entity.PostEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.repository.PostRepository;
@@ -20,54 +20,54 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class PostService {
 
-    private final PostRepository postRepository;
-    private final PostLikeService postLikeService;
-    private final ModelMapper modelMapper;
+  private final PostRepository postRepository;
+  private final PostLikeService postLikeService;
+  private final ModelMapper modelMapper;
 
-    public List<FindPostDto> findByKeyword(PostSearchDto postSearchDto, Pageable pageable) {
-        return postRepository.findByContentContaining(postSearchDto.getKeyword(), pageable).stream()
-            .map(post -> modelMapper.map(post, FindPostDto.class))
-            .toList();
-    }
+  public List<FindPostDto> findByKeyword(PostSearchDto postSearchDto, Pageable pageable) {
+    return postRepository.findByContentContaining(postSearchDto.getKeyword(), pageable).stream()
+        .map(post -> modelMapper.map(post, FindPostDto.class))
+        .toList();
+  }
 
-    public List<FindPostDto> findAll(Pageable pageable) {
-        return postRepository.findAll(pageable).map(post -> modelMapper.map(post, FindPostDto.class)).toList();
-        // 구현 안된 메서드에 보통 아래의 익셉션을 날림
+  public List<FindPostDto> findAll(Pageable pageable) {
+    return postRepository.findAll(pageable).map(post -> modelMapper.map(post, FindPostDto.class)).toList();
+    // 구현 안된 메서드에 보통 아래의 익셉션을 날림
 //        throw new UnsupportedOperationException();
-    }
+  }
 
-    public FindPostDto findByKey(Long seq) {
-        // Declarative Programming or Functional Programming
-        return postRepository.findById(seq)
-            .map(entity -> modelMapper.map(entity, FindPostDto.class))
-            .orElseThrow(() -> new EmptyResultDataAccessException("This post does not exist", 1));
+  public FindPostDto findByKey(Long seq) {
+    // Declarative Programming or Functional Programming
+    return postRepository.findById(seq)
+        .map(entity -> modelMapper.map(entity, FindPostDto.class))
+        .orElseThrow(() -> new EmptyResultDataAccessException("This post does not exist", 1));
 
-        // Imperative Programming
+    // Imperative Programming
 //        var optionalPost = postRepository.findById(seq);
 //        optionalPost.orElseThrow(() -> new EmptyResultDataAccessException("This post does not exist", 1));
 //        return modelMapper.map(optionalPost.get(), PostDto.class);
-    }
+  }
 
-    @Transactional
-    public FindPostDto insert(FindPostDto findPostDto) {
-        var postEntity = modelMapper.map(findPostDto, PostEntity.class);
-        // TODO Generic 한 PostDto 대신 상황에 맞는 DTO를 사용할 것을 권장함
-        return modelMapper.map(postRepository.save(postEntity), FindPostDto.class);
-    }
+  @Transactional
+  public FindPostDto insert(FindPostDto findPostDto) {
+    var postEntity = modelMapper.map(findPostDto, PostEntity.class);
+    // TODO Generic 한 PostDto 대신 상황에 맞는 DTO를 사용할 것을 권장함
+    return modelMapper.map(postRepository.save(postEntity), FindPostDto.class);
+  }
 
-    @Transactional
-    public FindPostDto updateBySeq(Long seq, FindPostDto findPostDto) {
-        // Declarative Programming
-        return postRepository.findById(seq)
-            .map(entity -> {
-                entity.setContent(findPostDto.getContent());
-                return entity;
-            })
-            .map(postRepository::save)
-            .map(entity -> modelMapper.map(entity, FindPostDto.class))
-            .orElseThrow(() -> new EmptyResultDataAccessException("Post with ID " + seq + "not found", 1));
+  @Transactional
+  public FindPostDto updateBySeq(Long seq, FindPostDto findPostDto) {
+    // Declarative Programming
+    return postRepository.findById(seq)
+        .map(entity -> {
+          entity.setContent(findPostDto.getContent());
+          return entity;
+        })
+        .map(postRepository::save)
+        .map(entity -> modelMapper.map(entity, FindPostDto.class))
+        .orElseThrow(() -> new EmptyResultDataAccessException("Post with ID " + seq + "not found", 1));
 
-        // Imperative Programming
+    // Imperative Programming
 //        var optionalPost = postRepository.findById(seq);
 //        var postEntity = optionalPost.orElseThrow(
 //            () -> new EmptyResultDataAccessException("Post with ID " + seq + "not found", 1));
@@ -78,19 +78,19 @@ public class PostService {
 //        );
 //        postEntity.setContent(postDto.getContent());
 //        return modelMapper.map(postRepository.save(postEntity), PostDto.class);
-    }
+  }
 
-    @Transactional
-    public void deleteBySeq(Long seq) {
-        // Declarative 1
-        postRepository.findById(seq)
-            .map(entity -> {
-                postRepository.delete(entity);
-                return entity;
-            })
-            .orElseThrow(() -> new EmptyResultDataAccessException("Post with ID " + seq + "not found", 1));
+  @Transactional
+  public void deleteBySeq(Long seq) {
+    // Declarative 1
+    postRepository.findById(seq)
+        .map(entity -> {
+          postRepository.delete(entity);
+          return entity;
+        })
+        .orElseThrow(() -> new EmptyResultDataAccessException("Post with ID " + seq + "not found", 1));
 
-        // Declarative 2
+    // Declarative 2
 //        postRepository.findById(seq)
 //            .ifPresentOrElse(
 //                postRepository::delete,
@@ -104,13 +104,13 @@ public class PostService {
 //        var postEntity = optionalPostEntity.orElseThrow(
 //            () -> new EmptyResultDataAccessException("Post with ID " + seq + "not found", 1));
 //        postRepository.delete(postEntity);
-    }
+  }
 
-    @Transactional
-    public PostLikeDto like(Long seq) {
-        var postEntity = postRepository.findById(seq).orElseThrow(() -> new NotFoundException("Post Not Found"));
-        postEntity.setLikes(postEntity.getLikes() + 1);
+  @Transactional
+  public PostLikeDto like(Long seq) {
+    var postEntity = postRepository.findById(seq).orElseThrow(() -> new NotFoundException("Post Not Found"));
+    postEntity.setLikes(postEntity.getLikes() + 1);
 
-        return postLikeService.insert(seq);
-    }
+    return postLikeService.insert(seq);
+  }
 }

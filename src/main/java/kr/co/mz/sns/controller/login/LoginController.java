@@ -1,4 +1,4 @@
-package kr.co.mz.sns.controllers;
+package kr.co.mz.sns.controller.login;
 
 import kr.co.mz.sns.config.security.JWTService;
 import kr.co.mz.sns.dto.login.LoginDto;
