@@ -30,7 +30,7 @@ public class CommentEntity {
     private String content;
     @CreatedBy
     @LastModifiedBy
-    @Column(name = "createBy", nullable = false)
+    @Column(name = "create_by", nullable = false)
     private Long createBy;
     @Column(name = "post_seq", nullable = false)
     private Long postSeq;

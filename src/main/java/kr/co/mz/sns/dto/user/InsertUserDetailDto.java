@@ -1,6 +1,7 @@
 package kr.co.mz.sns.dto.user;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import lombok.Data;
 
 @Data
@@ -11,5 +12,5 @@ public class InsertUserDetailDto {
     private String greeting;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private String profile_picture;
+    private Set<GenericUserDetailFileDto> userDetailFileDtoSet;
 }
