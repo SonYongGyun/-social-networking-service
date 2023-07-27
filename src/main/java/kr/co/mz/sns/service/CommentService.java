@@ -2,7 +2,6 @@ package kr.co.mz.sns.service;
 
 import java.util.Optional;
 import kr.co.mz.sns.dto.comment.CommentDto;
-import kr.co.mz.sns.dto.comment.CommentLikeDto;
 import kr.co.mz.sns.entity.CommentEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.repository.CommentLikeRepository;
@@ -58,6 +57,6 @@ public class CommentService {
 //        commentEntity.setCommentLike(commentEntity.getCommentLike() + 1);
 //        commentRepository.save(commentEntity);
 //
-//        return commentLikeRepository.insert();
+//        return commentLikeService.insert();
 //    }
 }
