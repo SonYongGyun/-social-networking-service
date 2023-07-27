@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import kr.co.mz.sns.dto.user.GenericUserDetailFileDto;
 import kr.co.mz.sns.entity.user.UserDetailFileEntity;
@@ -44,7 +45,8 @@ public class UserDetailFileService {
     for (var file : fileList) {
       if (!file.isEmpty()) {
         var directory = createDirectory();
-        var targetFile = directory + File.separator + uuidArray[index];
+        var targetFile = directory + File.separator + uuidArray[index] + "." + getFileExtension(
+            Objects.requireNonNull(file.getOriginalFilename()));
         try (
             var bis = new BufferedInputStream(file.getInputStream());
             var bos = new BufferedOutputStream(new FileOutputStream(targetFile))
@@ -105,6 +107,10 @@ public class UserDetailFileService {
 
   @Transactional
   public List<GenericUserDetailFileDto> insertProfiles(List<MultipartFile> files) {
+    if(files.isEmpty()){
+      throw
+    }
+
     var requiredUuids = getUuidList(files.size());
     var dtos = convertToDtos(files, requiredUuids);
     this.saveIntoLocal(files, requiredUuids);
