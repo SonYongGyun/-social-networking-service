@@ -23,15 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final CommentLikeRepository commentLikeRepository;
-    //  private final PostService postService;
     private final ModelMapper modelMapper;
-
     private final CommentLikeService commentLikeService;
+
     @Transactional
     public void deletePostComments(Long postSeq) {
         commentRepository.deleteAll(commentRepository.findAllByPostSeq(postSeq)
-                .orElseThrow( () -> new NotFoundException("It is not exist comment"))
+                .orElseThrow(() -> new NotFoundException("It is not exist comment"))
         );
     }
 
@@ -45,41 +43,32 @@ public class CommentService {
 
     @Transactional
     public CommentDto insert(CommentDto commentDto) {
-//        if (commentDto.isLike()) {
-//            postService.like(commentDto.getPostSeq());
-//        }
-
-        CommentEntity commentEntity = commentRepository.save(modelMapper.map(commentDto, CommentEntity.class));
+        var commentEntity = commentRepository.save(modelMapper.map(commentDto, CommentEntity.class));
         return modelMapper.map(commentEntity, CommentDto.class);
     }
 
-  @Transactional
-  public void deleteComment(Long commentSeq) {
-    Optional<CommentEntity> optional = commentRepository.findBySeq(commentSeq);
-    var commentEntity = optional.orElseThrow(() -> new NotFoundException("It is not exist comment"));
+    @Transactional
+    public void deleteComment(Long commentSeq) {
+        Optional<CommentEntity> optional = commentRepository.findBySeq(commentSeq);
+        var commentEntity = optional.orElseThrow(() -> new NotFoundException("It is not exist comment"));
 
-    commentRepository.delete(commentEntity);
-  }
+        commentRepository.delete(commentEntity);
+    }
 
     @Transactional
-    public void update(Long commentSeq, CommentDto commentDto) {
-        var optionalComment = commentRepository.findBySeq(commentSeq);
+    public void update(CommentDto commentDto) {
+        var optionalComment = commentRepository.findBySeq(commentDto.getSeq());
         var commentEntity = optionalComment.orElseThrow(() -> new NotFoundException("It is not exist comment"));
-
-//        if (commentDto.isLike()) {
-//            postService.like(commentDto.getPostSeq());
-//        }
-
         commentEntity.setContent(commentDto.getContent());
     }
 
     @Transactional
-    public CommentLikeDto like(CommentLikeDto commentLikeDto) {
+    public List<CommentLikeDto> like(CommentLikeDto commentLikeDto) {
         var commentEntityOptional = commentRepository.findBySeq(commentLikeDto.getCommentSeq());
         var commentEntity = commentEntityOptional.orElseThrow(() -> new NotFoundException("It is not exist comment"));
         commentEntity.setCommentLike(commentEntity.getCommentLike() + 1);
         commentRepository.save(commentEntity);
-
-        return commentLikeService.insert(commentLikeDto);
+        commentLikeService.insert(commentLikeDto);
+        return commentLikeService.findAll(commentLikeDto.getCommentSeq());
     }
 }
