@@ -6,7 +6,7 @@ import kr.co.mz.sns.dto.user.GenericUserDetailFileDto;
 import kr.co.mz.sns.dto.user.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.UpdateUserDetailDto;
 import kr.co.mz.sns.file.FileStorageService;
-import kr.co.mz.sns.service.FIleService;
+import kr.co.mz.sns.service.FileService;
 import kr.co.mz.sns.service.UserDetailService;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class UserDetailController {
 
     private final UserDetailService userDetailService;
     private final CurrentUserInfo currentUserInfo;
-    private final FIleService fileService;
+    private final FileService fileService;
 
     @GetMapping
     public ResponseEntity<FindUserDetailDto> findByEmail() {

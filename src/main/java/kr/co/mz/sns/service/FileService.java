@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-public class FIleService {
+public class FileService {
 
     private final UserDetailFileRepository userDetailFileRepository;
     private final PostFileRepository postFileRepository;
