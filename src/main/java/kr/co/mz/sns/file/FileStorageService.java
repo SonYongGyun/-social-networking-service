@@ -8,7 +8,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import kr.co.mz.sns.dto.post.GenericPostFileDto;
 import kr.co.mz.sns.dto.user.GenericUserDetailFileDto;
 import kr.co.mz.sns.exception.FileWriteException;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,9 +22,9 @@ public class FileStorageService {
 
 
     public static String createDirectory() {
-        File fileDirectory = new File(BASIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString().substring(0, 10));
+        var fileDirectory = new File(BASIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString().substring(0, 10));
         if (!fileDirectory.exists()) {
-            boolean flag = fileDirectory.mkdirs();
+            var flag = fileDirectory.mkdirs();
             if (!flag) {
                 System.out.println("디렉토리가 생성되지 않았습니다.");
             } else {
@@ -31,17 +34,16 @@ public class FileStorageService {
         return fileDirectory.getAbsolutePath();
     }
 
-    public static void saveFile(List<MultipartFile> fileList) {
-        for (MultipartFile file : fileList) {
+    public static void saveFile(List<MultipartFile> fileList, String uuid) {
+        for (var file : fileList) {
             if (!file.isEmpty()) {
-                String filePath = createDirectory();
-                String fileName = file.getOriginalFilename();
-                String fileFullPath = filePath + File.separator + fileName;
+                var filePath = createDirectory();
+                var fileFullPath = filePath + File.separator + uuid;
                 try (
-                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(fileFullPath));
-                    InputStream is = new BufferedInputStream(file.getInputStream())
+                    var bos = new BufferedOutputStream(new FileOutputStream(fileFullPath));
+                    var is = new BufferedInputStream(file.getInputStream())
                 ) {
-                    byte[] buffer = new byte[4096];
+                    var buffer = new byte[4096];
                     int bytesRead;
                     while ((bytesRead = is.read(buffer)) != -1) {
                         bos.write(buffer, 0, bytesRead);
@@ -54,7 +56,7 @@ public class FileStorageService {
     }
 
     public static InputStream downloadFile(GenericUserDetailFileDto fileDto) {
-        var fileFullPath = fileDto.getPath() + File.separator + fileDto.getName();
+        var fileFullPath = fileDto.getPath() + File.separator + fileDto.getUuid();
         try (var inputStream = new FileInputStream(fileFullPath)) {
             return inputStream;
         } catch (IOException e) {
@@ -62,12 +64,50 @@ public class FileStorageService {
         }
     }
 
+    public static List<GenericUserDetailFileDto> getUserFileList(List<MultipartFile> fileList) {
+        var fileDtoList = new ArrayList<GenericUserDetailFileDto>();
+        for (var file : fileList) {
+            if (!file.isEmpty() && file.getOriginalFilename() != null) {
+                var uuid = UUID.randomUUID().toString();
+                var name = file.getOriginalFilename();
+                var path = createDirectory();
+                var size = file.getSize();
+                var extension = getFileExtension(name);
+                fileDtoList.add(new GenericUserDetailFileDto(uuid, name, path, size, extension));
+            }
+        }
+        return fileDtoList;
+    }
+
+    public static List<GenericPostFileDto> getPostFileList(List<MultipartFile> fileList) {
+        var fileDtoList = new ArrayList<GenericPostFileDto>();
+        for (var file : fileList) {
+            if (!file.isEmpty() && file.getOriginalFilename() != null) {
+                var uuid = UUID.randomUUID().toString();
+                var name = file.getOriginalFilename();
+                var path = createDirectory();
+                var size = file.getSize();
+                var extension = getFileExtension(name);
+                fileDtoList.add(new GenericPostFileDto(uuid, name, path, size, extension));
+            }
+        }
+        return fileDtoList;
+    }
+
     public static boolean delete(String filePath) {
-        File file = new File(filePath);
-        boolean flag = false;
+        var file = new File(filePath);
+        var flag = false;
         if (file.exists()) {
             return file.delete();
         }
         return flag;
+    }
+
+    private static String getFileExtension(String fileName) {
+        var dotIndex = fileName.lastIndexOf(".");
+        if (dotIndex > 0) {
+            return fileName.substring(dotIndex + 1);
+        }
+        return "";
     }
 }
