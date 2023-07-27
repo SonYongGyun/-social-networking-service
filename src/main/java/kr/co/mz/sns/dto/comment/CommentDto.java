@@ -10,11 +10,12 @@ public class CommentDto {
 
     private Long seq;
     @NotEmpty
-    @NotNull
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private Long postSeq;
     private Long userSeq;
+    private boolean commentLike;
     private boolean like;
+
 }

@@ -2,8 +2,10 @@ package kr.co.mz.sns.service;
 
 import java.util.Optional;
 import kr.co.mz.sns.dto.comment.CommentDto;
+import kr.co.mz.sns.dto.comment.CommentLikeDto;
 import kr.co.mz.sns.entity.CommentEntity;
 import kr.co.mz.sns.exception.NotFoundException;
+import kr.co.mz.sns.repository.CommentLikeRepository;
 import kr.co.mz.sns.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -15,14 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
+    private final CommentLikeRepository commentLikeRepository;
     private final PostService postService;
     private final ModelMapper modelMapper;
 
-//    public List<CommentDto> viewAll(Long postSeq) {
-//        Optional<List<CommentEntity>> optional = commentRepository.findByPostEntityPostSeq(postSeq);
-//        var commentEntityList = optional.orElseThrow(() -> new CommentNotFoundException("It is not existed comment."));
-//        return commentEntityList.stream().map(comment -> modelMapper.map(comment, CommentDto.class)).toList();
-//    }
 
     @Transactional
     public CommentDto insert(CommentDto commentDto) {
@@ -54,4 +52,12 @@ public class CommentService {
         commentEntity.setContent(commentDto.getContent());
     }
 
+//    public CommentLikeDto like(Long commentSeq){
+//        var commentEntityOptional = commentRepository.findBySeq(commentSeq);
+//        var commentEntity = commentEntityOptional.orElseThrow(() -> new NotFoundException("It is not exist comment"));
+//        commentEntity.setCommentLike(commentEntity.getCommentLike() + 1);
+//        commentRepository.save(commentEntity);
+//
+//        return commentLikeRepository.insert();
+//    }
 }

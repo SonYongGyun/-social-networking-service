@@ -7,13 +7,8 @@ import kr.co.mz.sns.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,22 +21,28 @@ public class CommentController {
     public ResponseEntity<String> insert(@Valid @RequestBody CommentDto commentDto) {
         commentService.insert(commentDto);
         return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body("Success!");
+                .status(HttpStatus.CREATED)
+                .body("Success!");
     }
 
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<String> delete(@NotNull @PathVariable("commentId") Long commentId) {
-        commentService.delete(commentId);
+    @DeleteMapping("/{commentSeq}")
+    public ResponseEntity<String> delete(@NotNull @PathVariable("commentSeq") Long commentSeq) {
+        commentService.delete(commentSeq);
         return ResponseEntity
-            .ok("Success!");
+                .ok("Success!");
     }
 
-    @PutMapping("/{commentId}")
-    public ResponseEntity<String> update(@NotNull @PathVariable("commentId") Long commentId,
-        @Valid @RequestBody CommentDto commentDto) {
-        commentService.update(commentId, commentDto);
+    @PutMapping("/{commentSeq}")
+    public ResponseEntity<String> update(@NotNull @PathVariable("commentSeq") Long commentSeq,
+                                         @Valid @RequestBody CommentDto commentDto) {
+        commentService.update(commentSeq, commentDto);
         return ResponseEntity
-            .ok("Success!");
+                .ok("Success!");
+    }
+
+    @PutMapping("/{commentSeq}/like") // 같은 PutMapping
+    public ResponseEntity<String> like(@NotNull @PathVariable("commentSeq") Long commentSeq) {
+//        commentService.like(commentSeq);
+        return ResponseEntity.ok("Success!");
     }
 }

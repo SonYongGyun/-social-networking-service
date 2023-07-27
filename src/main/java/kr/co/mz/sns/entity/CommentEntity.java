@@ -35,6 +35,8 @@ public class CommentEntity {
     private Long createBy;
     @Column(name = "post_seq", nullable = false)
     private Long postSeq;
+    @Column(name = "comment_like", nullable = false)
+    private Long commentLike;
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

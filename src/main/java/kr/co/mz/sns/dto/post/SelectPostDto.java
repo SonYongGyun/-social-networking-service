@@ -12,12 +12,11 @@ import lombok.Data;
 public class SelectPostDto {
 
     private Long seq;
-    @NotNull
     @NotEmpty
     private String content;
-    private Integer likes;
+    private Integer likes = 0;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private Long userSeq;
+    private Long createBy;
     private List<CommentEntity> comments = new ArrayList<>();
 }
