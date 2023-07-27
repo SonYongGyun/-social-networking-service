@@ -4,11 +4,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import kr.co.mz.sns.dto.user.FindUserDetailDto;
-import kr.co.mz.sns.dto.user.GenericUserDetailFileDto;
+import kr.co.mz.sns.dto.user.GenericUserProfileDto;
 import kr.co.mz.sns.dto.user.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.UpdateUserDetailDto;
-import kr.co.mz.sns.service.user.UserDetailFileService;
 import kr.co.mz.sns.service.user.UserDetailService;
+import kr.co.mz.sns.service.user.UserProfileService;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserDetailController {
 
   private final UserDetailService userDetailService;
-  private final UserDetailFileService userDetailFileService;
+  private final UserProfileService userProfileService;
   private final CurrentUserInfo currentUserInfo;
 
   @GetMapping
@@ -43,25 +43,9 @@ public class UserDetailController {
         );
   }
 
-//    @RestController
-//    public class PostController {
-//
-//        @PostMapping("/create-post")
-//        public ResponseEntity<String> createPost(@RequestParam("title") String title,
-//            @RequestParam("content") String content,
-//            @RequestPart("files") List<MultipartFile> files) {
-//            // 게시글에 대한 비즈니스 로직 처리 (title, content)
-//            // ...
-//
-//            // 파일 업로드 처리 (file)
-//            // ...
-//
-//            return ResponseEntity.ok("Post created successfully.");
-//        }
-//    }
 
   @PostMapping
-  public ResponseEntity<InsertUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+  public ResponseEntity<InsertUserDetailDto> insertInfo(@RequestBody InsertUserDetailDto insertUserDetailDto) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(
@@ -70,14 +54,21 @@ public class UserDetailController {
         );
   }
 
+  @GetMapping("/profiles")
+  public ResponseEntity<GenericUserProfileDto> getProfile() {
+    return null; //todo get, delete, update prifile
+  }
+
   @PostMapping("/upload")
-  public ResponseEntity<List<GenericUserDetailFileDto>> uploadFile(
+  public ResponseEntity<List<GenericUserProfileDto>> uploadProfile(
       @Valid @RequestParam List<MultipartFile> files
   ) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(userDetailFileService.insertProfiles(files));
+        .body(userProfileService.insert(files));
   }
+
+  @DeleteMapping("/")
 
 //  @GetMapping("/download")
 //  public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) {
@@ -93,9 +84,8 @@ public class UserDetailController {
 //        .body(new InputStreamResource(inputStream));
 //  }
 
-
   @PutMapping
-  public ResponseEntity<InsertUserDetailDto> update(@RequestBody UpdateUserDetailDto
+  public ResponseEntity<InsertUserDetailDto> updateInfo(@RequestBody UpdateUserDetailDto
       updateUserDetailDto) {//업데이트할때는 seq 넣어서 보내주는걸로
     return ResponseEntity
         .ok(
@@ -106,7 +96,7 @@ public class UserDetailController {
   }
 
   @DeleteMapping("/{userSeq}")
-  public ResponseEntity<String> delete(@NotNull @PathVariable Long userSeq) {
+  public ResponseEntity<String> deleteInfo(@NotNull @PathVariable Long userSeq) {
     var result = userDetailService.deleteByUserSeq(userSeq);
     return ResponseEntity
         .ok(

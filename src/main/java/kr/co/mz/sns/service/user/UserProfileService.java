@@ -12,24 +12,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import kr.co.mz.sns.dto.user.GenericUserDetailFileDto;
-import kr.co.mz.sns.entity.user.UserDetailFileEntity;
+import kr.co.mz.sns.dto.user.GenericUserProfileDto;
+import kr.co.mz.sns.entity.user.UserProfileEntity;
 import kr.co.mz.sns.exception.FileWriteException;
-import kr.co.mz.sns.repository.user.UserDetailFileRepository;
+import kr.co.mz.sns.repository.user.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-public class UserDetailFileService {
+public class UserProfileService {
 
-  private final UserDetailFileRepository userDetailFileRepository;
+  private final UserProfileRepository userProfileRepository;
   private final ModelMapper modelMapper;
+
+  @Transactional
+  public List<GenericUserProfileDto> insert(List<MultipartFile> files) {
+    if (files.isEmpty()) {
+      throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
+    }
+
+    var requiredUuids = getUuidList(files.size());
+    var dtos = convertToDtos(files, requiredUuids);
+    this.saveIntoLocal(files, requiredUuids);
+    return dtos.stream()
+        .map(dto -> userProfileRepository.save(modelMapper.map(dto, UserProfileEntity.class)))
+        .map(entity -> modelMapper.map(entity, GenericUserProfileDto.class))
+        .toList();
+  }
+
+  @Transactional
+  public String delete(Long fileSeq) {
+    userProfileRepository.deleteBySeq(fileSeq);
+    return "선택한 프로필 사진이 삭제되었습니다.";
+  }
 
   private String createDirectory() {
     var fileDirectory = new File(SALVE_LOCAL_DERICTORY + LocalDateTime.now().toLocalDate().toString());
@@ -65,8 +88,8 @@ public class UserDetailFileService {
   }
 
 
-  private List<GenericUserDetailFileDto> convertToDtos(List<MultipartFile> fileList, List<String> uuidList) {
-    var fileDtoList = new ArrayList<GenericUserDetailFileDto>();
+  private List<GenericUserProfileDto> convertToDtos(List<MultipartFile> fileList, List<String> uuidList) {
+    var fileDtoList = new ArrayList<GenericUserProfileDto>();
     var index = 0;
     var uuidArray = uuidList.toArray(new String[0]);
     for (var file : fileList) {
@@ -76,7 +99,7 @@ public class UserDetailFileService {
         var path = createDirectory();
         var size = file.getSize();
         var extension = getFileExtension(name);
-        fileDtoList.add(new GenericUserDetailFileDto(uuid, name, path, size, extension));
+        fileDtoList.add(new GenericUserProfileDto(uuid, name, path, size, extension));
         index++;
 
       }
@@ -101,22 +124,4 @@ public class UserDetailFileService {
     return uuidList;
   }
 
-  public GenericUserDetailFileDto findByName(GenericUserDetailFileDto fileDto) {
-    return modelMapper.map(userDetailFileRepository.findByName(fileDto.getName()), GenericUserDetailFileDto.class);
-  }
-
-  @Transactional
-  public List<GenericUserDetailFileDto> insertProfiles(List<MultipartFile> files) {
-    if(files.isEmpty()){
-      throw
-    }
-
-    var requiredUuids = getUuidList(files.size());
-    var dtos = convertToDtos(files, requiredUuids);
-    this.saveIntoLocal(files, requiredUuids);
-    return dtos.stream()
-        .map(dto -> userDetailFileRepository.save(modelMapper.map(dto, UserDetailFileEntity.class)))
-        .map(entity -> modelMapper.map(entity, GenericUserDetailFileDto.class))
-        .toList();
-  }
 }

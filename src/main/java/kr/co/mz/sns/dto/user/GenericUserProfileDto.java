@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class GenericUserDetailFileDto {
+public class GenericUserProfileDto {
 
   private Long seq;
   private Long userSeq;
@@ -17,14 +17,16 @@ public class GenericUserDetailFileDto {
   private String extension;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
-  public GenericUserDetailFileDto(String uuid, String name, String path, Long size, String extension) {
+
+  public GenericUserProfileDto(String uuid, String name, String path, Long size, String extension) {
     this.uuid = uuid;
     this.name = name;
     this.path = path;
     this.size = size;
     this.extension = extension;
   }
-  public GenericUserDetailFileDto(String name) {
+
+  public GenericUserProfileDto(String name) {
     this.name = name;
   }
 

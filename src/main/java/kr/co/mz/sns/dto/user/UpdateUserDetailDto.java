@@ -8,5 +8,5 @@ public class UpdateUserDetailDto {
 
   private Long userSeq;
   private String greeting;
-  private Set<GenericUserDetailFileDto> userDetailFileDtoSet;
+  private Set<GenericUserProfileDto> userDetailFileDtoSet;
 }
