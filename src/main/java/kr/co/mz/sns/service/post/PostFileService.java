@@ -2,6 +2,7 @@ package kr.co.mz.sns.service.post;
 
 import java.util.List;
 import kr.co.mz.sns.dto.post.GenericPostFileDto;
+import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.entity.post.PostFileEntity;
 import kr.co.mz.sns.repository.post.PostFileRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,14 @@ public class PostFileService {
 //    public
 
     @Transactional
-    public List<GenericPostFileDto> insert(List<GenericPostFileDto> postFileDtoSet) {
+    public List<GenericPostFileDto> insert(List<GenericPostFileDto> postFileDtoSet, SelectPostDto postDto) {
         return postFileDtoSet.stream()
-            .map((postFile) -> postFileRepository.save(modelMapper.map(postFile, PostFileEntity.class)))
-            .map((postFileEntity) -> modelMapper.map(postFileEntity, GenericPostFileDto.class))
-            .toList();
+            .map((postFile) -> {
+                postFile.setPostSeq(postDto.getSeq());
+                return postFileRepository.save(modelMapper.map(postFile, PostFileEntity.class));
+            })
+            .map((postFileEntity) -> modelMapper.map(postFileEntity, GenericPostFileDto.class)
+            ).toList();
     }
 
 }

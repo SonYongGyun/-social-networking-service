@@ -6,8 +6,10 @@ import java.util.HashSet;
 import java.util.Set;
 import kr.co.mz.sns.entity.comment.CommentEntity;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class SelectPostDto {
 
     private Long seq;
