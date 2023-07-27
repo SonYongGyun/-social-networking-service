@@ -1,5 +1,6 @@
 package kr.co.mz.sns.controller.user;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import kr.co.mz.sns.dto.user.FindUserDetailDto;
@@ -7,15 +8,11 @@ import kr.co.mz.sns.dto.user.GenericUserDetailFileDto;
 import kr.co.mz.sns.dto.user.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.InsertUserProfileDtos;
 import kr.co.mz.sns.dto.user.UpdateUserDetailDto;
-import kr.co.mz.sns.file.FileStorageService;
-import kr.co.mz.sns.service.FileService;
+import kr.co.mz.sns.service.user.UserDetailFileService;
 import kr.co.mz.sns.service.user.UserDetailService;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/public/user_detail")
+@RequestMapping("/api/public/users")
 public class UserDetailController {
 
   private final UserDetailService userDetailService;
+  private final UserDetailFileService userDetailFileService;
   private final CurrentUserInfo currentUserInfo;
-  private final FileService fileService;
 
   @GetMapping
   public ResponseEntity<FindUserDetailDto> findByEmail() {
@@ -75,25 +72,26 @@ public class UserDetailController {
 
   @PostMapping("/upload")
   public ResponseEntity<List<GenericUserDetailFileDto>> uploadFile(
-      @RequestParam InsertUserProfileDtos insertUserProfileDtos
+      @Valid @RequestParam InsertUserProfileDtos insertUserProfileDtos
   ) {
-
-    return null;
-  }
-
-  @GetMapping("/download")
-  public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) {
-    var inputStream = FileStorageService.downloadFile(
-        fileService.findByName(new GenericUserDetailFileDto(fileName))
-    );
-    var headers = new HttpHeaders();
-    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
     return ResponseEntity
-        .ok()
-        .headers(headers)
-        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-        .body(new InputStreamResource(inputStream));
+        .status(HttpStatus.CREATED)
+        .body(userDetailFileService.insertProfiles(insertUserProfileDtos.getFiles()));
   }
+
+//  @GetMapping("/download")
+//  public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) {
+//    var inputStream = FileStorageService.downloadFile(
+//        fileService.findByName(new GenericUserDetailFileDto(fileName))
+//    );
+//    var headers = new HttpHeaders();
+//    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+//    return ResponseEntity
+//        .ok()
+//        .headers(headers)
+//        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+//        .body(new InputStreamResource(inputStream));
+//  }
 
 
   @PutMapping
