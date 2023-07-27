@@ -1,6 +1,8 @@
 package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import kr.co.mz.sns.dto.user.InsertUserProfileDtos;
 import kr.co.mz.sns.dto.user.FindUserDetailDto;
 import kr.co.mz.sns.dto.user.GenericUserDetailFileDto;
 import kr.co.mz.sns.dto.user.InsertUserDetailDto;
@@ -61,37 +63,38 @@ public class UserDetailController {
 //        }
 //    }
 
-    @PostMapping
-    public ResponseEntity<InsertUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(
-                userDetailService.saveOne(insertUserDetailDto)
+  @PostMapping
+  public ResponseEntity<InsertUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(
+            userDetailService.insert(insertUserDetailDto)
+
             );
     }
 
-    @GetMapping("/download")
-    public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) {
-        var inputStream = FileStorageService.downloadFile(
-            fileService.findByName(new GenericUserDetailFileDto(fileName))
-        );
-        var headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-        return ResponseEntity
-            .ok()
-            .headers(headers)
-            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-            .body(new InputStreamResource(inputStream));
-    }
+  @PostMapping("/upload")
+  public ResponseEntity<List<GenericUserDetailFileDto>> uploadFile(
+      @RequestParam InsertUserProfileDtos insertUserProfileDtos
+  ){
 
-    @PostMapping
-    public ResponseEntity<InsertUserDetailDto> write(@RequestBody InsertUserDetailDto insertUserDetailDto) {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(
-                userDetailService.saveOne(insertUserDetailDto)
-            );
-    }
+    var fileDtos =
+  }
+
+  @GetMapping("/download")
+  public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) {
+    var inputStream = FileStorageService.downloadFile(
+        fileService.findByName(new GenericUserDetailFileDto(fileName))
+    );
+    var headers = new HttpHeaders();
+    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+    return ResponseEntity
+        .ok()
+        .headers(headers)
+        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+        .body(new InputStreamResource(inputStream));
+  }
+
 
 
     @PutMapping
