@@ -29,34 +29,33 @@ public class UserDetailFileService {
   private final UserDetailFileRepository userDetailFileRepository;
   private final ModelMapper modelMapper;
 
-  public static String createDirectory() {
-    var fileDirectory = new File(SALVE_LOCAL_DERICTORY + LocalDateTime.now().toLocalDate().toString());
-    if (!fileDirectory.mkdirs()) {
-      System.out.println("경로가 존재합니다.");
-    }
-
-    return fileDirectory.getAbsolutePath();
-  }
-
-  public static void saveFile(List<MultipartFile> fileList, String uuid) {
+  public void saveFile(List<MultipartFile> fileList, String uuid) {
     for (var file : fileList) {
       if (!file.isEmpty()) {
-        var filePath = createDirectory();
-        var fileFullPath = filePath + File.separator + uuid;
+        var directory = createDirectory();
+        var targetFile = directory + File.separator + uuid;
         try (
-            var bos = new BufferedOutputStream(new FileOutputStream(fileFullPath));
-            var is = new BufferedInputStream(file.getInputStream())
+            var bis = new BufferedInputStream(file.getInputStream());
+            var bos = new BufferedOutputStream(new FileOutputStream(targetFile))
         ) {
           var buffer = new byte[4096];
-          int bytesRead;
-          while ((bytesRead = is.read(buffer)) != -1) {
-            bos.write(buffer, 0, bytesRead);
+          int bytesRead;//한번에읽은바이트 수
+          while ((bytesRead = bis.read(buffer)) != -1) {
+            bos.write(buffer, 0, bytesRead);// 버퍼의, 0(처음)부터, 읽은만큼
           }
         } catch (IOException ioe) {
           throw new FileWriteException("Failed to save file", ioe);
         }
       }
     }
+  }
+
+  public String createDirectory() {
+    var fileDirectory = new File(SALVE_LOCAL_DERICTORY + LocalDateTime.now().toLocalDate().toString());
+    if (!fileDirectory.mkdirs()) {
+      System.out.println("경로가 존재합니다.");
+    }
+    return fileDirectory.getAbsolutePath();
   }
 
   public GenericUserDetailFileDto findByName(GenericUserDetailFileDto fileDto) {
