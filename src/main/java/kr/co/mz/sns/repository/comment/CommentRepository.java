@@ -1,7 +1,7 @@
-package kr.co.mz.sns.repository;
+package kr.co.mz.sns.repository.comment;
 
 import java.util.Optional;
-import kr.co.mz.sns.entity.CommentEntity;
+import kr.co.mz.sns.entity.comment.CommentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

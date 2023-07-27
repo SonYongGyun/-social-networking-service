@@ -1,7 +1,7 @@
-package kr.co.mz.sns.repository;
+package kr.co.mz.sns.repository.user;
 
 import java.util.Optional;
-import kr.co.mz.sns.entity.UserEntity;
+import kr.co.mz.sns.entity.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {

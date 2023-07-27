@@ -1,4 +1,4 @@
-package kr.co.mz.sns.entity;
+package kr.co.mz.sns.entity.post;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,16 +20,16 @@ import org.springframework.data.annotation.CreatedBy;
 @NoArgsConstructor
 public class PostLikeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "seq")
-    private Long seq;
-    @CreatedBy
-    @Column(name = "user_seq")
-    private Long userSeq;
-    @Column(name = "post_seq")
-    private Long postSeq;
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "seq")
+  private Long seq;
+  @CreatedBy
+  @Column(name = "user_seq")
+  private Long userSeq;
+  @Column(name = "post_seq")
+  private Long postSeq;
+  @Column(name = "created_at", nullable = false)
+  private LocalDateTime createdAt;
 }
 
