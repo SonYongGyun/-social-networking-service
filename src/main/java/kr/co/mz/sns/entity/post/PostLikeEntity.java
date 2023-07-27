@@ -12,9 +12,10 @@ import kr.co.mz.sns.auditing.AuditorAwareImpl;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@EntityListeners(AuditorAwareImpl.class)
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "post_like")
 @Data
 @NoArgsConstructor

@@ -10,9 +10,14 @@ import jakarta.persistence.Table;
 import kr.co.mz.sns.auditing.AuditorAwareImpl;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
-@EntityListeners(AuditorAwareImpl.class) //???? 두개의 차이
+@EntityListeners(AuditingEntityListener.class) //???? 두개의 차이
 @Table(name = "comment_like")
 @Data
 @NoArgsConstructor
@@ -26,6 +31,10 @@ public class CommentLikeEntity {
   private Long postSeq;
   @Column(name = "comment_seq")
   private Long commentSeq;
-  @Column(name = "user_seq", nullable = false)
+  @CreatedBy
+  @Column(name = "user_seq")
   private Long userSeq;
+  @CreatedDate
+  @Column(name = "created_at", nullable = false)
+  private LocalDateTime createdAt;
 }
