@@ -25,27 +25,27 @@ public class PostFileEntity {
 
     @Id
     @GeneratedValue
-    @Column
+    @Column(name = "seq")
     private Long seq;
     @CreatedBy
     @LastModifiedBy
-    @Column(nullable = false)
-    private Long postSeq;
-    @Column(nullable = false)
+    @Column(name = "post_seq", nullable = false)
+    private Long post_seq;
+    @Column(name = "uuid", nullable = false)
     private String uuid = UUID.randomUUID().toString();
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(nullable = false)
+    @Column(name = "path", nullable = false)
     private String path;
-    @Column(nullable = false)
+    @Column(name = "size", nullable = false)
     private Long size;
-    @Column(nullable = false)
+    @Column(name = "extension", nullable = false)
     private String extension;
     @CreatedDate
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
     @LastModifiedDate
-    @Column(nullable = false)
+    @Column(name = "modified_At", nullable = false)
     private LocalDateTime modifiedAt;
 
 }

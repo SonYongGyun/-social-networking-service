@@ -23,15 +23,12 @@ public class PostLikeEntity {
     @GeneratedValue
     @Column(name = "seq")
     private Long seq;
-
     @CreatedBy
     @Column(name = "user_seq")
     private Long userSeq;
-
     @Column(name = "post_seq")
     private Long postSeq;
-
-    @Column(name = "create_at", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 }
 

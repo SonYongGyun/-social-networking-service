@@ -32,7 +32,7 @@ public class PostEntity {
     private Integer likes = 0;
     @CreatedBy
     @LastModifiedBy
-    @Column(name = "createBy", nullable = false)
+    @Column(name = "create_by", nullable = false)
     private Long createBy;
     @CreatedDate
     @Column(name = "created_at", nullable = false)
