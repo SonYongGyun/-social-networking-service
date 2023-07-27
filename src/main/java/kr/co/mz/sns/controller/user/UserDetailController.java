@@ -1,6 +1,7 @@
 package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.constraints.NotNull;
+import kr.co.mz.sns.dto.user.FindUserDetailDto;
 import kr.co.mz.sns.dto.user.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.UpdateUserDetailDto;
 import kr.co.mz.sns.service.UserDetailService;
@@ -26,7 +27,7 @@ public class UserDetailController {
   private final CurrentUserInfo currentUserInfo;
 
   @GetMapping
-  public ResponseEntity<InsertUserDetailDto> findByEmail() {
+  public ResponseEntity<FindUserDetailDto> findByEmail() {
     return ResponseEntity
         .ok(
             userDetailService.findByEmail(
@@ -53,7 +54,7 @@ public class UserDetailController {
 //    }
 
   @PostMapping
-  public ResponseEntity<InsertUserDetailDto> write(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+  public ResponseEntity<InsertUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(
@@ -64,10 +65,12 @@ public class UserDetailController {
 
   @PutMapping
   public ResponseEntity<InsertUserDetailDto> update(@RequestBody UpdateUserDetailDto
-      updateUserDetailDto) {
+      updateUserDetailDto) {//업데이트할때는 seq 넣어서 보내주는걸로
     return ResponseEntity
         .ok(
-            userDetailService.updateByUserSeq(updateUserDetailDto)
+            userDetailService.updateByUserSeq(
+                updateUserDetailDto
+            )
         );
   }
 
