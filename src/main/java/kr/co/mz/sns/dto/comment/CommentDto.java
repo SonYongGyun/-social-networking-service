@@ -15,6 +15,7 @@ public class CommentDto {
     private LocalDateTime modifiedAt;
     private Long postSeq;
     private Long userSeq;
+    private String mentionedUsers;
     private boolean commentLike;
     private boolean like;
 
