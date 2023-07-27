@@ -2,12 +2,12 @@ package kr.co.mz.sns.controller.post;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import kr.co.mz.sns.dto.post.GenericPostFileDto;
 import kr.co.mz.sns.dto.post.PostLikeDto;
 import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.file.FileStorageService;
-import kr.co.mz.sns.service.post.PostFileService;
 import kr.co.mz.sns.service.post.PostLikeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,30 +32,15 @@ public class PostController {
 
     private final kr.co.mz.sns.service.post.PostService postService;
     private final PostLikeService postLikeService;
-    private final PostFileService postFileService;
 
-    //    @RestController
-//    public class PostController {
-//
-//        @PostMapping("/create-post")
-//        public ResponseEntity<String> createPost(@RequestParam("title") String title,
-//            @RequestParam("content") String content,
-//            @RequestPart("files") List<MultipartFile> files) {
-//            // 게시글에 대한 비즈니스 로직 처리 (title, content)
-//            // ...
-//
-//            // 파일 업로드 처리 (file)
-//            // ...
-//
-//            return ResponseEntity.ok("Post created successfully.");
-//        }
-//    }
     @PostMapping
     public ResponseEntity<String> write(@RequestPart("files") List<MultipartFile> files,
         @Valid @RequestParam String content) {
+        var uuidList = new ArrayList<String>();
         for (GenericPostFileDto fileDto : postService.insert(new SelectPostDto(content), files)) {
-            FileStorageService.saveFile(files, fileDto.getUuid());
+            uuidList.add(fileDto.getUuid() + "." + fileDto.getExtension());
         }
+        FileStorageService.saveFile(files, uuidList);
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body("Successful Write");

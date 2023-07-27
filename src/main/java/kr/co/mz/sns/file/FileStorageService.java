@@ -34,11 +34,13 @@ public class FileStorageService {
         return fileDirectory.getAbsolutePath();
     }
 
-    public static void saveFile(List<MultipartFile> fileList, String uuid) {
+    public static void saveFile(List<MultipartFile> fileList, List<String> uuidList) {
+        var index = 0;
+        var uuidArray = uuidList.toArray();
         for (var file : fileList) {
             if (!file.isEmpty()) {
                 var filePath = createDirectory();
-                var fileFullPath = filePath + File.separator + uuid;
+                var fileFullPath = filePath + File.separator + uuidArray[index];
                 try (
                     var bos = new BufferedOutputStream(new FileOutputStream(fileFullPath));
                     var is = new BufferedInputStream(file.getInputStream())
@@ -52,11 +54,12 @@ public class FileStorageService {
                     throw new FileWriteException("Failed to save file", ioe);
                 }
             }
+            index++;
         }
     }
 
     public static InputStream downloadFile(GenericUserDetailFileDto fileDto) {
-        var fileFullPath = fileDto.getPath() + File.separator + fileDto.getUuid();
+        var fileFullPath = fileDto.getPath() + File.separator + fileDto.getUuid() + "." + fileDto.getExtension();
         try (var inputStream = new FileInputStream(fileFullPath)) {
             return inputStream;
         } catch (IOException e) {
