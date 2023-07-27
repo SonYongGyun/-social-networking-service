@@ -17,7 +17,13 @@ public class CurrentUserInfo {
     return currentUserDto().getEmail();
   }
 
+  public String getName() {
+    return currentUserDto().getName();
+  }
+
   public Long getSeq() {
     return currentUserDto().getSeq();
   }
+
+
 }

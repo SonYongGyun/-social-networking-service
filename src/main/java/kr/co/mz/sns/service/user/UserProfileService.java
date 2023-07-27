@@ -5,8 +5,10 @@ import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_DERICTORY;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,15 @@ public class UserProfileService {
   @Transactional
   public int delete(Long fileSeq) {
     return userProfileRepository.deleteBySeq(fileSeq);
+  }
+
+  public InputStream downloadFile(GenericUserProfileDto profileDto) {
+    var fileFullPath = profileDto.getPath() + File.separator + profileDto.getUuid() + "." + profileDto.getExtension();
+    try (var inputStream = new FileInputStream(fileFullPath)) {
+      return inputStream;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private String createDirectory() {

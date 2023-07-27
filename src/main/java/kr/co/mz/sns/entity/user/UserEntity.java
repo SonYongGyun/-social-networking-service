@@ -33,12 +33,12 @@ public class UserEntity {
   private String password;
   @Column(name = "role", nullable = false)
   private String role;
-  @LastModifiedDate
   @Column(name = "last_login_at")
   private LocalDateTime lastLoginAt;
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
+  @LastModifiedDate
   @Column(name = "modified_at")
   private LocalDateTime modifiedAt;
 }

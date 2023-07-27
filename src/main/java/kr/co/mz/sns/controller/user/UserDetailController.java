@@ -1,15 +1,10 @@
 package kr.co.mz.sns.controller.user;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Set;
 import kr.co.mz.sns.dto.user.FindUserDetailDto;
-import kr.co.mz.sns.dto.user.GenericUserProfileDto;
 import kr.co.mz.sns.dto.user.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.UpdateUserDetailDto;
 import kr.co.mz.sns.service.user.UserDetailService;
-import kr.co.mz.sns.service.user.UserProfileService;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,9 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserDetailController {
 
   private final UserDetailService userDetailService;
-  private final UserProfileService userProfileService;
   private final CurrentUserInfo currentUserInfo;
 
   @GetMapping
@@ -55,42 +47,6 @@ public class UserDetailController {
         );
   }
 
-  @GetMapping("/profiles")
-  public ResponseEntity<Set<GenericUserProfileDto>> getProfile() {
-
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(userProfileService.findAll(currentUserInfo.getSeq())); //todo get, update prifile
-  }
-
-  @PostMapping("/upload")
-  public ResponseEntity<List<GenericUserProfileDto>> uploadProfile(
-      @Valid @RequestParam List<MultipartFile> files
-  ) {
-    return ResponseEntity
-        .status(HttpStatus.CREATED)
-        .body(userProfileService.insert(files));
-  }
-
-  @DeleteMapping("/{profileSeq}")
-  public ResponseEntity<String> deleteProfile(@Valid @PathVariable Long profileSeq) {
-    return ResponseEntity.ok(
-        "Your detail is deleted Successfully for :" + userProfileService.delete(profileSeq) + " rows."
-    );
-  }
-
-//  @GetMapping("/download")
-//  public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) {
-//    var inputStream = FileStorageService.downloadFile(
-//        fileService.findByName(new GenericUserDetailFileDto(fileName))
-//    );
-//    var headers = new HttpHeaders();
-//    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-//    return ResponseEntity
-//        .ok()
-//        .headers(headers)
-//        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//        .body(new InputStreamResource(inputStream));
-//  }
 
   @PutMapping
   public ResponseEntity<InsertUserDetailDto> updateInfo(@RequestBody UpdateUserDetailDto

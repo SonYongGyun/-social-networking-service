@@ -1,4 +1,4 @@
-package kr.co.mz.sns.entity;
+package kr.co.mz.sns.entity.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,26 +17,31 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "Friend")
+@Table(name = "friend")
 @Data
 @NoArgsConstructor
 public class FriendEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "seq")
-    private Long seq;
-    @Column(name = "status", nullable = false)
-    private String status;
-    @CreatedBy
-    @Column(name = "create_by", nullable = false)
-    private Long createBy;
-    @Column(name = "friend_seq", nullable = false)
-    private Long friendSeq;
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    @Column(name = "modified_at")
-    private LocalDateTime modifiedAt;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "seq")
+  private Long seq;
+
+  @Column(name = "status", nullable = false)
+  private String status;
+
+  @CreatedBy
+  @Column(name = "user_seq", nullable = false)
+  private Long userSeq;
+
+  @Column(name = "friend_seq", nullable = false)
+  private Long friendSeq;
+
+  @CreatedDate
+  @Column(name = "created_at", nullable = false)
+  private LocalDateTime createdAt;
+
+  @LastModifiedDate
+  @Column(name = "modified_at")
+  private LocalDateTime modifiedAt;
 }
