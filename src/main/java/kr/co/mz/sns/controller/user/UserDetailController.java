@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -62,11 +63,13 @@ public class UserDetailController {
 //    }
 
   @PostMapping
-  public ResponseEntity<InsertUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+  public ResponseEntity<InsertUserDetailDto> insert(
+      @RequestPart InsertUserDetailDto insertUserDetailDto
+  ) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(
-            userDetailService.saveOne(insertUserDetailDto)
+            userDetailService.insert(insertUserDetailDto)
         );
   }
 
@@ -82,15 +85,6 @@ public class UserDetailController {
         .headers(headers)
         .contentType(MediaType.APPLICATION_OCTET_STREAM)
         .body(new InputStreamResource(inputStream));
-  }
-
-  @PostMapping
-  public ResponseEntity<InsertUserDetailDto> write(@RequestBody InsertUserDetailDto insertUserDetailDto) {
-    return ResponseEntity
-        .status(HttpStatus.CREATED)
-        .body(
-            userDetailService.saveOne(insertUserDetailDto)
-        );
   }
 
 

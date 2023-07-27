@@ -39,7 +39,7 @@ public class UserDetailService {
   }
 
   @Transactional
-  public InsertUserDetailDto saveOne(InsertUserDetailDto insertUserDetailDto) {
+  public InsertUserDetailDto insert(InsertUserDetailDto insertUserDetailDto) {
     var userDetailEntity = modelMapper.map(insertUserDetailDto, UserDetailEntity.class);
     var savedEntity = userDetailRepository.save(
         userDetailEntity);//todo insertfailed exception 이녀석은 바로위의 엔티티랑 같은녀석이다 참조까지 같다. jpa설명에있다.
