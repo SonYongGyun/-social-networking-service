@@ -3,6 +3,7 @@ package kr.co.mz.sns.controller.comment;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import kr.co.mz.sns.dto.comment.CommentDto;
+import kr.co.mz.sns.dto.comment.CommentLikeDto;
 import kr.co.mz.sns.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,12 +31,12 @@ public class CommentController {
         .body("Success!");
   }
 
-  @DeleteMapping("/{commentSeq}")
-  public ResponseEntity<String> delete(@NotNull @PathVariable("commentSeq") Long commentSeq) {
-    commentService.delete(commentSeq);
-    return ResponseEntity
-        .ok("Success!");
-  }
+    @DeleteMapping("/{commentSeq}")
+    public ResponseEntity<String> delete(@NotNull @PathVariable("commentSeq") Long commentSeq) {
+        commentService.deleteComment(commentSeq);
+        return ResponseEntity
+                .ok("Success!");
+    }
 
   @PutMapping("/{commentSeq}")
   public ResponseEntity<String> update(@NotNull @PathVariable("commentSeq") Long commentSeq,
@@ -45,9 +46,10 @@ public class CommentController {
         .ok("Success!");
   }
 
-  @PutMapping("/{commentSeq}/like") // 같은 PutMapping
-  public ResponseEntity<String> like(@NotNull @PathVariable("commentSeq") Long commentSeq) {
-//        commentService.like(commentSeq);
-    return ResponseEntity.ok("Success!");
-  }
+    @PutMapping("/{commentSeq}/like") // 같은 PutMapping
+    public ResponseEntity<CommentLikeDto> like(@NotNull @PathVariable("commentSeq") Long commentSeq, @Valid @RequestBody CommentLikeDto commentLikeDto) {
+        commentLikeDto.setCommentSeq(commentSeq);
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.like(commentLikeDto));
+
+    }
 }
