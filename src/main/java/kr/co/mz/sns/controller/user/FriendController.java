@@ -23,7 +23,7 @@ public class FriendController {
   public ResponseEntity<RequestedFriendDto> request(@NotNull @RequestBody RequestedFriendDto requestedFriendDto) {
 
     friendService.friendRequest(currentUserInfo.getSeq(), requestedFriendDto);
-
+    return ResponseEntity.ok(new RequestedFriendDto());
   }
 
 
