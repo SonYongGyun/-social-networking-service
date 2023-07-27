@@ -14,6 +14,10 @@ public class GenericUserDetailFileDto {
         this.extension = extension;
     }
 
+    public GenericUserDetailFileDto(String name) {
+        this.name = name;
+    }
+
     private Long seq;
     private Long userSeq;
     private String uuid;

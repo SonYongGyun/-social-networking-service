@@ -1,7 +1,7 @@
 package kr.co.mz.sns.controller;
 
 import kr.co.mz.sns.dto.ErrorDto;
-import kr.co.mz.sns.exception.FailedSaveFileException;
+import kr.co.mz.sns.exception.FileWriteException;
 import kr.co.mz.sns.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +37,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDto);
     }
 
-    @ExceptionHandler(FailedSaveFileException.class)
-    public ResponseEntity<ErrorDto> handleFailedSaveFileException(FailedSaveFileException fsfe) {
+    @ExceptionHandler(FileWriteException.class)
+    public ResponseEntity<ErrorDto> handleFailedSaveFileException(FileWriteException fsfe) {
         var errDto = new ErrorDto("파일등록에 실패하였습니다" + fsfe.getMessage(), 500);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errDto);
     }
