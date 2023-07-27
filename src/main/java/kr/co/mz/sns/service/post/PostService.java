@@ -55,8 +55,9 @@ public class PostService {
 
     @Transactional
     public List<GenericPostFileDto> insert(SelectPostDto selectPostDto, List<MultipartFile> files) {
-        postRepository.save(modelMapper.map(selectPostDto, PostEntity.class));
-        return postFileService.insert(FileStorageService.getPostFileList(files));
+        var postEntity = postRepository.save(modelMapper.map(selectPostDto, PostEntity.class));
+        return postFileService.insert(FileStorageService.getPostFileList(files)
+            , modelMapper.map(postEntity, SelectPostDto.class));
     }
 
     @Transactional
