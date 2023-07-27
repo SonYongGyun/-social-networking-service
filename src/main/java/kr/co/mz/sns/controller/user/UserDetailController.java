@@ -6,7 +6,6 @@ import java.util.List;
 import kr.co.mz.sns.dto.user.FindUserDetailDto;
 import kr.co.mz.sns.dto.user.GenericUserDetailFileDto;
 import kr.co.mz.sns.dto.user.InsertUserDetailDto;
-import kr.co.mz.sns.dto.user.InsertUserProfileDtos;
 import kr.co.mz.sns.dto.user.UpdateUserDetailDto;
 import kr.co.mz.sns.service.user.UserDetailFileService;
 import kr.co.mz.sns.service.user.UserDetailService;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,11 +72,11 @@ public class UserDetailController {
 
   @PostMapping("/upload")
   public ResponseEntity<List<GenericUserDetailFileDto>> uploadFile(
-      @Valid @RequestParam InsertUserProfileDtos insertUserProfileDtos
+      @Valid @RequestParam List<MultipartFile> files
   ) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(userDetailFileService.insertProfiles(insertUserProfileDtos.getFiles()));
+        .body(userDetailFileService.insertProfiles(files));
   }
 
 //  @GetMapping("/download")
