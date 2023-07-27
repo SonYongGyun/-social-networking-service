@@ -89,26 +89,29 @@ public class PostService {
             .orElseThrow(() -> new NotFoundException("Post with ID " + seq + "not found"));
 
         // Declarative 2
-//        postRepository.findById(seq)
-//            .ifPresentOrElse(
-//                postRepository::delete,
-//                () -> {
-//                    throw new NotFoundException("Post with ID " + seq + "not found", 1);
-//                }
-//            );
-//
-//        // Imperative
-//        var optionalPostEntity = postRepository.findById(seq);
-//        var postEntity = optionalPostEntity.orElseThrow(
-//            () -> new NotFoundException("Post with ID " + seq + "not found", 1));
-//        postRepository.delete(postEntity);
+        postRepository.findById(seq)
+            .ifPresentOrElse(
+                postRepository::delete,
+                () -> {
+                    throw new NotFoundException("Post with ID " + seq + "not found");
+                }
+            );
+
+        // Imperative
+        var optionalPostEntity = postRepository.findById(seq);
+        var postEntity = optionalPostEntity.orElseThrow(
+            () -> new NotFoundException("Post with ID " + seq + "not found"));
+        postRepository.delete(postEntity);
     }
 
     @Transactional
     public PostLikeDto like(Long seq) {
-        var postEntity = postRepository.findById(seq).orElseThrow(() -> new NotFoundException("Post Not Found"));
-        postEntity.setLikes(postEntity.getLikes() + 1);
-
+        postRepository.findById(seq)
+            .map((entity) -> {
+                entity.setLikes(entity.getLikes() + 1);
+                return postRepository.save(entity);
+            });
+        
         return postLikeService.insert(seq);
     }
 }

@@ -3,6 +3,7 @@ package kr.co.mz.sns.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class FriendEntity {
 
     @Id
+    @GeneratedValue
     @Column(name = "seq")
     private Long seq;
     @Column(name = "status", nullable = false)

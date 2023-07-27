@@ -32,8 +32,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginDto loginDto) {
-        System.out.println(loginDto.getEmail());
-        System.out.println(loginDto.getPassword());
         var authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(), loginDto.getPassword()));
@@ -54,6 +52,7 @@ public class LoginController {
         }
         var user = new UserEntity();
         user.setEmail(registerDto.getEmail());
+        user.setName(registerDto.getName());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         user.setRole(Role.ANONYMOUS.toString());
         userRepository.save(user);

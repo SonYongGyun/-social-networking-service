@@ -10,8 +10,14 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
 
     @Override
     public @NotNull Optional<Long> getCurrentAuditor() {
-        var customUserDetail = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication()
-            .getPrincipal();
-        return Optional.of(customUserDetail.getUserDto().getSeq());
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (
+            authentication == null || !authentication.isAuthenticated()
+                || authentication.getPrincipal().equals("anonymousUser")
+        ) {
+            return Optional.empty();
+        }
+        var customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        return Optional.of(customUserDetails.getUserDto().getSeq());
     }
 }

@@ -13,4 +13,7 @@ public class RegisterDto {
     @NotNull
     @NotEmpty
     private String password;
+    @NotNull
+    @NotEmpty
+    private String name;
 }
