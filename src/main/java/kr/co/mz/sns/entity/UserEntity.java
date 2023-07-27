@@ -22,15 +22,15 @@ public class UserEntity {
 
     @Id
     @GeneratedValue
-    @Column
+    @Column(name = "seq")
     private Long seq;
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
-    @Column(nullable = false)
+    @Column(name = "role", nullable = false)
     private String role;
     @LastModifiedDate
     @Column(name = "last_login_at")

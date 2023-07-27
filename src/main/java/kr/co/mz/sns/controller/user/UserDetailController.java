@@ -35,14 +35,32 @@ public class UserDetailController {
         );
   }
 
+//    @RestController
+//    public class PostController {
+//
+//        @PostMapping("/create-post")
+//        public ResponseEntity<String> createPost(@RequestParam("title") String title,
+//            @RequestParam("content") String content,
+//            @RequestPart("file") MultipartFile file) {
+//            // 게시글에 대한 비즈니스 로직 처리 (title, content)
+//            // ...
+//
+//            // 파일 업로드 처리 (file)
+//            // ...
+//
+//            return ResponseEntity.ok("Post created successfully.");
+//        }
+//    }
+
   @PostMapping
-  public ResponseEntity<InsertUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+  public ResponseEntity<InsertUserDetailDto> write(@RequestBody InsertUserDetailDto insertUserDetailDto) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(
             userDetailService.saveOne(insertUserDetailDto)
         );
   }
+
 
   @PutMapping
   public ResponseEntity<InsertUserDetailDto> update(@RequestBody UpdateUserDetailDto

@@ -28,7 +28,7 @@ public class FriendEntity {
     @Column(name = "status", nullable = false)
     private String status;
     @CreatedBy
-    @Column(name = "createBy", nullable = false)
+    @Column(name = "create_by", nullable = false)
     private Long createBy;
     @Column(name = "friend_seq", nullable = false)
     private Long friendSeq;

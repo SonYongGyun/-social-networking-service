@@ -24,12 +24,10 @@ public class UserDetailEntity {
     @Id
     @Column(name = "user_seq", nullable = false)
     private Long userSeq;
-    @Column
+    @Column(name = "blocked", nullable = false)
     private Boolean blocked = false;
-    @Column
+    @Column(name = "greeting", nullable = false)
     private String greeting;
-    @Column(name = "file_seq")
-    private Long fileSeq;
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
