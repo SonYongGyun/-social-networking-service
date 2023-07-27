@@ -43,4 +43,6 @@ public class CommentEntity {
   @LastModifiedDate
   @Column(name = "modified_at")
   private LocalDateTime modifiedAt;
+  @Column(name = "mentioned_users", nullable = true)
+  private String mentionedUsers;
 }
