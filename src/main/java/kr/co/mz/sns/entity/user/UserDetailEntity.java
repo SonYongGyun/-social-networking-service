@@ -1,4 +1,4 @@
-package kr.co.mz.sns.entity;
+package kr.co.mz.sns.entity.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,18 +20,18 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 public class UserDetailEntity {
 
-    @CreatedBy
-    @Id
-    @Column(name = "user_seq", nullable = false)
-    private Long userSeq;
-    @Column(name = "blocked", nullable = false)
-    private Boolean blocked = false;
-    @Column(name = "greeting", nullable = false)
-    private String greeting;
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    @Column(name = "modified_at", nullable = false)
-    private LocalDateTime modifiedAt;
+  @CreatedBy
+  @Id
+  @Column(name = "user_seq", nullable = false)
+  private Long userSeq;
+  @Column(name = "blocked", nullable = false)
+  private Boolean blocked = false;
+  @Column(name = "greeting", nullable = false)
+  private String greeting;
+  @CreatedDate
+  @Column(name = "created_at", nullable = false)
+  private LocalDateTime createdAt;
+  @LastModifiedDate
+  @Column(name = "modified_at", nullable = false)
+  private LocalDateTime modifiedAt;
 }

@@ -7,7 +7,7 @@ import kr.co.mz.sns.dto.user.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.UpdateUserDetailDto;
 import kr.co.mz.sns.file.FileStorageService;
 import kr.co.mz.sns.service.FileService;
-import kr.co.mz.sns.service.UserDetailService;
+import kr.co.mz.sns.service.user.UserDetailService;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -30,19 +30,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/public/user_detail")
 public class UserDetailController {
 
-    private final UserDetailService userDetailService;
-    private final CurrentUserInfo currentUserInfo;
-    private final FileService fileService;
+  private final UserDetailService userDetailService;
+  private final CurrentUserInfo currentUserInfo;
+  private final FileService fileService;
 
-    @GetMapping
-    public ResponseEntity<FindUserDetailDto> findByEmail() {
-        return ResponseEntity
-            .ok(
-                userDetailService.findByEmail(
-                    currentUserInfo.getEmail()
-                )
-            );
-    }
+  @GetMapping
+  public ResponseEntity<FindUserDetailDto> findByEmail() {
+    return ResponseEntity
+        .ok(
+            userDetailService.findByEmail(
+                currentUserInfo.getEmail()
+            )
+        );
+  }
 
 //    @RestController
 //    public class PostController {
@@ -61,56 +61,56 @@ public class UserDetailController {
 //        }
 //    }
 
-    @PostMapping
-    public ResponseEntity<InsertUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(
-                userDetailService.saveOne(insertUserDetailDto)
-            );
-    }
-
-    @GetMapping("/download")
-    public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) {
-        var inputStream = FileStorageService.downloadFile(
-            fileService.findByName(new GenericUserDetailFileDto(fileName))
+  @PostMapping
+  public ResponseEntity<InsertUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(
+            userDetailService.saveOne(insertUserDetailDto)
         );
-        var headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-        return ResponseEntity
-            .ok()
-            .headers(headers)
-            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-            .body(new InputStreamResource(inputStream));
-    }
+  }
 
-    @PostMapping
-    public ResponseEntity<InsertUserDetailDto> write(@RequestBody InsertUserDetailDto insertUserDetailDto) {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(
-                userDetailService.saveOne(insertUserDetailDto)
-            );
-    }
+  @GetMapping("/download")
+  public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) {
+    var inputStream = FileStorageService.downloadFile(
+        fileService.findByName(new GenericUserDetailFileDto(fileName))
+    );
+    var headers = new HttpHeaders();
+    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+    return ResponseEntity
+        .ok()
+        .headers(headers)
+        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+        .body(new InputStreamResource(inputStream));
+  }
+
+  @PostMapping
+  public ResponseEntity<InsertUserDetailDto> write(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(
+            userDetailService.saveOne(insertUserDetailDto)
+        );
+  }
 
 
-    @PutMapping
-    public ResponseEntity<InsertUserDetailDto> update(@RequestBody UpdateUserDetailDto
-        updateUserDetailDto) {//업데이트할때는 seq 넣어서 보내주는걸로
-        return ResponseEntity
-            .ok(
-                userDetailService.updateByUserSeq(
-                    updateUserDetailDto
-                )
-            );
-    }
+  @PutMapping
+  public ResponseEntity<InsertUserDetailDto> update(@RequestBody UpdateUserDetailDto
+      updateUserDetailDto) {//업데이트할때는 seq 넣어서 보내주는걸로
+    return ResponseEntity
+        .ok(
+            userDetailService.updateByUserSeq(
+                updateUserDetailDto
+            )
+        );
+  }
 
-    @DeleteMapping("/{userSeq}")
-    public ResponseEntity<String> delete(@NotNull @PathVariable Long userSeq) {
-        var result = userDetailService.deleteByUserSeq(userSeq);
-        return ResponseEntity
-            .ok(
-                "Your detail is deleted Successfully for :" + result + " rows."
-            );
-    }
+  @DeleteMapping("/{userSeq}")
+  public ResponseEntity<String> delete(@NotNull @PathVariable Long userSeq) {
+    var result = userDetailService.deleteByUserSeq(userSeq);
+    return ResponseEntity
+        .ok(
+            "Your detail is deleted Successfully for :" + result + " rows."
+        );
+  }
 }

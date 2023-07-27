@@ -1,4 +1,4 @@
-package kr.co.mz.sns.entity;
+package kr.co.mz.sns.entity.post;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,22 +23,22 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 public class PostEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "seq")
-    private Long seq;
-    @Column(name = "content", nullable = false)
-    private String content;
-    @Column(name = "likes", nullable = false)
-    private Integer likes = 0;
-    @CreatedBy
-    @LastModifiedBy
-    @Column(name = "create_by", nullable = false)
-    private Long createBy;
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    @Column(name = "modified_at")
-    private LocalDateTime modifiedAt;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "seq")
+  private Long seq;
+  @Column(name = "content", nullable = false)
+  private String content;
+  @Column(name = "likes", nullable = false)
+  private Integer likes = 0;
+  @CreatedBy
+  @LastModifiedBy
+  @Column(name = "create_by", nullable = false)
+  private Long createBy;
+  @CreatedDate
+  @Column(name = "created_at", nullable = false)
+  private LocalDateTime createdAt;
+  @LastModifiedDate
+  @Column(name = "modified_at")
+  private LocalDateTime modifiedAt;
 }

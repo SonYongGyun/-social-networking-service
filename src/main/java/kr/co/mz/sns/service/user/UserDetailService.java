@@ -1,11 +1,11 @@
-package kr.co.mz.sns.service;
+package kr.co.mz.sns.service.user;
 
 import kr.co.mz.sns.dto.user.FindUserDetailDto;
 import kr.co.mz.sns.dto.user.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.UpdateUserDetailDto;
-import kr.co.mz.sns.entity.UserDetailEntity;
+import kr.co.mz.sns.entity.user.UserDetailEntity;
 import kr.co.mz.sns.exception.NotFoundException;
-import kr.co.mz.sns.repository.UserDetailRepository;
+import kr.co.mz.sns.repository.user.UserDetailRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Repository;
