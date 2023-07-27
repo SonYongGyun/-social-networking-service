@@ -32,19 +32,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/public/user_detail")
 public class UserDetailController {
 
-  private final UserDetailService userDetailService;
-  private final CurrentUserInfo currentUserInfo;
-  private final FileService fileService;
+    private final UserDetailService userDetailService;
+    private final CurrentUserInfo currentUserInfo;
+    private final FileService fileService;
 
-  @GetMapping
-  public ResponseEntity<FindUserDetailDto> findByEmail() {
-    return ResponseEntity
-        .ok(
-            userDetailService.findByEmail(
-                currentUserInfo.getEmail()
-            )
-        );
-  }
+    @GetMapping
+    public ResponseEntity<FindUserDetailDto> findByEmail() {
+        return ResponseEntity
+            .ok(
+                userDetailService.findByEmail(
+                    currentUserInfo.getEmail()
+                )
+            );
+    }
 
 //    @RestController
 //    public class PostController {
@@ -69,8 +69,9 @@ public class UserDetailController {
         .status(HttpStatus.CREATED)
         .body(
             userDetailService.insert(insertUserDetailDto)
-        );
-  }
+
+            );
+    }
 
   @PostMapping("/upload")
   public ResponseEntity<List<GenericUserDetailFileDto>> uploadFile(
@@ -95,23 +96,24 @@ public class UserDetailController {
   }
 
 
-  @PutMapping
-  public ResponseEntity<InsertUserDetailDto> update(@RequestBody UpdateUserDetailDto
-      updateUserDetailDto) {//업데이트할때는 seq 넣어서 보내주는걸로
-    return ResponseEntity
-        .ok(
-            userDetailService.updateByUserSeq(
-                updateUserDetailDto
-            )
-        );
-  }
 
-  @DeleteMapping("/{userSeq}")
-  public ResponseEntity<String> delete(@NotNull @PathVariable Long userSeq) {
-    var result = userDetailService.deleteByUserSeq(userSeq);
-    return ResponseEntity
-        .ok(
-            "Your detail is deleted Successfully for :" + result + " rows."
-        );
-  }
+    @PutMapping
+    public ResponseEntity<InsertUserDetailDto> update(@RequestBody UpdateUserDetailDto
+        updateUserDetailDto) {//업데이트할때는 seq 넣어서 보내주는걸로
+        return ResponseEntity
+            .ok(
+                userDetailService.updateByUserSeq(
+                    updateUserDetailDto
+                )
+            );
+    }
+
+    @DeleteMapping("/{userSeq}")
+    public ResponseEntity<String> delete(@NotNull @PathVariable Long userSeq) {
+        var result = userDetailService.deleteByUserSeq(userSeq);
+        return ResponseEntity
+            .ok(
+                "Your detail is deleted Successfully for :" + result + " rows."
+            );
+    }
 }
