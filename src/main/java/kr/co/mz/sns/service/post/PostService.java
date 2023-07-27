@@ -9,6 +9,7 @@ import kr.co.mz.sns.entity.post.PostEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.file.FileStorageService;
 import kr.co.mz.sns.repository.post.PostRepository;
+import kr.co.mz.sns.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostLikeService postLikeService;
     private final PostFileService postFileService;
+    private final CommentService commentService;
     private final ModelMapper modelMapper;
 
     public List<SelectPostDto> findByKeyword(PostSearchDto postSearchDto, Pageable pageable) {
@@ -91,21 +93,20 @@ public class PostService {
                 return entity;
             })
             .orElseThrow(() -> new NotFoundException("Post with ID " + seq + "not found"));
-
         // Declarative 2
-        postRepository.findById(seq)
-            .ifPresentOrElse(
-                postRepository::delete,
-                () -> {
-                    throw new NotFoundException("Post with ID " + seq + "not found");
-                }
-            );
-
-        // Imperative
-        var optionalPostEntity = postRepository.findById(seq);
-        var postEntity = optionalPostEntity.orElseThrow(
-            () -> new NotFoundException("Post with ID " + seq + "not found"));
-        postRepository.delete(postEntity);
+//        postRepository.findById(seq)
+//            .ifPresentOrElse(
+//                postRepository::delete,
+//                () -> {
+//                    throw new NotFoundException("Post with ID " + seq + "not found");
+//                }
+//            );
+//
+//        // Imperative
+//        var optionalPostEntity = postRepository.findById(seq);
+//        var postEntity = optionalPostEntity.orElseThrow(
+//            () -> new NotFoundException("Post with ID " + seq + "not found"));
+//        postRepository.delete(postEntity);
     }
 
     @Transactional
