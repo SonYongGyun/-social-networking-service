@@ -11,7 +11,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import kr.co.mz.sns.dto.user.GenericUserProfileDto;
 import kr.co.mz.sns.entity.user.UserProfileEntity;
 import kr.co.mz.sns.exception.FileWriteException;
@@ -49,9 +51,15 @@ public class UserProfileService {
   }
 
   @Transactional
-  public String delete(Long fileSeq) {
-    userProfileRepository.deleteBySeq(fileSeq);
-    return "선택한 프로필 사진이 삭제되었습니다.";
+  public Set<GenericUserProfileDto> findAll(Long userSeq) {
+    return userProfileRepository.findAllByUserSeq(userSeq).stream()
+        .map(entity -> modelMapper.map(entity, GenericUserProfileDto.class))
+        .collect(Collectors.toSet());
+  }
+
+  @Transactional
+  public int delete(Long fileSeq) {
+    return userProfileRepository.deleteBySeq(fileSeq);
   }
 
   private String createDirectory() {

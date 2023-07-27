@@ -3,6 +3,7 @@ package kr.co.mz.sns.controller.user;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 import kr.co.mz.sns.dto.user.FindUserDetailDto;
 import kr.co.mz.sns.dto.user.GenericUserProfileDto;
 import kr.co.mz.sns.dto.user.InsertUserDetailDto;
@@ -34,7 +35,7 @@ public class UserDetailController {
   private final CurrentUserInfo currentUserInfo;
 
   @GetMapping
-  public ResponseEntity<FindUserDetailDto> findByEmail() {
+  public ResponseEntity<FindUserDetailDto> findByEmailWithProfile() {
     return ResponseEntity
         .ok(
             userDetailService.findByEmail(
@@ -55,8 +56,10 @@ public class UserDetailController {
   }
 
   @GetMapping("/profiles")
-  public ResponseEntity<GenericUserProfileDto> getProfile() {
-    return null; //todo get, delete, update prifile
+  public ResponseEntity<Set<GenericUserProfileDto>> getProfile() {
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(userProfileService.findAll(currentUserInfo.getSeq())); //todo get, update prifile
   }
 
   @PostMapping("/upload")
@@ -68,7 +71,12 @@ public class UserDetailController {
         .body(userProfileService.insert(files));
   }
 
-  @DeleteMapping("/")
+  @DeleteMapping("/{profileSeq}")
+  public ResponseEntity<String> deleteProfile(@Valid @PathVariable Long profileSeq) {
+    return ResponseEntity.ok(
+        "Your detail is deleted Successfully for :" + userProfileService.delete(profileSeq) + " rows."
+    );
+  }
 
 //  @GetMapping("/download")
 //  public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) {
@@ -97,10 +105,9 @@ public class UserDetailController {
 
   @DeleteMapping("/{userSeq}")
   public ResponseEntity<String> deleteInfo(@NotNull @PathVariable Long userSeq) {
-    var result = userDetailService.deleteByUserSeq(userSeq);
     return ResponseEntity
         .ok(
-            "Your detail is deleted Successfully for :" + result + " rows."
+            "Your detail is deleted Successfully for :" + userDetailService.deleteByUserSeq(userSeq) + " rows."
         );
   }
 }

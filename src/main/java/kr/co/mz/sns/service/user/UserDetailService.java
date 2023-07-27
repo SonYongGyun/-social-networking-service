@@ -20,6 +20,7 @@ public class UserDetailService {
   private final UserDetailRepository userDetailRepository;
   private final ModelMapper modelMapper;
   private final UserService userService;
+  private final UserProfileService userProfileService;
 
   public InsertUserDetailDto findByUserSeq(Long userSeq) {
     return modelMapper.map(userDetailRepository.findById(userSeq).orElseGet(UserDetailEntity::new),
@@ -28,14 +29,17 @@ public class UserDetailService {
 
   public FindUserDetailDto findByEmail(String email) {
     var userSeq = userService.findEntityByUserEmail(email).getSeq();
-    return modelMapper
+
+    var findUserDetailDto = modelMapper
         .map(
             userDetailRepository
                 .findById(userSeq)
                 .orElseThrow(
-                    () -> new NotFoundException("등록된 상세 정보가 없습니다. 지금 바로 작성 해 보세요!")
+                    () -> new NotFoundException("등록된 상세 정보가 없습니다. 지금 바로 작성 해 보세 요!")
                 ),
             FindUserDetailDto.class);
+    findUserDetailDto.setUserDetailFileDtoSet(userProfileService.findAll(userSeq));
+    return findUserDetailDto;
   }
 
   @Transactional
