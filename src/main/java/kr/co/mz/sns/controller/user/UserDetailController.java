@@ -39,7 +39,7 @@ public class UserDetailController {
 //        @PostMapping("/create-post")
 //        public ResponseEntity<String> createPost(@RequestParam("title") String title,
 //            @RequestParam("content") String content,
-//            @RequestPart("file") MultipartFile file) {
+//            @RequestPart("files") List<MultipartFile> files) {
 //            // 게시글에 대한 비즈니스 로직 처리 (title, content)
 //            // ...
 //
@@ -49,7 +49,7 @@ public class UserDetailController {
 //            return ResponseEntity.ok("Post created successfully.");
 //        }
 //    }
-    
+
     @PostMapping
     public ResponseEntity<InsertUserDetailDto> write(@RequestBody InsertUserDetailDto insertUserDetailDto) {
         return ResponseEntity
