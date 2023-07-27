@@ -1,6 +1,8 @@
 package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import kr.co.mz.sns.dto.user.InsertUserProfileDtos;
 import kr.co.mz.sns.dto.user.FindUserDetailDto;
 import kr.co.mz.sns.dto.user.GenericUserDetailFileDto;
 import kr.co.mz.sns.dto.user.InsertUserDetailDto;
@@ -23,7 +25,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -63,14 +64,20 @@ public class UserDetailController {
 //    }
 
   @PostMapping
-  public ResponseEntity<InsertUserDetailDto> insert(
-      @RequestPart InsertUserDetailDto insertUserDetailDto
-  ) {
+  public ResponseEntity<InsertUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(
             userDetailService.insert(insertUserDetailDto)
         );
+  }
+
+  @PostMapping("/upload")
+  public ResponseEntity<List<GenericUserDetailFileDto>> uploadFile(
+      @RequestParam InsertUserProfileDtos insertUserProfileDtos
+  ){
+
+    var fileDtos =
   }
 
   @GetMapping("/download")
