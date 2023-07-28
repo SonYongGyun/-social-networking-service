@@ -58,7 +58,8 @@ public class UserService {
     return now;
   }
 
-  public List<NotificationDto> getTargetSeqByNames(List<String> mentionedNames) {
+  @Transactional
+  public List<NotificationDto> mention(List<String> mentionedNames) {
     return mentionedNames.stream()
         .map(
             name -> userRepository.findByName(name).orElseThrow(() -> new NotFoundException("친구 아닌데?")).getSeq()
@@ -72,7 +73,8 @@ public class UserService {
         })
         .map(notificationRepository::save)
         .toList()
-        .stream().map(notiEntity -> modelMapper.map(notiEntity, NotificationDto.class))
+        .stream().map(notiEntity -> modelMapper.map(notiEntity,
+                    NotificationDto.class))
         .toList();
   }
 }

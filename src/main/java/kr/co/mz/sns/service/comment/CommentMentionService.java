@@ -7,26 +7,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CommentMentionService {
 
 
-    public CommentDto split(CommentDto commentDto){
+    public Optional<List<String>> split(CommentDto commentDto){
         List<String> userNameList = new ArrayList<>();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        String[] usernames = commentDto.getMentionedUsers().split("@");
+        var stringBuilder = new StringBuilder();
+        var mentionedUsers = commentDto.getMentionedUsers();
+        if (mentionedUsers == null) {
+            return Optional.empty();
+        }
+        String[] usernames = mentionedUsers.split("@");
         for (String username : usernames) {
             if (!username.trim().isEmpty()) {
                 userNameList.add(username.trim());
                 stringBuilder.append(username.trim());
             }
         }
-
         commentDto.setMentionedUsers(stringBuilder.toString());
 
-        return commentDto;
+        return Optional.of(userNameList);
     }
 }
