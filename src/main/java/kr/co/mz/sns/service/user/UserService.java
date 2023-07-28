@@ -34,7 +34,7 @@ public class UserService {
   private final CurrentUserInfo currentUserInfo;
 
   @Transactional
-  public UserEntity findEntityByUserEmail(String email) {
+  public UserEntity findByUserEmail(String email) {
     if (!userRepository.existsByEmail(email)) {
       throw new NotFoundException("Expected 1 result, but none returned.");
     }
@@ -75,4 +75,5 @@ public class UserService {
         .stream().map(notiEntity -> modelMapper.map(notiEntity, NotificationDto.class))
         .toList();
   }
+
 }

@@ -28,7 +28,7 @@ public class UserDetailService {
   }
 
   public FindUserDetailDto findByEmail(String email) {
-    var userSeq = userService.findEntityByUserEmail(email).getSeq();
+    var userSeq = userService.findByUserEmail(email).getSeq();
 
     var findUserDetailDto = modelMapper
         .map(

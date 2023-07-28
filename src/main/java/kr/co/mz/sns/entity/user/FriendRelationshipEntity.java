@@ -17,10 +17,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "friend")
+@Table(name = "friend_relationship")
 @Data
 @NoArgsConstructor
-public class FriendEntity {
+public class FriendRelationshipEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

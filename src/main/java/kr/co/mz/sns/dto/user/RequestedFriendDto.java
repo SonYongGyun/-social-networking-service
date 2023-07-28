@@ -8,5 +8,4 @@ import lombok.NoArgsConstructor;
 public class RequestedFriendDto {
 
   private Long userSeq;
-  private String friendName;
 }
