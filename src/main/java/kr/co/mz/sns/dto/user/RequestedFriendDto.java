@@ -8,4 +8,6 @@ import lombok.NoArgsConstructor;
 public class RequestedFriendDto {
 
   private Long userSeq;
+  private Long friendSeq;
+  private String status;
 }
