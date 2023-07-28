@@ -36,7 +36,7 @@ public class FriendService {
     if (!friendEntity.getStatus().equals(FR_WE_ARE_FRIEND)) {
     }
     userDetailService.findByUserSeq(friendEntity.getFriendSeq());
-//    return
+    return null;
 
   }
 }
