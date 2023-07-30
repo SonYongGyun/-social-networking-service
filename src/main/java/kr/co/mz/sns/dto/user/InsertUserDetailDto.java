@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 public class InsertUserDetailDto {
 
-    private Long userSeq;
-    private Boolean blocked;
-    private String greeting;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
-    private Set<GenericUserDetailFileDto> userDetailFileDtoSet;
+  private Long userSeq;
+  private Boolean blocked;
+  private String greeting;
+  private LocalDateTime createdAt;
+  private LocalDateTime modifiedAt;
+  private Set<GenericUserProfileDto> userDetailFileDtoSet;
 }

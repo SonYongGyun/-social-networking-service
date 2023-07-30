@@ -1,8 +1,8 @@
 package kr.co.mz.sns.service;
 
-import kr.co.mz.sns.dto.user.GenericUserDetailFileDto;
+import kr.co.mz.sns.dto.user.GenericUserProfileDto;
 import kr.co.mz.sns.repository.post.PostFileRepository;
-import kr.co.mz.sns.repository.user.UserDetailFileRepository;
+import kr.co.mz.sns.repository.user.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -14,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class FileService {
 
-  private final UserDetailFileRepository userDetailFileRepository;
+  private final UserProfileRepository userProfileRepository;
   private final PostFileRepository postFileRepository;
   private final ModelMapper modelMapper;
 
-  public GenericUserDetailFileDto findByName(GenericUserDetailFileDto fileDto) {
-    return modelMapper.map(userDetailFileRepository.findByName(fileDto.getName()), GenericUserDetailFileDto.class);
+  public GenericUserProfileDto findByName(GenericUserProfileDto fileDto) {
+    return modelMapper.map(userProfileRepository.findByName(fileDto.getName()), GenericUserProfileDto.class);
   }
 
 }

@@ -19,10 +19,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "user_Detail_file")
+@Table(name = "user_profile")
 @Data
 @NoArgsConstructor
-public class UserDetailFileEntity {
+public class UserProfileEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

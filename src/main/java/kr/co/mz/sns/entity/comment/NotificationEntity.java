@@ -1,4 +1,4 @@
-package kr.co.mz.sns.entity.user;
+package kr.co.mz.sns.entity.comment;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,35 +10,35 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "User")
+@Table(name = "notification")
 @Data
 @NoArgsConstructor
-public class UserEntity {
+public class NotificationEntity {
 
-  @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
   @Column(name = "seq")
   private Long seq;
-  @Column(name = "email", nullable = false)
-  private String email;
-  @Column(name = "name", nullable = false)
-  private String name;
-  @Column(name = "password", nullable = false)
-  private String password;
-  @Column(name = "role", nullable = false)
-  private String role;
-  @Column(name = "last_login_at")
-  private LocalDateTime lastLoginAt;
+
+  @CreatedBy
+  @Column(name = "mentioner_seq")
+  private Long mentionerSeq;
+
   @CreatedDate
-  @Column(name = "created_at", nullable = false)
-  private LocalDateTime createdAt;
-  @LastModifiedDate
-  @Column(name = "modified_at")
-  private LocalDateTime modifiedAt;
+  @Column(name = "mentioned_at")
+  private LocalDateTime mentionedAt;
+
+  @Column(name = "read_status")
+  private Boolean readStatus;
+
+  @Column(name = "target_seq")
+  private Long targetSeq;
+
+
 }

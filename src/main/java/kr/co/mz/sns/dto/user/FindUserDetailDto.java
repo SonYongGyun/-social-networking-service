@@ -18,6 +18,6 @@ public class FindUserDetailDto {
   private String greeting;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
-  private Set<GenericUserDetailFileDto> userDetailFileDtoSet;
+  private Set<GenericUserProfileDto> userDetailFileDtoSet;
 //todo 나중에여기에 파일 넣어주는로직 구현해야함
 }
