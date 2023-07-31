@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepository extends JpaRepository<PostEntity, Long> {
 
-  Page<PostEntity> findByContentContaining(String keyword, Pageable pageable);
+    Page<PostEntity> findByContentContaining(String keyword, Pageable pageable);
 
-  @NotNull Page<PostEntity> findAll(@NotNull Pageable pageable);
+    @NotNull Page<PostEntity> findAll(@NotNull Pageable pageable);
 
 }

@@ -4,9 +4,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.GenericPostFileDto;
 import kr.co.mz.sns.dto.post.PostLikeDto;
-import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.file.FileStorageService;
 import kr.co.mz.sns.service.post.PostLikeService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -34,38 +33,43 @@ public class PostController {
     private final PostLikeService postLikeService;
 
     @PostMapping
-    public ResponseEntity<String> write(@RequestPart("files") List<MultipartFile> files,
-        @Valid @RequestParam String content) {
-        var uuidList = new ArrayList<String>();
-        for (GenericPostFileDto fileDto : postService.insert(new SelectPostDto(content), files)) {
-            uuidList.add(fileDto.getUuid() + "." + fileDto.getExtension());
-        }
-        FileStorageService.saveFile(files, uuidList);
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body("Successful Write");
+    public ResponseEntity<GenericPostDto> insert(
+        @RequestPart("files") List<MultipartFile> files,
+        @Valid @RequestParam GenericPostDto postDto
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(
+                postService.insert(files, postDto)
+            );
     }
 
     @DeleteMapping("/{seq}")
-    public ResponseEntity<String> delete(@NotNull @PathVariable Long seq) {
-        postService.deleteBySeq(seq);
+    public ResponseEntity<GenericPostDto> delete(@NotNull @PathVariable Long seq) {
         return ResponseEntity.ok(
-            "Post with ID " + seq + " has been successfully deleted"
+            postService.deleteByKey(seq)
         );
     }
 
     @PutMapping("/{seq}")
-    public ResponseEntity<SelectPostDto> update(@NotNull @PathVariable Long seq,
-        @Valid @RequestBody SelectPostDto selectPostDto) {
-        return ResponseEntity.ok(
-            postService.updateBySeq(seq, selectPostDto)
+    public ResponseEntity<GenericPostDto> update(@NotNull @PathVariable Long seq,
+        @RequestPart("files") List<MultipartFile> files, @Valid @RequestParam String content) {
+        var uuidList = new ArrayList<String>();
+        var updatedPostDto = postService.updateByKey(
+            FileStorageService.convertTo(files, GenericPostFileDto::from),
+            new GenericPostDto(seq, content)
         );
+        updatedPostDto.getPostFiles().stream()
+            .map(fileDto -> uuidList.add(fileDto.getUuid() + "." + fileDto.getExtension()));
+        FileStorageService.saveFile(files, uuidList);
+
+        return ResponseEntity.ok(updatedPostDto);
     }
 
     @PostMapping("/{seq}/like")
     public ResponseEntity<List<PostLikeDto>> like(@NotNull @PathVariable Long seq) {
         var insertedPostLikeDto = postService.like(seq);
         log.debug("PostLike inserted:: {}", insertedPostLikeDto);
+
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(

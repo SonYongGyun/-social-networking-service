@@ -2,15 +2,14 @@ package kr.co.mz.sns.dto.post;
 
 import jakarta.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import kr.co.mz.sns.entity.comment.CommentEntity;
+import java.util.List;
+import kr.co.mz.sns.dto.comment.CommentDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class SelectPostDto {
+public class GenericPostDto {
 
     private Long seq;
     @NotEmpty
@@ -19,10 +18,15 @@ public class SelectPostDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private Long createBy;
-    private Set<GenericPostFileDto> postFileDtoSet = new HashSet<>();
-    private Set<CommentEntity> comments = new HashSet<>();
+    private List<GenericPostFileDto> postFiles;
+    private List<CommentDto> comments;
 
-    public SelectPostDto(String content) {
+    public GenericPostDto(String content) {
+        this.content = content;
+    }
+
+    public GenericPostDto(Long seq, String content) {
+        this.seq = seq;
         this.content = content;
     }
 }

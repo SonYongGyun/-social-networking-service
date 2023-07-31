@@ -27,7 +27,7 @@ public class PostFileEntity {
     @Column(name = "seq")
     private Long seq;
     @Column(name = "post_seq", nullable = false)
-    private Long post_seq;
+    private Long postSeq;
     @Column(name = "uuid", nullable = false)
     private String uuid = UUID.randomUUID().toString();
     @Column(name = "name", nullable = false)
