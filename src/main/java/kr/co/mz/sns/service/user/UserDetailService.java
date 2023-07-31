@@ -33,6 +33,16 @@ public class UserDetailService {
         );
   }
 
+  public CompleteUserDetailDto findByUserName(String userName) {
+    return modelMapper
+        .map(
+            userDetailRepository
+                .findByName(userName)
+                .orElseGet(UserDetailEntity::new),
+            CompleteUserDetailDto.class
+        );
+  }
+
   public UserDetailAndProfileDto findByEmail(String email) {
     var userSeq = userService.findByUserEmail(email).getSeq();
 
