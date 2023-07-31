@@ -3,9 +3,12 @@ package kr.co.mz.sns.entity.user;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
@@ -36,4 +39,8 @@ public class UserDetailEntity {
   @LastModifiedDate
   @Column(name = "modified_at", nullable = false)
   private LocalDateTime modifiedAt;
+  
+  @OneToMany(mappedBy = "userDetailEntity", fetch = FetchType.LAZY)
+  private List<FriendRelationshipEntity> friendRelationships;
+
 }

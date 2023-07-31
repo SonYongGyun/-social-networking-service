@@ -1,6 +1,7 @@
 package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.constraints.NotNull;
+import kr.co.mz.sns.dto.user.friend.AcceptFriendRelationshipDto;
 import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
 import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
 import kr.co.mz.sns.service.user.FriendService;
@@ -29,9 +30,8 @@ public class FriendController {
   }
 
   @GetMapping("/request/accept")
-  public ResponseEntity<String> accept(InsertFriendRelationshipDto insertFriendRelationshipDto) {
-    insertFriendRelationshipDto.setUserSeq(currentUserInfo.getSeq());
-    friendService.add(insertFriendRelationshipDto);
+  public ResponseEntity<String> accept(AcceptFriendRelationshipDto acceptFriendRelationshipDto) {
+    friendService.accept(acceptFriendRelationshipDto);
     return ResponseEntity.ok(":");
   }
 

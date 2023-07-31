@@ -2,6 +2,8 @@ package kr.co.mz.sns.service.user;
 
 import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WE_ARE_FRIEND;
 
+import java.util.function.Function;
+import kr.co.mz.sns.dto.user.friend.AcceptFriendRelationshipDto;
 import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
 import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
 import kr.co.mz.sns.entity.user.FriendRelationshipEntity;
@@ -26,26 +28,21 @@ public class FriendService {
 
   @Transactional
   public InsertFriendRelationshipDto request(InsertFriendRelationshipDto insertFriendRelationshipDto) {
-    return modelMapper
-        .map(
-            friendRelationshipRepository.save(
-                modelMapper.map(
-                        insertFriendRelationshipDto,
-                        FriendRelationshipEntity.class
-                    )
-                    .requestedBy(currentUserInfo.getSeq())
-            ),
-            InsertFriendRelationshipDto.class
-        );
+    return mapAndActAndMap(
+        insertFriendRelationshipDto,
+        FriendRelationshipEntity.class,
+        entity -> friendRelationshipRepository.save(entity.requestedBy(currentUserInfo.getSeq())),
+        InsertFriendRelationshipDto.class
+    );
   }
 
-  public InsertFriendRelationshipDto add(InsertFriendRelationshipDto insertFriendRelationshipDto) {
-
-    var saved = friendRelationshipRepository.save(
-        modelMapper.map(insertFriendRelationshipDto, FriendRelationshipEntity.class)
+  public AcceptFriendRelationshipDto accept(AcceptFriendRelationshipDto acceptFriendRelationshipDto) {
+    return mapAndActAndMap(
+        acceptFriendRelationshipDto,
+        FriendRelationshipEntity.class,
+        friendRelationshipRepository::save,
+        AcceptFriendRelationshipDto.class
     );
-
-    return modelMapper.map(saved, InsertFriendRelationshipDto.class);
   }
 
   public FriendDetailDto find(Long friendSep) {
@@ -56,6 +53,13 @@ public class FriendService {
     }
     userDetailService.findByUserSeq(friendEntity.getFriendSeq());
     return null;
+  }
 
+  private <FIRST, SECOND, THIRD> THIRD mapAndActAndMap(
+      FIRST source, Class<SECOND> secondType, Function<SECOND, SECOND> function, Class<THIRD> thirdType
+  ) {
+    SECOND intermediate = modelMapper.map(source, secondType);
+    SECOND processed = function.apply(intermediate);
+    return modelMapper.map(processed, thirdType);
   }
 }
