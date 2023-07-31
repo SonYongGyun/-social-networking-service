@@ -1,8 +1,13 @@
 package kr.co.mz.sns.dto.post;
 
+import static kr.co.mz.sns.file.FileStorageService.createDirectory;
+import static kr.co.mz.sns.file.FileStorageService.getFileExtension;
+
 import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -25,4 +30,15 @@ public class GenericPostFileDto {
     private String extension;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+
+    public static GenericPostFileDto from(MultipartFile file) {
+        var createdDirectory = createDirectory();
+        return new GenericPostFileDto(
+            UUID.randomUUID().toString(),
+            file.getOriginalFilename(),
+            createdDirectory,
+            file.getSize(),
+            getFileExtension(file.getOriginalFilename())
+        );
+    }
 }
