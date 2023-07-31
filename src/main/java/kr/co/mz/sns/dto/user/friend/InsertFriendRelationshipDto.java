@@ -10,5 +10,4 @@ public class InsertFriendRelationshipDto {
   private Long userSeq;
   private String status;
   private Long friendSeq;
-
 }

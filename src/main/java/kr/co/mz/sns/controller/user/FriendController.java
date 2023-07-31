@@ -1,12 +1,9 @@
 package kr.co.mz.sns.controller.user;
 
-import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WAITING_PERMIT_REQUEST;
-
 import jakarta.validation.constraints.NotNull;
 import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
 import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
 import kr.co.mz.sns.service.user.FriendService;
-import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,19 +19,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class FriendController {
 
   private final FriendService friendService;
-  private final CurrentUserInfo currentUserInfo;
 
   @PostMapping("/request")
   public ResponseEntity<InsertFriendRelationshipDto> request(
       @NotNull @RequestBody InsertFriendRelationshipDto insertFriendRelationshipDto) {
+    return ResponseEntity.ok(
+        friendService.request(insertFriendRelationshipDto)
+    );
+  }
+
+  @GetMapping("/request/accept")
+  public ResponseEntity<String> accept(InsertFriendRelationshipDto insertFriendRelationshipDto) {
     insertFriendRelationshipDto.setUserSeq(currentUserInfo.getSeq());
-    insertFriendRelationshipDto.setStatus(FR_WAITING_PERMIT_REQUEST);
-    return ResponseEntity.ok(friendService.request(insertFriendRelationshipDto));
+    friendService.add(insertFriendRelationshipDto);
+    return ResponseEntity.ok(":");
   }
 
   @GetMapping("/{friendSep}")
   public ResponseEntity<FriendDetailDto> showOne(@NotNull @PathVariable Long friendSep) {
-    return ResponseEntity.ok(friendService.find(friendSep));
+    return ResponseEntity.ok(
+        friendService.find(friendSep)
+    );
   }
 
 //  @GetMapping("/list")

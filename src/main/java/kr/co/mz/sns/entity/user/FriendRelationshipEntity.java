@@ -1,5 +1,7 @@
 package kr.co.mz.sns.entity.user;
 
+import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WAITING_PERMIT_REQUEST;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -44,4 +46,10 @@ public class FriendRelationshipEntity {
   @LastModifiedDate
   @Column(name = "modified_at")
   private LocalDateTime modifiedAt;
+
+  public FriendRelationshipEntity requestedBy(Long userSeq) {
+    this.userSeq = userSeq;
+    this.status = FR_WAITING_PERMIT_REQUEST;
+    return this;
+  }
 }
