@@ -1,13 +1,12 @@
 package kr.co.mz.sns.service.user;
 
-import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WE_ARE_FRIEND;
-
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import kr.co.mz.sns.dto.user.friend.AcceptFriendRelationshipDto;
 import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
 import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
 import kr.co.mz.sns.entity.user.FriendRelationshipEntity;
-import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.repository.user.FriendRelationshipRepository;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -45,14 +44,12 @@ public class FriendService {
     );
   }
 
-  public FriendDetailDto find(Long friendSep) {
-    var friendEntity = friendRelationshipRepository.findBySeq(friendSep)
-        .orElseThrow(() -> new NotFoundException("친구가 아니거나 친구요청을 하지 않았어요."));
-    if (!friendEntity.getStatus().equals(FR_WE_ARE_FRIEND)) {
-      //todo
-    }
-    userDetailService.findByUserSeq(friendEntity.getFriendSeq());
-    return null;
+  public List<FriendDetailDto> findByFriendName(String friendName) {
+    List<FriendRelationshipEntity> friendEntities = friendRelationshipRepository.findByFriendName(friendName);
+    return friendEntities.stream()
+        .map(FriendRelationshipEntity::getUserDetailEntity)
+        .map(userDetailEntity -> modelMapper.map(userDetailEntity, FriendDetailDto.class))
+        .collect(Collectors.toList());
   }
 
   private <FIRST, SECOND, THIRD> THIRD mapAndActAndMap(

@@ -5,7 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,13 +36,23 @@ public class UserDetailEntity {
   @Column(name = "greeting", nullable = false)
   private String greeting;
   @CreatedDate
+  @Column(name = "last_login_at", nullable = false)
+  private LocalDateTime lastLoginAt;
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
   @LastModifiedDate
   @Column(name = "modified_at", nullable = false)
   private LocalDateTime modifiedAt;
-  
+
+  @OneToOne
+  @JoinColumn(name = "user_seq")
+  private UserEntity user;
+
   @OneToMany(mappedBy = "userDetailEntity", fetch = FetchType.LAZY)
   private List<FriendRelationshipEntity> friendRelationships;
 
+  public LocalDateTime lastLogin() {
+    this.lastLoginAt = LocalDateTime.now();
+    return this.lastLoginAt;
+  }
 }

@@ -6,6 +6,7 @@ import kr.co.mz.sns.dto.user.detail.CompleteUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UpdateUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto;
+import kr.co.mz.sns.dto.user.friend.AFriendDto;
 import kr.co.mz.sns.entity.comment.CommentNotificationEntity;
 import kr.co.mz.sns.entity.user.UserDetailEntity;
 import kr.co.mz.sns.exception.NotFoundException;
@@ -50,6 +51,7 @@ public class UserDetailService {
         );
   }
 
+  public
   public UserDetailAndProfileDto findByEmail(String email) {
     var userSeq = userService.findByUserEmail(email).getSeq();
 
@@ -123,4 +125,8 @@ public class UserDetailService {
         .toList();
   }
 
+  public AFriendDto findByFriendName(String friendName) {
+    var user = userDetailRepository.findByName(friendName);
+    return null;
+  }
 }

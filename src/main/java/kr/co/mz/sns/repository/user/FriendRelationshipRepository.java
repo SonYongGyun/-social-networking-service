@@ -15,5 +15,8 @@ public interface FriendRelationshipRepository extends JpaRepository<FriendRelati
 
   @Query("SELECT f FROM FriendRelationshipEntity f JOIN FETCH f.userDetailEntity WHERE f.seq = :seq")
   Optional<FriendRelationshipEntity> findBySeqWithUserDetail(@Param("seq") Long seq);
+
+  @Query("SELECT fr FROM FriendRelationshipEntity fr JOIN FETCH fr.userDetailEntity ud WHERE ud.name = :name")
+  List<FriendRelationshipEntity> findByFriendName(@Param("name") String name);
 }
 

@@ -3,10 +3,14 @@ package kr.co.mz.sns.repository.user;
 import java.util.Optional;
 import kr.co.mz.sns.entity.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
   Optional<UserEntity> findByEmail(String email);
+
+  @Query("SELECT u FROM UserEntity u LEFT JOIN FETCH u.userDetail WHERE u.email = :email")
+  Optional<UserEntity> findByEmailWithUserDetail(String email);
 
   Boolean existsByEmail(String name);
   /*
