@@ -37,4 +37,9 @@ public class CommentLikeEntity {
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
+
+  public CommentLikeEntity(Long commentSeq, Long postSeq) {
+    this.commentSeq = commentSeq;
+    this.postSeq = postSeq;
+  }
 }
