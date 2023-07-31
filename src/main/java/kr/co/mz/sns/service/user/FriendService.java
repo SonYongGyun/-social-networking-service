@@ -24,16 +24,19 @@ public class FriendService {
 
   @Transactional
   public InsertFriendRelationshipDto request(InsertFriendRelationshipDto insertFriendRelationshipDto) {
-
     var friendEntity = modelMapper.map(insertFriendRelationshipDto, FriendRelationshipEntity.class);
-    return modelMapper.map(friendRepository.save(friendEntity),
-        InsertFriendRelationshipDto.class);
+    return modelMapper
+        .map(
+            friendRepository.save(friendEntity),
+            InsertFriendRelationshipDto.class
+        );
   }
 
   public FriendDetailDto find(Long friendSep) {
     var friendEntity = friendRepository.findBySeq(friendSep)
         .orElseThrow(() -> new NotFoundException("친구가 아니거나 친구요청을 하지 않았어요."));
     if (!friendEntity.getStatus().equals(FR_WE_ARE_FRIEND)) {
+      //todo
     }
     userDetailService.findByUserSeq(friendEntity.getFriendSeq());
     return null;
