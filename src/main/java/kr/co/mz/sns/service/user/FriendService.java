@@ -1,5 +1,7 @@
 package kr.co.mz.sns.service.user;
 
+import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_BLOCKED;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,6 +49,7 @@ public class FriendService {
   public List<FriendDetailDto> findByFriendName(String friendName) {
     List<FriendRelationshipEntity> friendEntities = friendRelationshipRepository.findByFriendName(friendName);
     return friendEntities.stream()
+        .filter(friend -> !friend.getStatus().equals(FR_BLOCKED))
         .map(FriendRelationshipEntity::getUserDetailEntity)
         .map(userDetailEntity -> modelMapper.map(userDetailEntity, FriendDetailDto.class))
         .collect(Collectors.toList());
