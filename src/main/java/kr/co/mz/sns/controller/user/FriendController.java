@@ -3,10 +3,8 @@ package kr.co.mz.sns.controller.user;
 import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WAITING_PERMIT_REQUEST;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
 import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
-import kr.co.mz.sns.dto.user.friend.ListFriendDto;
 import kr.co.mz.sns.service.user.FriendService;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -35,13 +33,13 @@ public class FriendController {
   }
 
   @GetMapping("/{friendSep}")
-  public ResponseEntity<FriendDetailDto> aFriend(@NotNull @PathVariable Long friendSep) {
+  public ResponseEntity<FriendDetailDto> showOne(@NotNull @PathVariable Long friendSep) {
     return ResponseEntity.ok(friendService.find(friendSep));
   }
 
-  @GetMapping("/list")
-  public ResponseEntity<List<ListFriendDto>> allFriends() {
-    return ResponseEntity.ok(friendService.findAll(currentUserInfo.getSeq()));
-  }
+//  @GetMapping("/list")
+//  public ResponseEntity<List<ListFriendDto>> showAll() {
+//    return ResponseEntity.ok(friendService.findAll(currentUserInfo.getSeq()));
+//  }
 
 }

@@ -2,6 +2,7 @@ package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.constraints.NotNull;
 import kr.co.mz.sns.dto.user.detail.CompleteUserDetailDto;
+import kr.co.mz.sns.dto.user.detail.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UpdateUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto;
 import kr.co.mz.sns.service.user.UserDetailService;
@@ -38,17 +39,17 @@ public class UserDetailController {
 
 
   @PostMapping
-  public ResponseEntity<CompleteUserDetailDto> insertInfo(@RequestBody CompleteUserDetailDto completeUserDetailDto) {
+  public ResponseEntity<CompleteUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(
-            userDetailService.insert(completeUserDetailDto)
+            userDetailService.insert(insertUserDetailDto)
         );
   }
 
 
   @PutMapping
-  public ResponseEntity<CompleteUserDetailDto> updateInfo(@RequestBody UpdateUserDetailDto
+  public ResponseEntity<CompleteUserDetailDto> update(@RequestBody UpdateUserDetailDto
       updateUserDetailDto) {//업데이트할때는 seq 넣어서 보내주는걸로
     return ResponseEntity
         .ok(
@@ -59,7 +60,7 @@ public class UserDetailController {
   }
 
   @DeleteMapping("/{userSeq}")
-  public ResponseEntity<CompleteUserDetailDto> deleteInfo(@NotNull @PathVariable Long userSeq) {
+  public ResponseEntity<CompleteUserDetailDto> delete(@NotNull @PathVariable Long userSeq) {
     return ResponseEntity
         .status(HttpStatus.NO_CONTENT)
         .body(

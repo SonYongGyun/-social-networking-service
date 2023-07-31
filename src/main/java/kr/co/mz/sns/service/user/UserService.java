@@ -53,7 +53,9 @@ public class UserService {
   @Transactional
   public LocalDateTime lastLogin(String email) {
     var now = LocalDateTime.now();
-    userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Wrong User!"))
+    userRepository
+        .findByEmail(email)
+        .orElseThrow(() -> new UsernameNotFoundException("Wrong User!"))
         .setLastLoginAt(now);
     return now;
   }

@@ -27,8 +27,6 @@ public class UserEntity {
   private Long seq;
   @Column(name = "email", nullable = false)
   private String email;
-  @Column(name = "name", nullable = false)
-  private String name;
   @Column(name = "password", nullable = false)
   private String password;
   @Column(name = "role", nullable = false)

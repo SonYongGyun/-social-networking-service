@@ -1,6 +1,7 @@
 package kr.co.mz.sns.service.user;
 
 import kr.co.mz.sns.dto.user.detail.CompleteUserDetailDto;
+import kr.co.mz.sns.dto.user.detail.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UpdateUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto;
 import kr.co.mz.sns.entity.user.UserDetailEntity;
@@ -18,14 +19,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDetailService {
 
   private final UserDetailRepository userDetailRepository;
-  private final ModelMapper modelMapper;
-  private final UserService userService;
   private final UserProfileService userProfileService;
+  private final UserService userService;
+  private final ModelMapper modelMapper;
 
   public CompleteUserDetailDto findByUserSeq(Long userSeq) {
     return modelMapper
         .map(
-            userDetailRepository.findById(userSeq).orElseGet(UserDetailEntity::new),
+            userDetailRepository
+                .findById(userSeq)
+                .orElseGet(UserDetailEntity::new),
             CompleteUserDetailDto.class
         );
   }
@@ -47,13 +50,13 @@ public class UserDetailService {
   }
 
   @Transactional
-  public CompleteUserDetailDto insert(CompleteUserDetailDto completeUserDetailDto) {
-    var userDetailEntity = modelMapper.map(completeUserDetailDto, UserDetailEntity.class);
-    var savedEntity = userDetailRepository.save(
-        userDetailEntity);//todo insertfailed exception 이녀석은 바로위의 엔티티랑 같은녀석이다 참조까지 같다. jpa설명에있다.
-
+  public CompleteUserDetailDto insert(InsertUserDetailDto insertUserDetailDto) {
+    var userDetailEntity = modelMapper.map(insertUserDetailDto, UserDetailEntity.class);
+    //todo insertfailed exception 이녀석은 바로위의 엔티티랑 같은녀석이다 참조까지 같다. jpa설명에있다.
     return modelMapper
-        .map(savedEntity, CompleteUserDetailDto.class);
+        .map(
+            userDetailRepository.save(userDetailEntity),
+            CompleteUserDetailDto.class);
   }
 
   @Transactional
@@ -81,7 +84,7 @@ public class UserDetailService {
   }
 
   // 완벽하게 dto 랑 맞지 않으니까.왜? default 로 생성되는 db설정들 외 기타 요인들 떄문.
-  // 업데이트 후 업데이트 된 entitiy 를 다시 dto로 만들어서 보내준다.
+  // 업데이트 후 업데이트 된 entity 를 다시 dto로 만들어서 보내준다.
 
 
 }
