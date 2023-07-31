@@ -39,9 +39,9 @@ public class FriendController {
     return ResponseEntity.ok(friendService.find(friendSep));
   }
 
-  @GetMapping("/list")
-  public ResponseEntity<List<ListFriendDto>> allFriends() {
-    return ResponseEntity.ok(friendService.findAll(currentUserInfo.getSeq()));
-  }
+//  @GetMapping("/list")
+//  public ResponseEntity<List<ListFriendDto>> allFriends() {
+//    return ResponseEntity.ok(friendService.findAll(currentUserInfo.getSeq()));
+//  }
 
 }
