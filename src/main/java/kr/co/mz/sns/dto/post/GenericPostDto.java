@@ -21,6 +21,10 @@ public class GenericPostDto {
     private List<GenericPostFileDto> postFiles;
     private List<CommentDto> comments;
 
+    public GenericPostDto(Long seq) {
+        this.seq = seq;
+    }
+
     public GenericPostDto(String content) {
         this.content = content;
     }
