@@ -31,6 +31,7 @@ public class UserService {
   private final ModelMapper modelMapper;
   private final PasswordEncoder passwordEncoder;
   private final CommentNotificationRepository commentNotificationRepository;
+  private final UserDetailService userDetailService;
   private final CurrentUserInfo currentUserInfo;
 
   @Transactional
@@ -64,7 +65,7 @@ public class UserService {
   public List<NotificationDto> mention(List<String> mentionedNames) {
     return mentionedNames.stream()
         .map(
-            name -> userRepository.findByName(name).orElseThrow(() -> new NotFoundException("친구 아닌데?")).getSeq()
+            name -> userDetailService.findByUserName(name).getUserSeq()
         )
         .map(userSeq -> {
           var notiEntity = new CommentNotificationEntity();
