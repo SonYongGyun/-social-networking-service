@@ -2,15 +2,13 @@ package kr.co.mz.sns.service.post;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Stream;
 import kr.co.mz.sns.dto.post.GenericPostDto;
-import kr.co.mz.sns.dto.post.GenericPostFileDto;
 import kr.co.mz.sns.dto.post.PostLikeDto;
 import kr.co.mz.sns.dto.post.PostSearchDto;
 import kr.co.mz.sns.entity.post.PostEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.file.FileStorageService;
+import kr.co.mz.sns.mapper.ModelMapperService;
 import kr.co.mz.sns.repository.post.PostRepository;
 import kr.co.mz.sns.service.comment.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +28,9 @@ public class PostService {
     private final PostLikeService postLikeService;
     private final PostFileService postFileService;
     private final CommentService commentService;
+    private final FileStorageService fileStorageService;
     private final ModelMapper modelMapper;
+    private final ModelMapperService modelMapperService;
 
     public List<GenericPostDto> findByKeyword(PostSearchDto postSearchDto, Pageable pageable) {
 
@@ -69,35 +69,27 @@ public class PostService {
 
     @Transactional
     public GenericPostDto insert(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
-        // insert POST into Database
-        var insertedPostDto = Optional.of(genericPostDto).stream()
-            .map(dto -> modelMapper.map(dto, PostEntity.class))
-            .map(postRepository::save)
-            .map(entity -> modelMapper.map(entity, GenericPostDto.class))
-            .findFirst().orElseThrow();
+        var insertedPostDto = modelMapperService.mapAndActAndMap(
+            Optional.of(genericPostDto).stream(),
+            PostEntity.class,
+            postRepository::save,
+            GenericPostDto.class
+        ).findFirst().orElseThrow();
 
         // insert POST_FILE into Database
-        var savedFiles = postFileService.insert(multipartFiles, insertedPostDto.getSeq());
+        var savedFiles = postFileService.insertAll(multipartFiles, insertedPostDto);
         insertedPostDto.setPostFiles(savedFiles);
 
         // save files into Disk Drive
-        FileStorageService.saveFile(multipartFiles, insertedPostDto);
+        fileStorageService.saveFile(multipartFiles, insertedPostDto);
 
         return insertedPostDto;
     }
 
-    private <FIRST, SECOND, THIRD> Stream<THIRD> mapAndActAndMap(Stream<FIRST> stream, Class<SECOND> secondType,
-        Function<SECOND, SECOND> function, Class<THIRD> thirdType) {
-        return stream
-            .map(first -> modelMapper.map(first, secondType))
-            .map(function)
-            .map(second -> modelMapper.map(second, thirdType));
-    }
-
     @Transactional
-    public GenericPostDto updateByKey(List<GenericPostFileDto> postFiles, GenericPostDto postDto) {
+    public GenericPostDto updateByKey(GenericPostDto postDto) {
         // Declarative Programming
-        var updatedPostDto = postRepository.findById(postDto.getSeq())
+        return postRepository.findById(postDto.getSeq())
             .map(entity -> {
                 entity.setContent(postDto.getContent());
                 return entity;
@@ -105,8 +97,6 @@ public class PostService {
             .map(postRepository::save)
             .map(entity -> modelMapper.map(entity, GenericPostDto.class))
             .orElseThrow(() -> new NotFoundException("Post with ID " + postDto.getSeq() + "not found"));
-        updatedPostDto.setPostFiles(postFileService.updateAllByPostSeq(postFiles, postDto.getSeq()));
-        return updatedPostDto;
 
         // Imperative Programming
 //        var optionalPost = postRepository.findById(seq);

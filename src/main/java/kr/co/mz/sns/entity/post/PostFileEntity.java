@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,8 +27,6 @@ public class PostFileEntity {
     private Long seq;
     @Column(name = "post_seq", nullable = false)
     private Long postSeq;
-    @Column(name = "uuid", nullable = false)
-    private String uuid = UUID.randomUUID().toString();
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "path", nullable = false)

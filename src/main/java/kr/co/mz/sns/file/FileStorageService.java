@@ -16,8 +16,10 @@ import java.util.function.Function;
 import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto;
 import kr.co.mz.sns.exception.FileWriteException;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+@Service
 public class FileStorageService {
 
     public static final String BASIC_DIRECTORY = "/Users/mz01-junghunee/Documents/tutorial_directory/";
@@ -36,9 +38,10 @@ public class FileStorageService {
         return fileDirectory.getAbsolutePath();
     }
 
-    public static void saveFile(List<MultipartFile> fileList, GenericPostDto insertedPostDto) {
+    public void saveFile(List<MultipartFile> fileList, GenericPostDto insertedPostDto) {
         var uuidList = insertedPostDto.getPostFiles().stream()
-            .map(fileDto -> fileDto.getUuid() + "." + fileDto.getExtension())
+            .map(fileDto -> fileDto.getSeq() + "_" + fileDto.getName() + "_" + fileDto.getSeq() + "."
+                + fileDto.getExtension())
             .toList();
 
         var index = 0;
@@ -64,7 +67,7 @@ public class FileStorageService {
         }
     }
 
-    public static InputStream downloadFile(CompleteUserProfileDto fileDto) {
+    public InputStream downloadFile(CompleteUserProfileDto fileDto) {
         var fileFullPath = fileDto.getPath() + File.separator + fileDto.getUuid() + "." + fileDto.getExtension();
         try (var inputStream = new FileInputStream(fileFullPath)) {
             return inputStream;
@@ -73,7 +76,7 @@ public class FileStorageService {
         }
     }
 
-    public static List<CompleteUserProfileDto> getUserFileList(List<MultipartFile> fileList) {
+    public List<CompleteUserProfileDto> getUserFileList(List<MultipartFile> fileList) {
         var fileDtoList = new ArrayList<CompleteUserProfileDto>();
         for (var file : fileList) {
             if (!file.isEmpty() && file.getOriginalFilename() != null) {
@@ -88,7 +91,7 @@ public class FileStorageService {
         return fileDtoList;
     }
 
-    public static <T> List<T> convertTo(List<MultipartFile> fileList, Function<MultipartFile, T> function) {
+    public <T> List<T> convertTo(List<MultipartFile> fileList, Function<MultipartFile, T> function) {
         if (fileList.isEmpty()) {
             return List.of();
         }
@@ -114,7 +117,7 @@ public class FileStorageService {
 //        return fileDtoList;
 //    }
 
-    public static boolean delete(String filePath) {
+    public boolean delete(String filePath) {
         var file = new File(filePath);
         var flag = false;
         if (file.exists()) {
