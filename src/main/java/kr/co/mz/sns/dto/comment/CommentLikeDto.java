@@ -10,4 +10,9 @@ public class CommentLikeDto {
     private Long postSeq;
     private Long commentSeq;
     private LocalDateTime createdAt;
+
+    public CommentLikeDto(Long seq, Long postSeq) {
+        setCommentSeq(seq);
+        setPostSeq(postSeq);
+    }
 }
