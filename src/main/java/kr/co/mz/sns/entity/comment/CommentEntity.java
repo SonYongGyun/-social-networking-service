@@ -45,4 +45,9 @@ public class CommentEntity {
   private LocalDateTime modifiedAt;
   @Column(name = "mentioned_users", nullable = true)
   private String mentionedUsers;
+
+  public CommentEntity increaseCommentLike() {
+    this.commentLike += 1;
+    return this;
+  }
 }
