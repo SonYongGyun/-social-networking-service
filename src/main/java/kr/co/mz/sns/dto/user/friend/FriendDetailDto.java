@@ -1,4 +1,4 @@
-package kr.co.mz.sns.dto.user;
+package kr.co.mz.sns.dto.user.friend;
 
 import java.time.LocalDateTime;
 import lombok.Data;

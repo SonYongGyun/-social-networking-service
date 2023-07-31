@@ -7,13 +7,10 @@ import lombok.Data;
 @Data
 public class RegisterDto {
 
-    @NotNull
-    @NotEmpty
-    private String email;
-    @NotNull
-    @NotEmpty
-    private String password;
-    @NotNull
-    @NotEmpty
-    private String name;
+  @NotNull
+  @NotEmpty
+  private String email;
+  @NotNull
+  @NotEmpty
+  private String password;
 }

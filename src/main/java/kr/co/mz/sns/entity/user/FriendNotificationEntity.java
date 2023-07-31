@@ -10,33 +10,27 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "User")
+@Table(name = "friend_notification")
 @Data
 @NoArgsConstructor
-public class UserEntity {
+public class FriendNotificationEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "seq")
   private Long seq;
-  @Column(name = "email", nullable = false)
-  private String email;
-  @Column(name = "password", nullable = false)
-  private String password;
-  @Column(name = "role", nullable = false)
-  private String role;
-  @Column(name = "last_login_at")
-  private LocalDateTime lastLoginAt;
+  @CreatedBy
+  @Column(nullable = false)
+  private Long userSeq;
+  @Column(nullable = false)
+  private Long targetSeq;
+  @Column
+  private Boolean readStatus;
   @CreatedDate
-  @Column(name = "created_at", nullable = false)
-  private LocalDateTime createdAt;
-  @LastModifiedDate
-  @Column(name = "modified_at")
-  private LocalDateTime modifiedAt;
+  private LocalDateTime requestedAt;
 }

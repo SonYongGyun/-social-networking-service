@@ -1,13 +1,14 @@
-package kr.co.mz.sns.dto.user;
+package kr.co.mz.sns.dto.user.friend;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class RequestedFriendDto {
+public class InsertFriendRelationshipDto {
 
   private Long userSeq;
-  private Long friendSeq;
   private String status;
+  private Long friendSeq;
+
 }

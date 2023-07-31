@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import kr.co.mz.sns.dto.post.GenericPostFileDto;
-import kr.co.mz.sns.dto.user.GenericUserProfileDto;
+import kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto;
 import kr.co.mz.sns.exception.FileWriteException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -58,7 +58,7 @@ public class FileStorageService {
     }
   }
 
-  public static InputStream downloadFile(GenericUserProfileDto fileDto) {
+  public static InputStream downloadFile(CompleteUserProfileDto fileDto) {
     var fileFullPath = fileDto.getPath() + File.separator + fileDto.getUuid() + "." + fileDto.getExtension();
     try (var inputStream = new FileInputStream(fileFullPath)) {
       return inputStream;
@@ -67,8 +67,8 @@ public class FileStorageService {
     }
   }
 
-  public static List<GenericUserProfileDto> getUserFileList(List<MultipartFile> fileList) {
-    var fileDtoList = new ArrayList<GenericUserProfileDto>();
+  public static List<CompleteUserProfileDto> getUserFileList(List<MultipartFile> fileList) {
+    var fileDtoList = new ArrayList<CompleteUserProfileDto>();
     for (var file : fileList) {
       if (!file.isEmpty() && file.getOriginalFilename() != null) {
         var uuid = UUID.randomUUID().toString();
@@ -76,7 +76,7 @@ public class FileStorageService {
         var path = createDirectory();
         var size = file.getSize();
         var extension = getFileExtension(name);
-        fileDtoList.add(new GenericUserProfileDto(uuid, name, path, size, extension));
+        fileDtoList.add(new CompleteUserProfileDto(uuid, name, path, size, extension));
       }
     }
     return fileDtoList;
