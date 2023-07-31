@@ -1,6 +1,6 @@
 package kr.co.mz.sns.service;
 
-import kr.co.mz.sns.dto.user.GenericUserProfileDto;
+import kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto;
 import kr.co.mz.sns.repository.post.PostFileRepository;
 import kr.co.mz.sns.repository.user.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ public class FileService {
   private final PostFileRepository postFileRepository;
   private final ModelMapper modelMapper;
 
-  public GenericUserProfileDto findByName(GenericUserProfileDto fileDto) {
-    return modelMapper.map(userProfileRepository.findByName(fileDto.getName()), GenericUserProfileDto.class);
+  public CompleteUserProfileDto findByName(CompleteUserProfileDto fileDto) {
+    return modelMapper.map(userProfileRepository.findByName(fileDto.getName()), CompleteUserProfileDto.class);
   }
 
 }

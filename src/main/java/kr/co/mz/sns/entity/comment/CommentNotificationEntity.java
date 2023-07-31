@@ -16,10 +16,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "notification")
+@Table(name = "comment_notification")
 @Data
 @NoArgsConstructor
-public class NotificationEntity {
+public class CommentNotificationEntity {
 
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Id

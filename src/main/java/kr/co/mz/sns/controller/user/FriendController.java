@@ -4,9 +4,9 @@ import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WAITI
 
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import kr.co.mz.sns.dto.user.FriendDetailDto;
-import kr.co.mz.sns.dto.user.InsertFriendRelationshipDto;
-import kr.co.mz.sns.dto.user.ListFriendDto;
+import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
+import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
+import kr.co.mz.sns.dto.user.friend.ListFriendDto;
 import kr.co.mz.sns.service.user.FriendService;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;

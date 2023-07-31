@@ -1,4 +1,4 @@
-package kr.co.mz.sns.dto.user;
+package kr.co.mz.sns.dto.user.detail;
 
 import java.time.LocalDateTime;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class GenericUserProfileDto {
+public class CompleteUserProfileDto {
 
   private Long seq;
   private Long userSeq;
@@ -18,7 +18,7 @@ public class GenericUserProfileDto {
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
 
-  public GenericUserProfileDto(String uuid, String name, String path, Long size, String extension) {
+  public CompleteUserProfileDto(String uuid, String name, String path, Long size, String extension) {
     this.uuid = uuid;
     this.name = name;
     this.path = path;
@@ -26,7 +26,7 @@ public class GenericUserProfileDto {
     this.extension = extension;
   }
 
-  public GenericUserProfileDto(String name) {
+  public CompleteUserProfileDto(String name) {
     this.name = name;
   }
 

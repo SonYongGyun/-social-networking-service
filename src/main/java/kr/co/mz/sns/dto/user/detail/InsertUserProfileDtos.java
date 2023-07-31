@@ -1,4 +1,4 @@
-package kr.co.mz.sns.dto.user;
+package kr.co.mz.sns.dto.user.detail;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

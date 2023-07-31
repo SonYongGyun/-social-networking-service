@@ -2,8 +2,8 @@ package kr.co.mz.sns.service.user;
 
 import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WE_ARE_FRIEND;
 
-import kr.co.mz.sns.dto.user.FriendDetailDto;
-import kr.co.mz.sns.dto.user.InsertFriendRelationshipDto;
+import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
+import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
 import kr.co.mz.sns.entity.user.FriendRelationshipEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.repository.user.FriendRepository;

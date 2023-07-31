@@ -1,8 +1,8 @@
 package kr.co.mz.sns.service.user;
 
-import kr.co.mz.sns.dto.user.FindUserDetailDto;
-import kr.co.mz.sns.dto.user.InsertUserDetailDto;
-import kr.co.mz.sns.dto.user.UpdateUserDetailDto;
+import kr.co.mz.sns.dto.user.detail.CompleteUserDetailDto;
+import kr.co.mz.sns.dto.user.detail.UpdateUserDetailDto;
+import kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto;
 import kr.co.mz.sns.entity.user.UserDetailEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.repository.user.UserDetailRepository;
@@ -22,12 +22,15 @@ public class UserDetailService {
   private final UserService userService;
   private final UserProfileService userProfileService;
 
-  public InsertUserDetailDto findByUserSeq(Long userSeq) {
-    return modelMapper.map(userDetailRepository.findById(userSeq).orElseGet(UserDetailEntity::new),
-        InsertUserDetailDto.class);
+  public CompleteUserDetailDto findByUserSeq(Long userSeq) {
+    return modelMapper
+        .map(
+            userDetailRepository.findById(userSeq).orElseGet(UserDetailEntity::new),
+            CompleteUserDetailDto.class
+        );
   }
 
-  public FindUserDetailDto findByEmail(String email) {
+  public UserDetailAndProfileDto findByEmail(String email) {
     var userSeq = userService.findByUserEmail(email).getSeq();
 
     var findUserDetailDto = modelMapper
@@ -37,21 +40,24 @@ public class UserDetailService {
                 .orElseThrow(
                     () -> new NotFoundException("등록된 상세 정보가 없습니다. 지금 바로 작성 해 보세 요!")
                 ),
-            FindUserDetailDto.class);
+            UserDetailAndProfileDto.class);
     findUserDetailDto.setUserDetailFileDtoSet(userProfileService.findAll(userSeq));
+
     return findUserDetailDto;
   }
 
   @Transactional
-  public InsertUserDetailDto insert(InsertUserDetailDto insertUserDetailDto) {
-    var userDetailEntity = modelMapper.map(insertUserDetailDto, UserDetailEntity.class);
+  public CompleteUserDetailDto insert(CompleteUserDetailDto completeUserDetailDto) {
+    var userDetailEntity = modelMapper.map(completeUserDetailDto, UserDetailEntity.class);
     var savedEntity = userDetailRepository.save(
         userDetailEntity);//todo insertfailed exception 이녀석은 바로위의 엔티티랑 같은녀석이다 참조까지 같다. jpa설명에있다.
-    return modelMapper.map(savedEntity, InsertUserDetailDto.class);
+
+    return modelMapper
+        .map(savedEntity, CompleteUserDetailDto.class);
   }
 
   @Transactional
-  public InsertUserDetailDto updateByUserSeq(UpdateUserDetailDto updateUserDetailDto) {
+  public CompleteUserDetailDto updateByUserSeq(UpdateUserDetailDto updateUserDetailDto) {
     var optionalUserDetailEntity = userDetailRepository.findByUserSeq(updateUserDetailDto.getUserSeq());
     var userDetailEntity = optionalUserDetailEntity.orElseThrow(
         () -> new NotFoundException("Oops! No existing detail! Insert your detail first!"));
@@ -59,14 +65,19 @@ public class UserDetailService {
     //todo fileEntity가 필요하네..?
 //    var userDetailEntity = modelMapper.map(updateUserDetailDto, UserDetailEntity.class);
     var updatedEntity = userDetailRepository.save(userDetailEntity);
-    return modelMapper.map(updatedEntity, InsertUserDetailDto.class);
+
+    return modelMapper
+        .map(updatedEntity, CompleteUserDetailDto.class);
   }
 
   //나는 삭제만 할거라고 알고 있다. 근데 다른 사람이 이녀석을 쓸 때, 트랜잭션 걸고할껏.
   //일단 트랜잭션공부가 더 필요.
   @Transactional
-  public long deleteByUserSeq(Long userSeq) {
-    return userDetailRepository.deleteByUserSeq(userSeq);
+  public CompleteUserDetailDto deleteByUserSeq(Long userSeq) {
+    return modelMapper
+        .map(
+            userDetailRepository.deleteByUserSeq(userSeq), CompleteUserDetailDto.class
+        );
   }
 
   // 완벽하게 dto 랑 맞지 않으니까.왜? default 로 생성되는 db설정들 외 기타 요인들 떄문.
