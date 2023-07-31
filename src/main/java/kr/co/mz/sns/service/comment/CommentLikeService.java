@@ -25,9 +25,7 @@ public class CommentLikeService {
 
     @Transactional
     public CommentLikeDto insert(CommentLikeDto commentLikeDto) { //코드 간추리기
-        var commentLikeEntity = new CommentLikeEntity();
-        commentLikeEntity.setCommentSeq(commentLikeDto.getCommentSeq());
-        commentLikeEntity.setPostSeq(commentLikeDto.getPostSeq());
+        var commentLikeEntity = new CommentLikeEntity(commentLikeDto.getCommentSeq(),commentLikeDto.getPostSeq());
 
         return modelMapper.map(
                 commentLikeRepository.save(commentLikeEntity),
@@ -36,7 +34,7 @@ public class CommentLikeService {
 
     @Transactional
     public List<CommentLikeDto> findAll(Long commentSeq) {  //orelse
-        return commentLikeRepository.findByCommentSeq(commentSeq).orElseThrow(() -> new NotFoundException("It is not exist commentLike")).stream()
+        return commentLikeRepository.findByCommentSeq(commentSeq).stream()
                 .map(entity -> modelMapper.map(entity, CommentLikeDto.class))
                 .toList();
     }

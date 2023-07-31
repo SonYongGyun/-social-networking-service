@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CommentLikeRepository extends JpaRepository<CommentLikeEntity, Long> {
-    Optional<List<CommentLikeEntity>> findByCommentSeq(Long commentSeq);
+   List<CommentLikeEntity> findByCommentSeq(Long commentSeq);
 
 }

@@ -31,7 +31,7 @@ public class CommentController {
     public ResponseEntity<CommentDto> insert(@Valid @RequestBody CommentDto commentDto) {
         commentDto.splitContentAndMentionedUsername();
         var insertedComment = commentService.insert(commentDto);
-        //notification
+        userService.mention(commentDto.getMentionedUsername());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(insertedComment);
@@ -41,8 +41,7 @@ public class CommentController {
     public ResponseEntity<String> delete(@NotNull @PathVariable("seq") Long seq) {
         commentService.deleteBySeq(seq);
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body("The comment has been successfully deleted!");
+                .status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/{seq}")
