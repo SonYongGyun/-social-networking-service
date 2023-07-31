@@ -1,16 +1,11 @@
 package kr.co.mz.sns.service.user;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import kr.co.mz.sns.dto.comment.NotificationDto;
 import kr.co.mz.sns.dto.login.RegisterDto;
-import kr.co.mz.sns.entity.comment.CommentNotificationEntity;
 import kr.co.mz.sns.entity.user.UserEntity;
 import kr.co.mz.sns.enums.Role;
 import kr.co.mz.sns.exception.NotFoundException;
-import kr.co.mz.sns.repository.comment.CommentNotificationRepository;
 import kr.co.mz.sns.repository.user.UserRepository;
-import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,9 +25,7 @@ public class UserService {
   private final UserRepository userRepository;
   private final ModelMapper modelMapper;
   private final PasswordEncoder passwordEncoder;
-  private final CommentNotificationRepository commentNotificationRepository;
-  private final UserDetailService userDetailService;
-  private final CurrentUserInfo currentUserInfo;
+
 
   @Transactional
   public UserEntity findByUserEmail(String email) {
@@ -60,25 +53,4 @@ public class UserService {
         .setLastLoginAt(now);
     return now;
   }
-
-  @Transactional
-  public List<NotificationDto> mention(List<String> mentionedNames) {
-    return mentionedNames.stream()
-        .map(
-            name -> userDetailService.findByUserName(name).getUserSeq()
-        )
-        .map(userSeq -> {
-          var notiEntity = new CommentNotificationEntity();
-          notiEntity.setMentionerSeq(currentUserInfo.getSeq());
-          notiEntity.setReadStatus(false);
-          notiEntity.setTargetSeq(userSeq);
-          return notiEntity;
-        })
-        .map(commentNotificationRepository::save)
-        .toList()
-        .stream().map(notiEntity -> modelMapper.map(notiEntity,
-            NotificationDto.class))
-        .toList();
-  }
-
 }

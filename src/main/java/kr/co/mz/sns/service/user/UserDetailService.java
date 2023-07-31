@@ -1,12 +1,17 @@
 package kr.co.mz.sns.service.user;
 
+import java.util.List;
+import kr.co.mz.sns.dto.comment.NotificationDto;
 import kr.co.mz.sns.dto.user.detail.CompleteUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UpdateUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto;
+import kr.co.mz.sns.entity.comment.CommentNotificationEntity;
 import kr.co.mz.sns.entity.user.UserDetailEntity;
 import kr.co.mz.sns.exception.NotFoundException;
+import kr.co.mz.sns.repository.comment.CommentNotificationRepository;
 import kr.co.mz.sns.repository.user.UserDetailRepository;
+import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Repository;
@@ -22,6 +27,8 @@ public class UserDetailService {
   private final UserProfileService userProfileService;
   private final UserService userService;
   private final ModelMapper modelMapper;
+  private final CommentNotificationRepository commentNotificationRepository;
+  private final CurrentUserInfo currentUserInfo;
 
   public CompleteUserDetailDto findByUserSeq(Long userSeq) {
     return modelMapper
@@ -96,5 +103,24 @@ public class UserDetailService {
   // 완벽하게 dto 랑 맞지 않으니까.왜? default 로 생성되는 db설정들 외 기타 요인들 떄문.
   // 업데이트 후 업데이트 된 entity 를 다시 dto로 만들어서 보내준다.
 
+  @Transactional
+  public List<NotificationDto> mention(List<String> mentionedNames) {
+    return mentionedNames.stream()
+        .map(
+            name -> findByUserName(name).getUserSeq()
+        )
+        .map(userSeq -> {
+          var notiEntity = new CommentNotificationEntity();
+          notiEntity.setMentionerSeq(currentUserInfo.getSeq());
+          notiEntity.setReadStatus(false);
+          notiEntity.setTargetSeq(userSeq);
+          return notiEntity;
+        })
+        .map(commentNotificationRepository::save)
+        .toList()
+        .stream().map(notiEntity -> modelMapper.map(notiEntity,
+            NotificationDto.class))
+        .toList();
+  }
 
 }
