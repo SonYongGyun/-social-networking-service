@@ -3,7 +3,7 @@ package kr.co.mz.sns.controller.user;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Set;
-import kr.co.mz.sns.dto.user.GenericUserProfileDto;
+import kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto;
 import kr.co.mz.sns.service.user.UserProfileService;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -27,40 +27,44 @@ public class UserProfileController {
   private final CurrentUserInfo currentUserInfo;
 
   @GetMapping
-  public ResponseEntity<Set<GenericUserProfileDto>> getProfile() {
+  public ResponseEntity<Set<CompleteUserProfileDto>> get() {
 
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(userProfileService.findAll(currentUserInfo.getSeq()));
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(
+            userProfileService.findAll(currentUserInfo.getSeq())
+        );
   }
 
   //todo update prifile
-  @DeleteMapping("/{profileSeq}")
-  public ResponseEntity<String> deleteProfile(@Valid @PathVariable Long profileSeq) {//todo server local 에서 삭제?
-    return ResponseEntity.ok(
-        "Your detail is deleted Successfully for :" + userProfileService.delete(profileSeq) + " rows."
-    );
-  }
 
   @PostMapping
-  public ResponseEntity<List<GenericUserProfileDto>> uploadProfile(
+  public ResponseEntity<List<CompleteUserProfileDto>> upload(
       @Valid @RequestParam List<MultipartFile> files
   ) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(userProfileService.insert(files));
+        .body(
+            userProfileService.insert(files)
+        );
   }
 
-//  @GetMapping("/profiles/download/{profileSeq}")
-//  public ResponseEntity<InputStreamResource> downloadFile(@RequestParam("fileName") String fileName) {
-//    var inputStream = FileStorageService.downloadFile(
-//        fileService.findByName(new GenericUserDetailFileDto(fileName))
-//    );
-//    var headers = new HttpHeaders();
-//    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-//    return ResponseEntity
-//        .ok()
-//        .headers(headers)
-//        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//        .body(new InputStreamResource(inputStream));
-//  }
+  @DeleteMapping("/{profileSeq}")
+  public ResponseEntity<CompleteUserProfileDto> delete(@Valid @PathVariable Long profileSeq) {
+    return ResponseEntity
+        .status(HttpStatus.NO_CONTENT)
+        .body(
+            userProfileService.delete(profileSeq)
+        );
+  }
+
+  @DeleteMapping
+  public ResponseEntity<Integer> deleteAll() {
+    return ResponseEntity
+        .status(HttpStatus.NO_CONTENT)
+        .body(
+            userProfileService.deleteAll(currentUserInfo.getSeq())
+        );
+  }
+
 }

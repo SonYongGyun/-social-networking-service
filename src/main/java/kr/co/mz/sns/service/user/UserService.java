@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import kr.co.mz.sns.dto.comment.NotificationDto;
 import kr.co.mz.sns.dto.login.RegisterDto;
-import kr.co.mz.sns.entity.comment.NotificationEntity;
+import kr.co.mz.sns.entity.comment.CommentNotificationEntity;
 import kr.co.mz.sns.entity.user.UserEntity;
 import kr.co.mz.sns.enums.Role;
 import kr.co.mz.sns.exception.NotFoundException;
-import kr.co.mz.sns.repository.user.NotificationRepository;
+import kr.co.mz.sns.repository.comment.CommentNotificationRepository;
 import kr.co.mz.sns.repository.user.UserRepository;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class UserService {
   private final UserRepository userRepository;
   private final ModelMapper modelMapper;
   private final PasswordEncoder passwordEncoder;
-  private final NotificationRepository notificationRepository;
+  private final CommentNotificationRepository commentNotificationRepository;
   private final CurrentUserInfo currentUserInfo;
 
   @Transactional
@@ -53,7 +53,9 @@ public class UserService {
   @Transactional
   public LocalDateTime lastLogin(String email) {
     var now = LocalDateTime.now();
-    userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Wrong User!"))
+    userRepository
+        .findByEmail(email)
+        .orElseThrow(() -> new UsernameNotFoundException("Wrong User!"))
         .setLastLoginAt(now);
     return now;
   }
@@ -65,16 +67,16 @@ public class UserService {
             name -> userRepository.findByName(name).orElseThrow(() -> new NotFoundException("친구 아닌데?")).getSeq()
         )
         .map(userSeq -> {
-          var notiEntity = new NotificationEntity();
+          var notiEntity = new CommentNotificationEntity();
           notiEntity.setMentionerSeq(currentUserInfo.getSeq());
           notiEntity.setReadStatus(false);
           notiEntity.setTargetSeq(userSeq);
           return notiEntity;
         })
-        .map(notificationRepository::save)
+        .map(commentNotificationRepository::save)
         .toList()
         .stream().map(notiEntity -> modelMapper.map(notiEntity,
-                    NotificationDto.class))
+            NotificationDto.class))
         .toList();
   }
 

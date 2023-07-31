@@ -26,6 +26,8 @@ public class UserDetailEntity {
   private Long userSeq;
   @Column(name = "blocked", nullable = false)
   private Boolean blocked = false;
+  @Column(name = "name", nullable = false)
+  private String name;
   @Column(name = "greeting", nullable = false)
   private String greeting;
   @CreatedDate

@@ -1,9 +1,10 @@
 package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.constraints.NotNull;
-import kr.co.mz.sns.dto.user.FindUserDetailDto;
-import kr.co.mz.sns.dto.user.InsertUserDetailDto;
-import kr.co.mz.sns.dto.user.UpdateUserDetailDto;
+import kr.co.mz.sns.dto.user.detail.CompleteUserDetailDto;
+import kr.co.mz.sns.dto.user.detail.InsertUserDetailDto;
+import kr.co.mz.sns.dto.user.detail.UpdateUserDetailDto;
+import kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto;
 import kr.co.mz.sns.service.user.UserDetailService;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class UserDetailController {
   private final CurrentUserInfo currentUserInfo;
 
   @GetMapping
-  public ResponseEntity<FindUserDetailDto> findByEmailWithProfile() {
+  public ResponseEntity<UserDetailAndProfileDto> findByEmailWithProfile() {
     return ResponseEntity
         .ok(
             userDetailService.findByEmail(
@@ -38,18 +39,17 @@ public class UserDetailController {
 
 
   @PostMapping
-  public ResponseEntity<InsertUserDetailDto> insertInfo(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+  public ResponseEntity<CompleteUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(
             userDetailService.insert(insertUserDetailDto)
-
         );
   }
 
 
   @PutMapping
-  public ResponseEntity<InsertUserDetailDto> updateInfo(@RequestBody UpdateUserDetailDto
+  public ResponseEntity<CompleteUserDetailDto> update(@RequestBody UpdateUserDetailDto
       updateUserDetailDto) {//업데이트할때는 seq 넣어서 보내주는걸로
     return ResponseEntity
         .ok(
@@ -60,10 +60,11 @@ public class UserDetailController {
   }
 
   @DeleteMapping("/{userSeq}")
-  public ResponseEntity<String> deleteInfo(@NotNull @PathVariable Long userSeq) {
+  public ResponseEntity<CompleteUserDetailDto> delete(@NotNull @PathVariable Long userSeq) {
     return ResponseEntity
-        .ok(
-            "Your detail is deleted Successfully for :" + userDetailService.deleteByUserSeq(userSeq) + " rows."
+        .status(HttpStatus.NO_CONTENT)
+        .body(
+            userDetailService.deleteByUserSeq(userSeq)
         );
   }
 }

@@ -1,16 +1,14 @@
-package kr.co.mz.sns.dto.user;
+package kr.co.mz.sns.dto.user.detail;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import lombok.Data;
 
 @Data
-public class InsertUserDetailDto {
+public class CompleteUserDetailDto {
 
   private Long userSeq;
   private Boolean blocked;
   private String greeting;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
-  private Set<GenericUserProfileDto> userDetailFileDtoSet;
 }

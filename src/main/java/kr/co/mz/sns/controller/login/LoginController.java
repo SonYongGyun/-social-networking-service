@@ -5,6 +5,7 @@ import kr.co.mz.sns.config.security.JWTService;
 import kr.co.mz.sns.dto.login.LoginDto;
 import kr.co.mz.sns.dto.login.RegisterDto;
 import kr.co.mz.sns.repository.user.UserRepository;
+import kr.co.mz.sns.service.user.UserDetailService;
 import kr.co.mz.sns.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +26,7 @@ public class LoginController {
 
   private final AuthenticationManager authenticationManager;
   private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
+  private final UserDetailService userDetailService;
   private final JWTService jwtService;
   private final UserService userService;
 
@@ -37,9 +37,11 @@ public class LoginController {
             loginDto.getEmail(), loginDto.getPassword()));
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
+
     var token = jwtService.generateToken(authentication);
     var headers = new HttpHeaders();
     headers.add("Authorization", "Bearer " + token);
+
     var lastLoginTime = userService.lastLogin(loginDto.getEmail());
 
     return ResponseEntity

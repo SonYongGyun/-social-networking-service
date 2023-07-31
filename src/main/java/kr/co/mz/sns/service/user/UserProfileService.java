@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import kr.co.mz.sns.dto.user.GenericUserProfileDto;
+import kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto;
 import kr.co.mz.sns.entity.user.UserProfileEntity;
 import kr.co.mz.sns.exception.FileWriteException;
 import kr.co.mz.sns.repository.user.UserProfileRepository;
@@ -38,7 +38,7 @@ public class UserProfileService {
   private final ModelMapper modelMapper;
 
   @Transactional
-  public List<GenericUserProfileDto> insert(List<MultipartFile> files) {
+  public List<CompleteUserProfileDto> insert(List<MultipartFile> files) {
     if (files.isEmpty()) {
       throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
     }
@@ -46,25 +46,33 @@ public class UserProfileService {
     var requiredUuids = getUuidList(files.size());
     var dtos = convertToDtos(files, requiredUuids);
     this.saveIntoLocal(files, requiredUuids);
-    return dtos.stream()
+    return dtos
+        .stream()
         .map(dto -> userProfileRepository.save(modelMapper.map(dto, UserProfileEntity.class)))
-        .map(entity -> modelMapper.map(entity, GenericUserProfileDto.class))
+        .map(entity -> modelMapper.map(entity, CompleteUserProfileDto.class))
         .toList();
   }
 
   @Transactional
-  public Set<GenericUserProfileDto> findAll(Long userSeq) {
-    return userProfileRepository.findAllByUserSeq(userSeq).stream()
-        .map(entity -> modelMapper.map(entity, GenericUserProfileDto.class))
+  public Set<CompleteUserProfileDto> findAll(Long userSeq) {
+    return userProfileRepository.findAllByUserSeq(userSeq)
+        .stream()
+        .map(entity -> modelMapper.map(entity, CompleteUserProfileDto.class))
         .collect(Collectors.toSet());
   }
 
   @Transactional
-  public int delete(Long fileSeq) {
-    return userProfileRepository.deleteBySeq(fileSeq);
+  public CompleteUserProfileDto delete(Long fileSeq) {
+    return modelMapper
+        .map(userProfileRepository.deleteBySeq(fileSeq), CompleteUserProfileDto.class);
   }
 
-  public InputStream downloadFile(GenericUserProfileDto profileDto) {
+  @Transactional
+  public Integer deleteAll(Long userSeq) {
+    return userProfileRepository.deleteAllByUserSeq(userSeq);
+  }
+
+  public InputStream downloadFile(CompleteUserProfileDto profileDto) {
     var fileFullPath = profileDto.getPath() + File.separator + profileDto.getUuid() + "." + profileDto.getExtension();
     try (var inputStream = new FileInputStream(fileFullPath)) {
       return inputStream;
@@ -107,8 +115,8 @@ public class UserProfileService {
   }
 
 
-  private List<GenericUserProfileDto> convertToDtos(List<MultipartFile> fileList, List<String> uuidList) {
-    var fileDtoList = new ArrayList<GenericUserProfileDto>();
+  private List<CompleteUserProfileDto> convertToDtos(List<MultipartFile> fileList, List<String> uuidList) {
+    var fileDtoList = new ArrayList<CompleteUserProfileDto>();
     var index = 0;
     var uuidArray = uuidList.toArray(new String[0]);
     for (var file : fileList) {
@@ -118,7 +126,7 @@ public class UserProfileService {
         var path = createDirectory();
         var size = file.getSize();
         var extension = getFileExtension(name);
-        fileDtoList.add(new GenericUserProfileDto(uuid, name, path, size, extension));
+        fileDtoList.add(new CompleteUserProfileDto(uuid, name, path, size, extension));
         index++;
 
       }
@@ -142,5 +150,4 @@ public class UserProfileService {
     }
     return uuidList;
   }
-
 }
