@@ -6,10 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import kr.co.mz.sns.dto.LocalFileResponseDto;
-import kr.co.mz.sns.dto.post.GenericPostDto;
+import kr.co.mz.sns.dto.post.SaveFileRequestDto;
 import kr.co.mz.sns.file.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -22,17 +19,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/unauth/files")
+@RequestMapping("/api/unauth")
 public class LocalFileController {
 
   private final FileStorageService fileStorageService;
   private final String localFileDirectory = SALVE_LOCAL_PUBLIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString();
 
-  @GetMapping
+  @GetMapping("/{fileName}")
   public ResponseEntity<byte[]> getPublicImage(@PathVariable String fileName) {
     try (
         var imageStream = new FileInputStream(new File(localFileDirectory, fileName))
@@ -47,14 +43,16 @@ public class LocalFileController {
   }
 
   @PostMapping("/posts")
-  public ResponseEntity<LocalFileResponseDto> insertFileIntoLocal(
-      @RequestBody List<MultipartFile> multipartFilesList,
-      @RequestBody GenericPostDto genericPostDto
+  public ResponseEntity<String> insertFileIntoLocal(
+      @RequestBody SaveFileRequestDto saveFileRequestDto
   ) {
-    var fileResponses = new ArrayList<LocalFileResponseDto>();
+    var base64FilesStringList = saveFileRequestDto.getByteFileList();
 
+    var genericPostDto = saveFileRequestDto.getGenericPostDto();
     String message = "Saved into localDirectory.";
-    fileStorageService.saveFile(multipartFilesList, genericPostDto);
-    return ResponseEntity.ok(new LocalFileResponseDto("filepath", message));
+    fileStorageService.saveFile(null, genericPostDto);
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .body(message);
   }
 }

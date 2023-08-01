@@ -76,6 +76,36 @@ public class FileStorageService {
     }
   }
 
+//  public void saveFileByBytes(byte[] fileList, GenericPostDto insertedPostDto) {
+//    var uuidList = insertedPostDto.getPostFiles().stream()
+//        .map(fileDto -> fileDto.getSeq() + "_" + fileDto.getName() + "_" + fileDto.getSeq() + "."
+//            + fileDto.getExtension())
+//        .toList();
+//
+//    var index = 0;
+//    var uuidArray = uuidList.toArray();
+//    for (var file : fileList) {
+//      if (!file.isEmpty()) {
+//        var filePath = createDirectory();
+//        var fileFullPath = filePath + File.separator + uuidArray[index];
+//        try (
+//            var bos = new BufferedOutputStream(new FileOutputStream(fileFullPath));
+//            var is = new BufferedInputStream(file.getInputStream())
+//        ) {
+//          var buffer = new byte[4096];
+//          int bytesRead;
+//          while ((bytesRead = is.read(buffer)) != -1) {
+//            bos.write(buffer, 0, bytesRead);
+//          }
+//        } catch (IOException ioe) {
+//          throw new FileWriteException("Failed to save file", ioe);
+//        }
+//      }
+//      index++;
+//    }
+//  }
+//
+
   public InputStream downloadFile(CompleteUserProfileDto fileDto) {
     var fileFullPath = fileDto.getPath() + File.separator + fileDto.getUuid() + "." + fileDto.getExtension();
     try (var inputStream = new FileInputStream(fileFullPath)) {
