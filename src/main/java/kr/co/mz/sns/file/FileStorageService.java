@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -76,36 +77,6 @@ public class FileStorageService {
     }
   }
 
-//  public void saveFileByBytes(byte[] fileList, GenericPostDto insertedPostDto) {
-//    var uuidList = insertedPostDto.getPostFiles().stream()
-//        .map(fileDto -> fileDto.getSeq() + "_" + fileDto.getName() + "_" + fileDto.getSeq() + "."
-//            + fileDto.getExtension())
-//        .toList();
-//
-//    var index = 0;
-//    var uuidArray = uuidList.toArray();
-//    for (var file : fileList) {
-//      if (!file.isEmpty()) {
-//        var filePath = createDirectory();
-//        var fileFullPath = filePath + File.separator + uuidArray[index];
-//        try (
-//            var bos = new BufferedOutputStream(new FileOutputStream(fileFullPath));
-//            var is = new BufferedInputStream(file.getInputStream())
-//        ) {
-//          var buffer = new byte[4096];
-//          int bytesRead;
-//          while ((bytesRead = is.read(buffer)) != -1) {
-//            bos.write(buffer, 0, bytesRead);
-//          }
-//        } catch (IOException ioe) {
-//          throw new FileWriteException("Failed to save file", ioe);
-//        }
-//      }
-//      index++;
-//    }
-//  }
-//
-
   public InputStream downloadFile(CompleteUserProfileDto fileDto) {
     var fileFullPath = fileDto.getPath() + File.separator + fileDto.getUuid() + "." + fileDto.getExtension();
     try (var inputStream = new FileInputStream(fileFullPath)) {
@@ -128,6 +99,26 @@ public class FileStorageService {
       }
     }
     return fileDtoList;
+  }
+
+  public List<String> getByteArrayList(List<MultipartFile> fileList) {
+    var byteArrayList = new ArrayList<String>();
+    for (var file : fileList) {
+      if (!file.isEmpty() && file.getOriginalFilename() != null) {
+        try {
+          byte[] bytes = file.getInputStream().readAllBytes();
+          byteArrayList.add(Base64.getEncoder().encodeToString(bytes));
+        } catch (IOException e) {
+          throw new FileWriteException("Failed file write", e);
+        }
+      }
+    }
+//        try {
+//            return new ObjectMapper().writeValueAsString(byteArrayList);
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException(e);
+//        }
+    return byteArrayList;
   }
 
 //    public static List<GenericPostFileDto> getPostFileList(List<MultipartFile> fileList) {
