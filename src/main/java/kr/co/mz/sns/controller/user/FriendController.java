@@ -1,19 +1,18 @@
 package kr.co.mz.sns.controller.user;
 
-import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WAITING_PERMIT_REQUEST;
-
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import kr.co.mz.sns.dto.user.friend.AcceptFriendRelationshipDto;
 import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
 import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
 import kr.co.mz.sns.service.user.FriendService;
-import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,21 +21,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class FriendController {
 
   private final FriendService friendService;
-  private final CurrentUserInfo currentUserInfo;
 
   @PostMapping("/request")
   public ResponseEntity<InsertFriendRelationshipDto> request(
       @NotNull @RequestBody InsertFriendRelationshipDto insertFriendRelationshipDto) {
-    insertFriendRelationshipDto.setUserSeq(currentUserInfo.getSeq());
-    insertFriendRelationshipDto.setStatus(FR_WAITING_PERMIT_REQUEST);
-    return ResponseEntity.ok(friendService.request(insertFriendRelationshipDto));
+    return ResponseEntity.ok(
+        friendService.request(insertFriendRelationshipDto)
+    );
   }
 
-  @GetMapping("/{friendSep}")
-  public ResponseEntity<FriendDetailDto> showOne(@NotNull @PathVariable Long friendSep) {
-    return ResponseEntity.ok(friendService.find(friendSep));
+  @GetMapping("/request/accept")
+  public ResponseEntity<AcceptFriendRelationshipDto> accept(AcceptFriendRelationshipDto acceptFriendRelationshipDto) {
+    return ResponseEntity.ok(
+        friendService.accept(acceptFriendRelationshipDto)
+    );
   }
 
+  @GetMapping("/search")
+  public List<FriendDetailDto> findBy(@RequestParam String friendName) {
+    return friendService.findByFriendName(friendName);
+  }
 //  @GetMapping("/list")
 //  public ResponseEntity<List<ListFriendDto>> showAll() {
 //    return ResponseEntity.ok(friendService.findAll(currentUserInfo.getSeq()));

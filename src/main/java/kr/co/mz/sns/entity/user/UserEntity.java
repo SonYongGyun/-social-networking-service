@@ -1,11 +1,14 @@
 package kr.co.mz.sns.entity.user;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Data;
@@ -31,12 +34,15 @@ public class UserEntity {
   private String password;
   @Column(name = "role", nullable = false)
   private String role;
-  @Column(name = "last_login_at")
-  private LocalDateTime lastLoginAt;
+  //  @Column(name = "last_login_at")
+//  private LocalDateTime lastLoginAt;
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
   @LastModifiedDate
   @Column(name = "modified_at")
   private LocalDateTime modifiedAt;
+
+  @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private UserDetailEntity userDetail;
 }

@@ -1,11 +1,16 @@
 package kr.co.mz.sns.entity.user;
 
+import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WAITING_PERMIT_REQUEST;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Data;
@@ -34,8 +39,8 @@ public class FriendRelationshipEntity {
   @Column(name = "user_seq", nullable = false)
   private Long userSeq;
 
-  @Column(name = "friend_seq", nullable = false)
-  private Long friendSeq;
+//  @Column(name = "friend_seq", nullable = false)
+//  private Long friendSeq;
 
   @CreatedDate
   @Column(name = "created_at", nullable = false)
@@ -44,4 +49,15 @@ public class FriendRelationshipEntity {
   @LastModifiedDate
   @Column(name = "modified_at")
   private LocalDateTime modifiedAt;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "friend_seq", referencedColumnName = "user_seq")
+  private UserDetailEntity userDetailEntity;
+
+
+  public FriendRelationshipEntity requestedBy(Long userSeq) {
+    this.userSeq = userSeq;
+    this.status = FR_WAITING_PERMIT_REQUEST;
+    return this;
+  }
 }

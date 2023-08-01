@@ -1,6 +1,6 @@
 package kr.co.mz.sns.service.user;
 
-import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_DERICTORY;
+import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_DIRECTORY;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -82,7 +82,7 @@ public class UserProfileService {
   }
 
   private String createDirectory() {
-    var fileDirectory = new File(SALVE_LOCAL_DERICTORY + LocalDateTime.now().toLocalDate().toString());
+    var fileDirectory = new File(SALVE_LOCAL_DIRECTORY + LocalDateTime.now().toLocalDate().toString());
     if (!fileDirectory.mkdirs()) {
       System.out.println("경로가 존재합니다.");
     }
