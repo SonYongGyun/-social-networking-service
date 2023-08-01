@@ -51,7 +51,7 @@ public class UserDetailService {
         );
   }
 
-  public
+  
   public UserDetailAndProfileDto findByEmail(String email) {
     var userSeq = userService.findByUserEmail(email).getSeq();
 

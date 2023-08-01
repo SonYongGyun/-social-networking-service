@@ -36,7 +36,7 @@ public class UserDetailEntity {
   @Column(name = "greeting", nullable = false)
   private String greeting;
   @CreatedDate
-  @Column(name = "last_login_at", nullable = false)
+  @Column(name = "last_login_at")
   private LocalDateTime lastLoginAt;
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;

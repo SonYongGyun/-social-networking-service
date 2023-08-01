@@ -39,8 +39,8 @@ public class FriendRelationshipEntity {
   @Column(name = "user_seq", nullable = false)
   private Long userSeq;
 
-  @Column(name = "friend_seq", nullable = false)
-  private Long friendSeq;
+//  @Column(name = "friend_seq", nullable = false)
+//  private Long friendSeq;
 
   @CreatedDate
   @Column(name = "created_at", nullable = false)
