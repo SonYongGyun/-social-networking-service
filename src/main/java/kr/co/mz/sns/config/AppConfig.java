@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
@@ -18,5 +19,10 @@ public class AppConfig {
     @Bean
     public AuditorAwareImpl auditorAware() {
         return new AuditorAwareImpl();
+    }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
     }
 }

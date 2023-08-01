@@ -34,15 +34,13 @@ public class PostFileService {
 
     @Transactional
     public List<GenericPostFileDto> insertAll(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
-        return fileStorageService.convertTo(multipartFiles, GenericPostFileDto::from)
+        var fileList = fileStorageService.convertTo(multipartFiles, GenericPostFileDto::from)
             .stream()
             .map(postFile -> {
                 postFile.setPostSeq(genericPostDto.getSeq());
-                return postFile;
-            })
-            .map(postFile ->
-                postFileRepository.save(modelMapper.map(postFile, PostFileEntity.class))
-            )
+                return modelMapper.map(postFile, PostFileEntity.class);
+            }).toList();
+        return postFileRepository.saveAll(fileList).stream()
             .map(entity -> modelMapper.map(entity, GenericPostFileDto.class)
             ).toList();
     }
