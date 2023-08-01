@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
+import java.util.Map;
 import javax.crypto.SecretKey;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
@@ -19,12 +20,18 @@ public class JWTService {
 
 
     public String generateToken(Authentication authentication) {
-        var email = authentication.getName();
+        var customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        var seq = customUserDetails.getUserDto().getSeq();
+        var email = customUserDetails.getUserDto().getEmail();
+        var name = customUserDetails.getUserDto().getName();
+        name = name == null ? "Anonymous" : name;
+
         var currentDate = new Date();
         var expireDate = new Date(currentDate.getTime() + JWT_EXPIRATION);
 
         return Jwts.builder()
             .setSubject(email)
+            .addClaims(Map.of("seq", seq, "email", email, "name", name))
             .setIssuedAt(new Date())
             .setExpiration(expireDate)
             .signWith(key)

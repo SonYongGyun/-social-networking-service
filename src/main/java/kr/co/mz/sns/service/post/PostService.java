@@ -31,6 +31,7 @@ public class PostService {
     private final FileStorageService fileStorageService;
     private final ModelMapper modelMapper;
     private final ModelMapperService modelMapperService;
+    private final FileStorageRequestService fileStorageRequestService;
 
     public List<GenericPostDto> findByKeyword(PostSearchDto postSearchDto, Pageable pageable) {
 
@@ -81,7 +82,8 @@ public class PostService {
         insertedPostDto.setPostFiles(savedFiles);
 
         // save files into Disk Drive
-        fileStorageService.saveFile(multipartFiles, insertedPostDto);
+        fileStorageRequestService.save(multipartFiles, insertedPostDto);
+//        fileStorageService.saveFile(multipartFiles, insertedPostDto);
 
         return insertedPostDto;
     }
