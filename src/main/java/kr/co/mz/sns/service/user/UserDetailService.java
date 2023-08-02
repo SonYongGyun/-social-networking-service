@@ -41,13 +41,7 @@ public class UserDetailService {
         .map(
             userDetailRepository
                 .findById(userSeq)
-                .orElseGet(() -> {
-                      var newUserDetail = new UserDetailEntity();
-//                      newUserDetail.setUserEntity(userRepository.findBySeq(userSeq).get());
-                      newUserDetail.setBlocked(false);
-                      return newUserDetail;
-                    }
-                ),
+                .orElseGet(UserDetailEntity::new),
             CompleteUserDetailDto.class
         );
   }
@@ -78,7 +72,7 @@ public class UserDetailService {
     var newUserDetail = new UserDetailEntity();
     newUserDetail.setGreeting(insertUserDetailDto.getGreeting());
     userEntity.setUserDetail(newUserDetail);
-    newUserDetail.setUserEntity(userEntity);
+//    newUserDetail.setUserEntity(userEntity);
     return modelMapper
         .map(
             userRepository.save(userEntity),
