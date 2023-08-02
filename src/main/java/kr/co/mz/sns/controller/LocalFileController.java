@@ -1,6 +1,6 @@
 package kr.co.mz.sns.controller;
 
-import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
+import static kr.co.mz.sns.service.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,33 +29,33 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/unauth/files")
 public class LocalFileController {
 
-    private final FileStorageService fileStorageService;
-    private final String localFileDirectory =
-        SALVE_LOCAL_PUBLIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString();
+  private final FileStorageService fileStorageService;
+  private final String localFileDirectory =
+      SALVE_LOCAL_PUBLIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString();
 
-    @GetMapping
-    public ResponseEntity<byte[]> getPublicImage(@PathVariable String fileName) {
-        try (
-            var imageStream = new FileInputStream(new File(localFileDirectory, fileName))
-        ) {
-            var imageBytes = imageStream.readAllBytes();
-            var headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG);
-            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
-        } catch (IOException ioe) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PostMapping("/posts")
-    public ResponseEntity<LocalFileResponseDto> insertFileIntoLocal(
-        @RequestBody List<MultipartFile> multipartFilesList,
-        @RequestBody SelectPostDto selectPostDto
+  @GetMapping
+  public ResponseEntity<byte[]> getPublicImage(@PathVariable String fileName) {
+    try (
+        var imageStream = new FileInputStream(new File(localFileDirectory, fileName))
     ) {
-        var fileResponses = new ArrayList<LocalFileResponseDto>();
-
-        String message = "Saved into localDirectory.";
-        fileStorageService.saveFile(multipartFilesList, selectPostDto);
-        return ResponseEntity.ok(new LocalFileResponseDto("filepath", message));
+      var imageBytes = imageStream.readAllBytes();
+      var headers = new HttpHeaders();
+      headers.setContentType(MediaType.IMAGE_JPEG);
+      return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    } catch (IOException ioe) {
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  @PostMapping("/posts")
+  public ResponseEntity<LocalFileResponseDto> insertFileIntoLocal(
+      @RequestBody List<MultipartFile> multipartFilesList,
+      @RequestBody SelectPostDto selectPostDto
+  ) {
+    var fileResponses = new ArrayList<LocalFileResponseDto>();
+
+    String message = "Saved into localDirectory.";
+    fileStorageService.saveFile(multipartFilesList, selectPostDto);
+    return ResponseEntity.ok(new LocalFileResponseDto("filepath", message));
+  }
 }

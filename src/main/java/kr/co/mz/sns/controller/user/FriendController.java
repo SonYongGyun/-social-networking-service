@@ -1,9 +1,7 @@
 package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import kr.co.mz.sns.dto.user.friend.AcceptFriendRelationshipDto;
-import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
 import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
 import kr.co.mz.sns.service.user.FriendService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,10 +34,10 @@ public class FriendController {
     );
   }
 
-  @GetMapping("/search")
-  public List<FriendDetailDto> findBy(@RequestParam String friendName) {
-    return friendService.findByFriendName(friendName);
-  }
+//  @GetMapping("/search")
+//  public List<FriendDetailDto> findBy(@RequestParam String friendName) {
+//    return friendService.findByFriendName(friendName);
+//  }
 //  @GetMapping("/list")
 //  public ResponseEntity<List<ListFriendDto>> showAll() {
 //    return ResponseEntity.ok(friendService.findAll(currentUserInfo.getSeq()));

@@ -1,7 +1,10 @@
 package kr.co.mz.sns.service.user;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import kr.co.mz.sns.dto.login.RegisterUserDto;
+import kr.co.mz.sns.dto.user.friend.MentionedFriendDto;
 import kr.co.mz.sns.entity.user.UserDetailEntity;
 import kr.co.mz.sns.entity.user.UserEntity;
 import kr.co.mz.sns.enums.Role;
@@ -10,6 +13,7 @@ import kr.co.mz.sns.exception.ResourceAlreadyExistsException;
 import kr.co.mz.sns.repository.user.UserDetailRepository;
 import kr.co.mz.sns.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,52 +23,95 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
-    // 순수하게 데이터만 쓸꺼면 그냥 바로 repo 들고오면된다.
-    //근데 깔끔하게 처리해주는 로직은 service에 이미 구현되어 있다. 로직이 필요하다면 뭐 이거쓰는거지.
-    //이건정답이 없는데 cleanarchitecture 쓰라고하는거다.
-    private final UserRepository userRepository;
-    private final UserDetailRepository userDetailRepository;
-    private final ModelMapper modelMapper;
-    private final PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
+  private final UserDetailRepository userDetailRepository;
+  private final ModelMapper modelMapper;
+  private final PasswordEncoder passwordEncoder;
 
-    public UserEntity findByUserEmail(String email) {
-        return userRepository.findByEmail(email)
-            .orElseThrow(() -> new NotFoundException(""));
+  public UserEntity findByUserEmail(String email) {
+    return userRepository.findByEmail(email)
+        .orElseThrow(() -> new NotFoundException(""));
+  }
+
+  public UserEntity findBySeq(Long seq) {
+    return userRepository.findBySeq(seq)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + seq));
+  }
+
+  @Transactional
+  public long register(RegisterUserDto dto) {
+    if (userRepository.existsByEmail(dto.getEmail())) {
+      throw new ResourceAlreadyExistsException("Existing Email entered: " + dto.getEmail());
     }
 
-    @Transactional
-    public long register(RegisterUserDto dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new ResourceAlreadyExistsException("Existing Email entered: " + dto.getEmail());
-        }
+    var userEntity = modelMapper.map(dto, UserEntity.class);
+    userEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
+    userEntity.setRole(Role.ANONYMOUS.toString());
+    userRepository.save(userEntity);
 
-        var userEntity = modelMapper.map(dto, UserEntity.class);
-        userEntity.setPassword(passwordEncoder.encode(dto.getPassword()));
-        userEntity.setRole(Role.ANONYMOUS.toString());
-        userRepository.save(userEntity);
+    return userEntity.getSeq();
+  }
 
-        return userEntity.getSeq();
-    }
 
-    @Transactional
-    public LocalDateTime updateLastLogin(Long seq) {
-        var now = LocalDateTime.now();
-        var userEntity = userDetailRepository.findByUserSeq(seq)
-            .orElse(
-                UserDetailEntity.builder()
-                    .userSeq(seq)
-                    .lastLoginAt(now)
-                    .build()
-            );
+  //  @Transactional
+//  public LocalDateTime updateLastLogin(Long seq) {
+//    var now = LocalDateTime.now();
+//    var user = userRepository.findBySeq(seq).orElseThrow();
+//    var userDetail = userDetailRepository.findByDetailSeq(seq)
+//        .orElseGet(() -> {
+//          UserDetailEntity newUserDetail = UserDetailEntity.builder()
+//              .detailSeq(seq)
+//              .user(user)
+//              .blocked(false)
+//              .lastLoginAt(now)
+//              .createdAt(now)
+//              .build();
+//
+//          user.setUserDetail(newUserDetail);
+//          System.out.println(newUserDetail.getDetailSeq());
+//          return newUserDetail;
+//        });
+//
+//    user.setUserDetail(userDetail);
+//    userRepository.save(user);
+//
+//    return now;
+//
+//  }
+  @Transactional
+  public LocalDateTime updateLastLogin(Long seq) {
+    var now = LocalDateTime.now();
+    var user = userRepository.findBySeq(seq)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with seq: " + seq));
+    log.debug(user.toString());
+    var userDetail = Optional.ofNullable(user.getUserDetail()).orElseGet(() -> {
+      var newUserDetail = new UserDetailEntity();
+//      newUserDetail.setUserEntity(user);
+      newUserDetail.setBlocked(false);
+      newUserDetail.setLastLoginAt(now);
+      newUserDetail.setCreatedAt(now);
+      return newUserDetail;
+    });
 
-        userDetailRepository.save(userEntity);
+    userDetail.setLastLoginAt(now);
+    user.setUserDetail(userDetail);
+    userRepository.save(user);
 
-        return now;
-    }
+    return now;
+  }
 
-    public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
+
+  public MentionedFriendDto findDetailByUserName(String userName) {
+    return modelMapper
+        .map(
+            userRepository
+                .findByName(userName)
+                .orElseThrow(),
+            MentionedFriendDto.class
+        );
+  }
+
 }

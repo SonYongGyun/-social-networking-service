@@ -8,15 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface UserDetailRepository extends JpaRepository<UserDetailEntity, Long> {
 
-  Optional<UserDetailEntity> findByUserSeq(Long userSeq);
+  Optional<UserDetailEntity> findByDetailSeq(Long userSeq);
 
-  Optional<UserDetailEntity> findByName(String userName);
-
-  boolean existsByUserSeq(Long userSeq);
+//  Optional<UserDetailEntity> findByName(String userName);
 
   @Modifying
   @Transactional
-  UserDetailEntity deleteByUserSeq(Long userSeq);
+  UserDetailEntity deleteByDetailSeq(Long userSeq);
 
 
 }
