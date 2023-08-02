@@ -3,7 +3,7 @@ package kr.co.mz.sns.service.post;
 import java.util.List;
 import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.SaveFileRequestDto;
-import kr.co.mz.sns.file.FileStorageService;
+import kr.co.mz.sns.service.file.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,25 +18,25 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class FileStorageRequestService {
 
-    private final RestTemplate restTemplate;
-    private final FileStorageService fileStorageService;
-    
-    public String save(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
-        String url = "http://172.90.4.143:8080/api/unauth/posts"; // 다른 서버의 API URL
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+  private final RestTemplate restTemplate;
+  private final FileStorageService fileStorageService;
 
-        ResponseEntity<String> response = restTemplate.exchange(
-            url,
-            HttpMethod.POST,
-            new HttpEntity<>(
-                new SaveFileRequestDto(fileStorageService.getByteArrayList(multipartFiles), genericPostDto), headers),
-            String.class
-        );
+  public String save(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
+    String url = "http://172.90.4.143:8080/api/unauth/posts"; // 다른 서버의 API URL
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
 
-        return response.getBody();
+    ResponseEntity<String> response = restTemplate.exchange(
+        url,
+        HttpMethod.POST,
+        new HttpEntity<>(
+            new SaveFileRequestDto(fileStorageService.getByteArrayList(multipartFiles), genericPostDto), headers),
+        String.class
+    );
+
+    return response.getBody();
 //        byte[] imageBytes = response.getBody();
 //        headers.setContentType(MediaType.IMAGE_JPEG);
 //        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
-    }
+  }
 }

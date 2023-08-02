@@ -10,7 +10,7 @@ public interface UserDetailRepository extends JpaRepository<UserDetailEntity, Lo
 
   Optional<UserDetailEntity> findByUserSeq(Long userSeq);
 
-  Optional<UserDetailEntity> findByName(String userName);
+//  Optional<UserDetailEntity> findByName(String userName);
 
   boolean existsByUserSeq(Long userSeq);
 

@@ -1,6 +1,6 @@
 package kr.co.mz.sns.service.user;
 
-import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_DIRECTORY;
+import static kr.co.mz.sns.service.file.FileConstants.SALVE_LOCAL_DIRECTORY;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

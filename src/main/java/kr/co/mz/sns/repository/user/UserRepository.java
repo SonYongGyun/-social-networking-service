@@ -8,12 +8,15 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    Optional<UserEntity> findByEmail(String email);
+  Optional<UserEntity> findByEmail(String email);
 
-    @Query("SELECT u FROM UserEntity u LEFT JOIN FETCH u.userDetail WHERE u.email = :email")
-    Optional<UserEntity> findByEmailWithUserDetail(@Param("email") String email);
+//  @Query("SELECT u FROM UserEntity u LEFT JOIN FETCH u.userDetail WHERE u.name = :name")
+//  Optional<UserEntity> findByName(@Param("name") String name);
 
-    Boolean existsByEmail(String email);
+  @Query("SELECT u FROM UserEntity u LEFT JOIN FETCH u.userDetail WHERE u.email = :email")
+  Optional<UserEntity> findByEmailWithUserDetail(@Param("email") String email);
+
+  Boolean existsByEmail(String email);
   /*
    * SELECT * FROM user
    * WHERE 'email' like '%?%'  어떤 인자를 받고 그 인자에 검색어를 설정

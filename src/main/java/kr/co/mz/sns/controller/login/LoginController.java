@@ -20,17 +20,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/unauth")
 public class LoginController {
 
-    private final LoginService loginService;
-    private final UserService userService;
+  private final LoginService loginService;
+  private final UserService userService;
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginDto loginDto) {
-        return loginService.authenticate(loginDto);
-    }
+  @PostMapping("/login")
+  public ResponseEntity<String> login(@Valid @RequestBody LoginDto loginDto) {
+    return loginService.authenticate(loginDto);
+  }
 
-    @PostMapping("/register")
-    public ResponseEntity<Void> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
-        var userSeq = userService.register(registerUserDto);
-        return ResponseEntity.created(URI.create("/api/auth/users/" + userSeq)).build();
-    }
+  @PostMapping("/register")
+  public ResponseEntity<Void> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
+    var userSeq = userService.register(registerUserDto);
+    return ResponseEntity.created(
+            URI.create("/api/auth/users/" + userSeq)
+        )
+        .build();
+  }//create 후에는 그저 헤더에 url을 담아주는 것 뿐이다.
 }

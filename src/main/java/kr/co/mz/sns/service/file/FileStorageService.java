@@ -1,6 +1,6 @@
-package kr.co.mz.sns.file;
+package kr.co.mz.sns.service.file;
 
-import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
+import static kr.co.mz.sns.service.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
 
 import jakarta.annotation.Nullable;
 import java.io.BufferedInputStream;

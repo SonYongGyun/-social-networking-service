@@ -30,12 +30,12 @@ public class UserEntity {
   private Long seq;
   @Column(name = "email", nullable = false)
   private String email;
+  @Column(name = "name", nullable = false)
+  private String name;
   @Column(name = "password", nullable = false)
   private String password;
   @Column(name = "role", nullable = false)
   private String role;
-  //  @Column(name = "last_login_at")
-//  private LocalDateTime lastLoginAt;
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;

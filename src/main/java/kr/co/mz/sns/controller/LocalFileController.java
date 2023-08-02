@@ -1,13 +1,13 @@
 package kr.co.mz.sns.controller;
 
-import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
+import static kr.co.mz.sns.service.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import kr.co.mz.sns.dto.post.SaveFileRequestDto;
-import kr.co.mz.sns.file.FileStorageService;
+import kr.co.mz.sns.service.file.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

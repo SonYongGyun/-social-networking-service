@@ -21,49 +21,57 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/public/users")
+@RequestMapping("/api/auth/users")
 public class UserDetailController {
 
-    private final UserDetailService userDetailService;
-    private final CurrentUserInfo currentUserInfo;
+  private final UserDetailService userDetailService;
+  private final CurrentUserInfo currentUserInfo;
 
-    @GetMapping
-    public ResponseEntity<UserDetailAndProfileDto> findByEmailWithProfile() {
-        return ResponseEntity
-            .ok(
-                userDetailService.findByEmail(
-                    currentUserInfo.getEmail()
-                )
-            );
-    }
+  @GetMapping
+  public ResponseEntity<UserDetailAndProfileDto> findDetailAndProfileByEmail() {
+    return ResponseEntity
+        .ok(
+            userDetailService.findByEmail(
+                currentUserInfo.getEmail()
+            )
+        );
+  }
 
-    @PostMapping
-    public ResponseEntity<CompleteUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(
-                userDetailService.insert(insertUserDetailDto)
-            );
-    }
+  @GetMapping("/{seq}")
+  public ResponseEntity<CompleteUserDetailDto> findBySeq(@PathVariable Long seq) {
+    return ResponseEntity
+        .ok(
+            userDetailService.findByUserSeq(seq)
+        );
+  }
+
+  @PostMapping
+  public ResponseEntity<CompleteUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(
+            userDetailService.insert(insertUserDetailDto)
+        );
+  }
 
 
-    @PutMapping
-    public ResponseEntity<CompleteUserDetailDto> update(@RequestBody UpdateUserDetailDto
-        updateUserDetailDto) {//업데이트할때는 seq 넣어서 보내주는걸로
-        return ResponseEntity
-            .ok(
-                userDetailService.updateByUserSeq(
-                    updateUserDetailDto
-                )
-            );
-    }
+  @PutMapping
+  public ResponseEntity<CompleteUserDetailDto> update(@RequestBody UpdateUserDetailDto
+      updateUserDetailDto) {//업데이트할때는 seq 넣어서 보내주는걸로
+    return ResponseEntity
+        .ok(
+            userDetailService.updateByUserSeq(
+                updateUserDetailDto
+            )
+        );
+  }
 
-    @DeleteMapping("/{userSeq}")
-    public ResponseEntity<CompleteUserDetailDto> delete(@NotNull @PathVariable Long userSeq) {
-        return ResponseEntity
-            .status(HttpStatus.NO_CONTENT)
-            .body(
-                userDetailService.deleteByUserSeq(userSeq)
-            );
-    }
+  @DeleteMapping("/{userSeq}")
+  public ResponseEntity<CompleteUserDetailDto> delete(@NotNull @PathVariable Long userSeq) {
+    return ResponseEntity
+        .status(HttpStatus.NO_CONTENT)
+        .body(
+            userDetailService.deleteByUserSeq(userSeq)
+        );
+  }
 }
