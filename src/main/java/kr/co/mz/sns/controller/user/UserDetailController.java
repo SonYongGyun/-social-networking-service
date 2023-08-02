@@ -1,6 +1,7 @@
 package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.constraints.NotNull;
+import kr.co.mz.sns.dto.user.WriteUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.CompleteUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UpdateUserDetailDto;
@@ -46,7 +47,7 @@ public class UserDetailController {
   }
 
   @PostMapping
-  public ResponseEntity<CompleteUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+  public ResponseEntity<WriteUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
     insertUserDetailDto.setUserSeq(currentUserInfo.getSeq());
     return ResponseEntity
         .status(HttpStatus.CREATED)

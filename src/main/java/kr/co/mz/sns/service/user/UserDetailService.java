@@ -2,6 +2,7 @@ package kr.co.mz.sns.service.user;
 
 import java.util.List;
 import kr.co.mz.sns.dto.comment.NotificationDto;
+import kr.co.mz.sns.dto.user.WriteUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.CompleteUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UpdateUserDetailDto;
@@ -71,17 +72,17 @@ public class UserDetailService {
   }
 
   @Transactional
-  public CompleteUserDetailDto insert(InsertUserDetailDto insertUserDetailDto) {
+  public WriteUserDetailDto insert(InsertUserDetailDto insertUserDetailDto) {
 
     var userEntity = userService.findBySeq(insertUserDetailDto.getUserSeq());
     var newUserDetail = new UserDetailEntity();
-    newUserDetail.setDetailSeq(userEntity.getSeq());
-    newUserDetail.setBlocked(false);
-//    newUserDetail.setUserEntity(userEntity);
+    newUserDetail.setGreeting(insertUserDetailDto.getGreeting());
+    userEntity.setUserDetail(newUserDetail);
+    newUserDetail.setUserEntity(userEntity);
     return modelMapper
         .map(
-            userDetailRepository.save(newUserDetail),
-            CompleteUserDetailDto.class);
+            userRepository.save(userEntity),
+            WriteUserDetailDto.class);
   }
 
   @Transactional

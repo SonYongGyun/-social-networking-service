@@ -1,5 +1,6 @@
 package kr.co.mz.sns.entity.user;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -49,7 +50,7 @@ public class UserDetailEntity {
   protected LocalDateTime modifiedAt;
 
   @MapsId
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "user_seq")
   protected UserEntity userEntity;
 
