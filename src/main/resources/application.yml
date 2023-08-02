@@ -12,6 +12,8 @@ spring:
       hibernate:
         jdbc:
           batch_size: 10
-      format_sql: true
+        format_sql: true
       use_sql_comments: true
-      show-sql: true
+    show-sql: true
+logging:
+  level: info

@@ -10,12 +10,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface PostFileRepository extends JpaRepository<PostFileEntity, Long> {
 
-    List<PostFileEntity> findAllByPostEntity_Seq(Long postSeq);
+    List<PostFileEntity> findAllByPostSeq(Long postSeq);
 
     @Modifying
-    @Query("DELETE FROM PostFileEntity pf WHERE pf.postEntity.seq = :postSeq")
+    @Query("DELETE FROM PostFileEntity pf WHERE pf.postSeq = :postSeq")
     void deleteAllByPostSeq(@Param("postSeq") Long postSeq);
 
-    @Query("SELECT pf FROM PostFileEntity pf WHERE pf.postEntity.seq = :postSeq AND pf.name = :name")
+    @Query("SELECT pf FROM PostFileEntity pf WHERE pf.postSeq = :postSeq AND pf.name = :name")
     Optional<PostFileEntity> findByPostSeqAndName(Long postSeq, String name);
 }

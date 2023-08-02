@@ -9,6 +9,6 @@ import lombok.Data;
 public class SaveFileRequestDto {
 
     private List<String> byteFileList;
-    private SelectPostDto selectPostDto;
+    private SelectPostDto genericPostDto;
 
 }
