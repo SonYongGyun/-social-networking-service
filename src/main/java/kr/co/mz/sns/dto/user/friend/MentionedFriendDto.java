@@ -1,6 +1,5 @@
 package kr.co.mz.sns.dto.user.friend;
 
-import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MentionedFriendDto {
 
+  private Long userSeq;
   private String name;
-  private LocalDateTime lastLoginAt;
 }

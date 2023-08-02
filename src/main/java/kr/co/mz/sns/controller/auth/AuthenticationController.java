@@ -38,11 +38,12 @@ public class AuthenticationController {
     headers.add("Authorization", "Bearer " + token);
 
     var customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-    ;
+
     return ResponseEntity
         .ok()
         .headers(headers)
-        .body("Log-In Succeed : " + userService.updateLastLogin(customUserDetails.getUserDto().getSeq()).toString());
+        .body(
+            "Log-In Succeed : ");// + userService.updateLastLogin(customUserDetails.getUserDto().getSeq()).toString());
   }
 
 }

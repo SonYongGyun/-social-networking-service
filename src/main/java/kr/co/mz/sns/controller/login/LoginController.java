@@ -35,5 +35,5 @@ public class LoginController {
             URI.create("/api/auth/users/" + userSeq)
         )
         .build();
-  }//create 후에는 그저 헤더에 url을 담아주는 것 뿐이다.
+  }
 }

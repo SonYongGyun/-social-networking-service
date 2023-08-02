@@ -9,7 +9,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -39,9 +38,6 @@ public class FriendRelationshipEntity {
   @Column(name = "user_seq", nullable = false)
   private Long userSeq;
 
-//  @Column(name = "friend_seq", nullable = false)
-//  private Long friendSeq;
-
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
@@ -50,11 +46,10 @@ public class FriendRelationshipEntity {
   @Column(name = "modified_at")
   private LocalDateTime modifiedAt;
 
+
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "friend_seq", referencedColumnName = "user_seq")
-  private UserDetailEntity userDetailEntity;
-
-
+  private UserEntity userEntity;
+  
   public FriendRelationshipEntity requestedBy(Long userSeq) {
     this.userSeq = userSeq;
     this.status = FR_WAITING_PERMIT_REQUEST;

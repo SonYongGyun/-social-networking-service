@@ -47,6 +47,7 @@ public class UserDetailController {
 
   @PostMapping
   public ResponseEntity<CompleteUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+    insertUserDetailDto.setUserSeq(currentUserInfo.getSeq());
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(

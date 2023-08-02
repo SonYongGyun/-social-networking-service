@@ -1,7 +1,10 @@
 package kr.co.mz.sns.service.user;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import kr.co.mz.sns.dto.login.RegisterUserDto;
+import kr.co.mz.sns.dto.user.friend.MentionedFriendDto;
 import kr.co.mz.sns.entity.user.UserDetailEntity;
 import kr.co.mz.sns.entity.user.UserEntity;
 import kr.co.mz.sns.enums.Role;
@@ -10,6 +13,7 @@ import kr.co.mz.sns.exception.ResourceAlreadyExistsException;
 import kr.co.mz.sns.repository.user.UserDetailRepository;
 import kr.co.mz.sns.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
   private final UserRepository userRepository;
@@ -29,6 +34,11 @@ public class UserService {
   public UserEntity findByUserEmail(String email) {
     return userRepository.findByEmail(email)
         .orElseThrow(() -> new NotFoundException(""));
+  }
+
+  public UserEntity findBySeq(Long seq) {
+    return userRepository.findBySeq(seq)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + seq));
   }
 
   @Transactional
@@ -45,31 +55,63 @@ public class UserService {
     return userEntity.getSeq();
   }
 
+
+  //  @Transactional
+//  public LocalDateTime updateLastLogin(Long seq) {
+//    var now = LocalDateTime.now();
+//    var user = userRepository.findBySeq(seq).orElseThrow();
+//    var userDetail = userDetailRepository.findByDetailSeq(seq)
+//        .orElseGet(() -> {
+//          UserDetailEntity newUserDetail = UserDetailEntity.builder()
+//              .detailSeq(seq)
+//              .user(user)
+//              .blocked(false)
+//              .lastLoginAt(now)
+//              .createdAt(now)
+//              .build();
+//
+//          user.setUserDetail(newUserDetail);
+//          System.out.println(newUserDetail.getDetailSeq());
+//          return newUserDetail;
+//        });
+//
+//    user.setUserDetail(userDetail);
+//    userRepository.save(user);
+//
+//    return now;
+//
+//  }
   @Transactional
   public LocalDateTime updateLastLogin(Long seq) {
     var now = LocalDateTime.now();
-    var userEntity = userDetailRepository.findByUserSeq(seq)
-        .orElse(
-            UserDetailEntity.builder()
-                .userSeq(seq)
-                .blocked(false)
-                .lastLoginAt(now)
-                .build()
-        );
+    var user = userRepository.findBySeq(seq)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with seq: " + seq));
+    log.debug(user.toString());
+    var userDetail = Optional.ofNullable(user.getUserDetail()).orElseGet(() -> {
+      var newUserDetail = new UserDetailEntity();
+//      newUserDetail.setUserEntity(user);
+      newUserDetail.setBlocked(false);
+      newUserDetail.setLastLoginAt(now);
+      newUserDetail.setCreatedAt(now);
+      return newUserDetail;
+    });
 
-    userDetailRepository.save(userEntity);
+    userDetail.setLastLoginAt(now);
+    user.setUserDetail(userDetail);
+    userRepository.save(user);
 
     return now;
   }
-//
-//  public CompleteUserDetailDto findDetailByUserName(String userName) {
-//    return modelMapper
-//        .map(
-//            userRepository
-//                .findByName(userName)
-//                .orElseThrow(),
-//            CompleteUserDetailDto.class
-//        );
-//  }
+
+
+  public MentionedFriendDto findDetailByUserName(String userName) {
+    return modelMapper
+        .map(
+            userRepository
+                .findByName(userName)
+                .orElseThrow(),
+            MentionedFriendDto.class
+        );
+  }
 
 }
