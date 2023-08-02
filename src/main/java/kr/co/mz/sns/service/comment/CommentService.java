@@ -29,7 +29,7 @@ public class CommentService {
     }
 
     public List<CommentDto> findAllByPostSeq(Long postSeq) {
-        return commentRepository.findAllByPostSeq(postSeq)
+        return commentRepository.findAllByPostEntity_Seq(postSeq)
             .stream()
             .map(commentEntity -> modelMapper.map(commentEntity, CommentDto.class))
             .toList();
@@ -69,9 +69,9 @@ public class CommentService {
 
     @Transactional
     public List<CommentLikeDto> like(Long seq) {
-        return commentRepository.findBySeq(seq)
+        return commentRepository.findBySeqWithPost(seq)
             .map(CommentEntity::increaseCommentLike)
-            .map(commentEntity -> new CommentLikeDto(seq, commentEntity.getPostSeq()))
+            .map(commentEntity -> new CommentLikeDto(seq, commentEntity.getPostEntity().getSeq()))
             .map(commentLikeService::insert)
             .map(commentLikeDto -> commentLikeService.findAll(seq))
             .orElseThrow(() -> new NotFoundException("Comment Not Found: " + seq));
@@ -84,9 +84,9 @@ public class CommentService {
     }
 
     @Transactional
-    public List<CommentDto> deleteByPostSeq(Long postSeq) {
+    public List<CommentDto> deleteAllByPostSeq(Long postSeq) {
 //        commentRepository.deleteAllByPostSeq(postSeq);
-        var commentEntities = commentRepository.findAllByPostSeq(postSeq);
+        var commentEntities = commentRepository.findAllByPostEntity_Seq(postSeq);
 
         commentRepository.deleteAllByPostSeq(postSeq);
         commentRepository.deleteAllByCommentSeqs(

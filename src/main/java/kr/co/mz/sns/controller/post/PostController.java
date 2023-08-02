@@ -2,9 +2,10 @@ package kr.co.mz.sns.controller.post;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.net.URI;
 import java.util.List;
-import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.PostLikeDto;
+import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.service.post.PostLikeService;
 import kr.co.mz.sns.service.post.PostService;
 import lombok.RequiredArgsConstructor;
@@ -31,28 +32,30 @@ public class PostController {
     private final PostLikeService postLikeService;
 
     @PostMapping
-    public ResponseEntity<GenericPostDto> insert(
+    public ResponseEntity<SelectPostDto> insert(
         @RequestPart("files") List<MultipartFile> files,
-        @Valid @RequestPart GenericPostDto postDto
+        @Valid @RequestPart SelectPostDto postDto
     ) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-            .body(
-                postService.insert(files, postDto)
-            );
+        var selectPostDto = postService.insert(files, postDto);
+        return ResponseEntity.created(
+            URI.create(
+                "/api/auth/posts/" + selectPostDto.getSeq()
+            )
+        ).body(selectPostDto);
     }
 
     @DeleteMapping("/{seq}")
-    public ResponseEntity<GenericPostDto> delete(@NotNull @PathVariable Long seq) {
+    public ResponseEntity<SelectPostDto> delete(@NotNull @PathVariable Long seq) {
         return ResponseEntity.ok(
             postService.deleteByKey(seq)
         );
     }
 
     @PutMapping("/{seq}")
-    public ResponseEntity<GenericPostDto> update(@NotNull @PathVariable Long seq,
-        @Valid @RequestBody GenericPostDto genericPostDto) {
-        genericPostDto.setSeq(seq);
-        var updatedPostDto = postService.updateByKey(genericPostDto);
+    public ResponseEntity<SelectPostDto> update(@NotNull @PathVariable Long seq,
+        @Valid @RequestBody SelectPostDto selectPostDto) {
+        selectPostDto.setSeq(seq);
+        var updatedPostDto = postService.updateByKey(selectPostDto);
         return ResponseEntity.ok(updatedPostDto);
     }
 

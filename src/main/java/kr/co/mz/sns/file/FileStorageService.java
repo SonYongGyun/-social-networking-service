@@ -1,5 +1,6 @@
 package kr.co.mz.sns.file;
 
+import static kr.co.mz.sns.file.FileConstants.BASIC_DIRECTORY;
 import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
 
 import jakarta.annotation.Nullable;
@@ -12,11 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
-import kr.co.mz.sns.dto.post.GenericPostDto;
+import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto;
 import kr.co.mz.sns.exception.FileWriteException;
 import org.springframework.stereotype.Service;
@@ -25,12 +25,18 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileStorageService {
 
-    public static final String BASIC_DIRECTORY = "/Users/mz01-junghunee/Documents/tutorial_directory/";
-
-
     public static String createDirectory() {
         var fileDirectory = new File(
             SALVE_LOCAL_PUBLIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString().substring(0, 10));
+        if (!fileDirectory.mkdirs()) {
+            System.out.println("경로가 존재합니다.");
+        }
+        return fileDirectory.getAbsolutePath();
+    }
+
+    public static String createPostDirectory() {
+        var fileDirectory = new File(
+            BASIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString().substring(0, 10));
         if (!fileDirectory.mkdirs()) {
             System.out.println("경로가 존재합니다.");
         }
@@ -48,17 +54,16 @@ public class FileStorageService {
         return "";
     }
 
-    public void saveFile(List<MultipartFile> fileList, GenericPostDto insertedPostDto) {
+    public void saveFile(List<MultipartFile> fileList, SelectPostDto insertedPostDto) {
         var uuidList = insertedPostDto.getPostFiles().stream()
-            .map(fileDto -> fileDto.getSeq() + "_" + fileDto.getName() + "_" + fileDto.getSeq() + "."
-                + fileDto.getExtension())
+            .map(fileDto -> insertedPostDto.getSeq() + "_" + fileDto.getName())
             .toList();
 
         var index = 0;
         var uuidArray = uuidList.toArray();
         for (var file : fileList) {
             if (!file.isEmpty()) {
-                var filePath = createDirectory();
+                var filePath = createPostDirectory();
                 var fileFullPath = filePath + File.separator + uuidArray[index];
                 try (
                     var bos = new BufferedOutputStream(new FileOutputStream(fileFullPath));
@@ -70,7 +75,7 @@ public class FileStorageService {
                         bos.write(buffer, 0, bytesRead);
                     }
                 } catch (IOException ioe) {
-                    throw new FileWriteException("Failed to save file", ioe);
+                    throw new FileWriteException("Failed to save file" + ioe.getMessage(), ioe);
                 }
             }
             index++;
@@ -101,41 +106,6 @@ public class FileStorageService {
         return fileDtoList;
     }
 
-    public List<String> getByteArrayList(List<MultipartFile> fileList) {
-        var byteArrayList = new ArrayList<String>();
-        for (var file : fileList) {
-            if (!file.isEmpty() && file.getOriginalFilename() != null) {
-                try {
-                    byte[] bytes = file.getInputStream().readAllBytes();
-                    byteArrayList.add(Base64.getEncoder().encodeToString(bytes));
-                } catch (IOException e) {
-                    throw new FileWriteException("Failed file write", e);
-                }
-            }
-        }
-//        try {
-//            return new ObjectMapper().writeValueAsString(byteArrayList);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-        return byteArrayList;
-    }
-
-//    public static List<GenericPostFileDto> getPostFileList(List<MultipartFile> fileList) {
-//        return fileList.stream()
-//            .filter(file -> !file.isEmpty() && file.getOriginalFilename() != null)
-//            .map(GenericPostFileDto::from)
-//            .toList();
-
-//        var fileDtoList = new ArrayList<GenericPostFileDto>();
-//        for (var file : fileList) {
-//            if (!file.isEmpty() && file.getOriginalFilename() != null) {
-//                fileDtoList.add(GenericPostFileDto.from(file));
-//            }
-//        }
-//        return fileDtoList;
-//    }
-
     public <T> List<T> convertTo(List<MultipartFile> fileList, Function<MultipartFile, T> function) {
         if (fileList.isEmpty()) {
             return List.of();
@@ -148,6 +118,7 @@ public class FileStorageService {
     }
 
     public boolean delete(String filePath) {
+        System.out.println(filePath);
         var file = new File(filePath);
         var flag = false;
         if (file.exists()) {
