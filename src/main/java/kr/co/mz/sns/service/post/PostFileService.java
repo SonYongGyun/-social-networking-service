@@ -1,9 +1,10 @@
 package kr.co.mz.sns.service.post;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.GenericPostFileDto;
+import kr.co.mz.sns.dto.post.SelectPostDto;
+import kr.co.mz.sns.entity.post.PostEntity;
 import kr.co.mz.sns.entity.post.PostFileEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.file.FileStorageService;
@@ -27,58 +28,67 @@ public class PostFileService {
     private final ModelMapperService modelMapperService;
 
     public List<GenericPostFileDto> findAllByPostSeq(Long postSeq) {
-        return postFileRepository.findAllByPostSeq(postSeq).stream()
+        return postFileRepository.findAllByPostEntity_Seq(postSeq).stream()
             .map(entity -> modelMapper.map(entity, GenericPostFileDto.class))
             .toList();
     }
 
     @Transactional
-    public List<GenericPostFileDto> insertAll(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
+    public List<GenericPostFileDto> insertAll(List<MultipartFile> multipartFiles, SelectPostDto selectPostDto) {
         var fileList = fileStorageService.convertTo(multipartFiles, GenericPostFileDto::from)
             .stream()
             .map(postFile -> {
-                postFile.setPostSeq(genericPostDto.getSeq());
-                return modelMapper.map(postFile, PostFileEntity.class);
-            }).toList();
+                var postFileEntity = modelMapper.map(postFile, PostFileEntity.class);
+                postFileEntity.setPostEntity(
+                    PostEntity.builder().seq(selectPostDto.getSeq()).postFiles(new ArrayList<>())
+                        .build());
+                return postFileEntity;
+            })
+            .toList();
         return postFileRepository.saveAll(fileList).stream()
-            .map(entity -> modelMapper.map(entity, GenericPostFileDto.class)
-            ).toList();
+            .map(entity -> modelMapper.map(entity, GenericPostFileDto.class))
+            .toList();
     }
 
     @Transactional
-    public GenericPostFileDto insert(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
-        return fileStorageService.convertTo(multipartFiles, GenericPostFileDto::from)
+    public GenericPostFileDto insert(List<MultipartFile> multipartFiles, SelectPostDto selectPostDto) {
+        var insertedPostFileDto = fileStorageService.convertTo(multipartFiles, GenericPostFileDto::from)
             .stream()
             .map(postFile -> {
-                postFile.setPostSeq(genericPostDto.getSeq());
-                return postFile;
+                var postFileEntity = modelMapper.map(postFile, PostFileEntity.class);
+                postFileEntity.setPostEntity(PostEntity.builder().seq(selectPostDto.getSeq()).build());
+                return postFileRepository.save(postFileEntity);
             })
-            .map(postFile -> postFileRepository.save(modelMapper.map(postFile, PostFileEntity.class)))
             .map(entity -> modelMapper.map(entity, GenericPostFileDto.class))
             .findFirst().orElseThrow();
+        fileStorageService.saveFile(multipartFiles, selectPostDto);
+
+        return insertedPostFileDto;
     }
 
     @Transactional
-    public GenericPostFileDto delete(GenericPostDto genericPostDto, GenericPostFileDto genericPostFileDto) {
-        var findPostFileEntity = postFileRepository.findByPostSeqAndName(genericPostDto.getSeq(),
-                genericPostFileDto.getName())
+    public GenericPostFileDto delete(SelectPostDto selectPostDto, GenericPostFileDto genericPostFileDto) {
+        return postFileRepository.findByPostSeqAndName(
+                selectPostDto.getSeq(),
+                genericPostFileDto.getName()
+            ).map(entity -> {
+                var fileDto = modelMapper.map(entity, GenericPostFileDto.class);
+                postFileRepository.delete(entity);
+                return fileDto;
+            })
             .orElseThrow(() -> new NotFoundException("File does not exist"));
-        postFileRepository.delete(findPostFileEntity);
-        return modelMapper.map(findPostFileEntity, GenericPostFileDto.class);
     }
 
     @Transactional
     public List<GenericPostFileDto> deleteAllByPostSeq(Long postSeq) {
-        var deletedPostFiles = postFileRepository.findAllByPostSeq(postSeq).stream().map(
-            entity -> {
-                var filePath =
-                    entity.getPath() + File.separator + entity.getSeq() + "_" + entity.getName()
-                        + "_" + entity.getSeq() + "." + entity.getExtension();
-                fileStorageService.delete(filePath);
-                return modelMapper.map(entity, GenericPostFileDto.class);
-            }
-        ).toList();
-        postFileRepository.deleteAllByPostSeq(postSeq);
+        var deletedPostFiles = postFileRepository.findAllByPostEntity_Seq(postSeq).stream()
+            .map(entity -> modelMapper.map(entity, GenericPostFileDto.class))
+            .toList();
+        if (!deletedPostFiles.isEmpty()) {
+            postFileRepository.deleteAllByPostSeq(postSeq);
+        }
+        System.out.println(deletedPostFiles);
+
         return deletedPostFiles;
     }
 }

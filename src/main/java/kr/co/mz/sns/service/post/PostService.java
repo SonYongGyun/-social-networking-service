@@ -1,10 +1,11 @@
 package kr.co.mz.sns.service.post;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.PostLikeDto;
 import kr.co.mz.sns.dto.post.PostSearchDto;
+import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.entity.post.PostEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.file.FileStorageService;
@@ -31,50 +32,38 @@ public class PostService {
     private final FileStorageService fileStorageService;
     private final ModelMapper modelMapper;
     private final ModelMapperService modelMapperService;
-    private final FileStorageRequestService fileStorageRequestService;
 
-    public List<GenericPostDto> findByKeyword(PostSearchDto postSearchDto, Pageable pageable) {
-
+    public List<SelectPostDto> findByKeyword(PostSearchDto postSearchDto, Pageable pageable) {
         return postRepository.findByContentContaining(postSearchDto.getKeyword(), pageable)
             .stream()
-            .map(post -> modelMapper.map(post, GenericPostDto.class))
+            .map(post -> modelMapper.map(post, SelectPostDto.class))
             .toList();
     }
 
-    public List<GenericPostDto> findAll(Pageable pageable) {
-
-        return postRepository.findAll(pageable)
-            .map(post -> modelMapper.map(post, GenericPostDto.class))
+    public List<SelectPostDto> findAll(Pageable pageable) {
+        return postRepository.findAllWithPostFilesAndComments(pageable)
+            .map(post -> modelMapper.map(post, SelectPostDto.class))
             .toList();
-        // 구현 안된 메서드에 보통 아래의 익셉션을 날림
-//        throw new UnsupportedOperationException();
     }
 
-    public GenericPostDto findByKey(Long seq) {
-        // Declarative Programming or Functional Programming
-        return postRepository.findById(seq)
+    public SelectPostDto findByKey(Long seq) {
+        return postRepository.findBySeqWithPostFilesAndComments(seq)
             .map(
                 entity -> {
-                    var postDto = modelMapper.map(entity, GenericPostDto.class);
+                    var postDto = modelMapper.map(entity, SelectPostDto.class);
                     postDto.setComments(commentService.findAllByPostSeq(seq));
-                    postDto.setPostFiles(postFileService.findAllByPostSeq(seq));
                     return postDto;
                 })
             .orElseThrow(() -> new NotFoundException("This post does not exist"));
-
-        // Imperative Programming
-//        var optionalPost = postRepository.findById(seq);
-//        optionalPost.orElseThrow(() -> new NotFoundException("This post does not exist"));
-//        return modelMapper.map(optionalPost.get(), PostDto.class);
     }
 
     @Transactional
-    public GenericPostDto insert(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
+    public SelectPostDto insert(List<MultipartFile> multipartFiles, SelectPostDto selectPostDto) {
         var insertedPostDto = modelMapperService.mapAndActAndMap(
-            Optional.of(genericPostDto).stream(),
+            Optional.of(selectPostDto).stream(),
             PostEntity.class,
             postRepository::save,
-            GenericPostDto.class
+            SelectPostDto.class
         ).findFirst().orElseThrow();
 
         // insert POST_FILE into Database
@@ -82,62 +71,48 @@ public class PostService {
         insertedPostDto.setPostFiles(savedFiles);
 
         // save files into Disk Drive
-        fileStorageRequestService.save(multipartFiles, insertedPostDto);
-//        fileStorageService.saveFile(multipartFiles, insertedPostDto);
+        fileStorageService.saveFile(multipartFiles, insertedPostDto);
 
         return insertedPostDto;
     }
 
     @Transactional
-    public GenericPostDto updateByKey(GenericPostDto postDto) {
-        // Declarative Programming
+    public SelectPostDto updateByKey(SelectPostDto postDto) {
         return postRepository.findById(postDto.getSeq())
             .map(entity -> {
                 entity.setContent(postDto.getContent());
                 return entity;
             })
             .map(postRepository::save)
-            .map(entity -> modelMapper.map(entity, GenericPostDto.class))
+            .map(entity -> modelMapper.map(entity, SelectPostDto.class))
             .orElseThrow(() -> new NotFoundException("Post with ID " + postDto.getSeq() + "not found"));
-
-        // Imperative Programming
-//        var optionalPost = postRepository.findById(seq);
-//        var postEntity = optionalPost.orElseThrow(
-//            () -> new NotFoundException("Post with ID " + seq + "not found", 1));
-//        var userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        var optionalUserEntity = userRepository.findByEmail(userDetails.getUsername());
-//        postEntity.setUsers(
-//            optionalUserEntity.orElseThrow(() -> new NotFoundException("User information not found", 1))
-//        );
-//        postEntity.setContent(postDto.getContent());
-//        return modelMapper.map(postRepository.save(postEntity), PostDto.class);
     }
 
     @Transactional
-    public GenericPostDto deleteByKey(Long seq) {
-        // Declarative 1
+    public SelectPostDto deleteByKey(Long seq) {
+        var deletedPostFiles = postFileService.deleteAllByPostSeq(seq).stream().map(
+            postFile -> {
+                System.out.println(postFile.getPath() + File.separator
+                    + seq + "_" + postFile.getName());
+                fileStorageService.delete(
+                    postFile.getPath() + File.separator
+                        + seq + "_" + postFile.getName()
+                );
+                return postFile;
+            }
+        ).toList();
+        var deletedComments = commentService.deleteAllByPostSeq(seq);
         var deletedPostDto = postRepository.findById(seq)
             .map(entity -> {
                 postRepository.delete(entity);
-                return modelMapper.map(entity, GenericPostDto.class);
+                return modelMapper.map(entity, SelectPostDto.class);
             })
             .orElseThrow(() -> new NotFoundException("Post with ID " + seq + "not found"));
-        deletedPostDto.setPostFiles(postFileService.deleteAllByPostSeq(seq));
+
+        deletedPostDto.setComments(deletedComments);
+        deletedPostDto.setPostFiles(deletedPostFiles);
+
         return deletedPostDto;
-        // Declarative 2
-//        postRepository.findById(seq)
-//            .ifPresentOrElse(
-//                postRepository::delete,
-//                () -> {
-//                    throw new NotFoundException("Post with ID " + seq + "not found");
-//                }
-//            );
-//
-//        // Imperative
-//        var optionalPostEntity = postRepository.findById(seq);
-//        var postEntity = optionalPostEntity.orElseThrow(
-//            () -> new NotFoundException("Post with ID " + seq + "not found"));
-//        postRepository.delete(postEntity);
     }
 
     @Transactional
