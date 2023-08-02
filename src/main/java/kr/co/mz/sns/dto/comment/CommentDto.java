@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.co.mz.sns.dto.post.GenericPostFileDto;
 import lombok.Data;
 
 @Data
@@ -20,7 +21,7 @@ public class CommentDto {
     private Long userSeq;
     private boolean commentLike;
     private boolean like;
-
+    private List<CommentFileDto> commentFiles;
     private List<String> mentionedUsername = new ArrayList<>();
 
     public void splitContentAndMentionedUsername() {
