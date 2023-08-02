@@ -2,8 +2,8 @@ package kr.co.mz.sns.controller.post;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.PostSearchDto;
+import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -22,12 +22,13 @@ public class PublicPostController {
     private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<List<GenericPostDto>> getAll(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<List<SelectPostDto>> getAll(@RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size, PostSearchDto postSearchDto) {
-        List<GenericPostDto> posts;
+        List<SelectPostDto> posts;
         var pageable = PageRequest.of(page, size);
-        if (postSearchDto == null) {
+        if (postSearchDto.getKeyword() == null) {
             posts = postService.findAll(pageable);
+            System.out.println("1");
         } else {
             posts = postService.findByKeyword(postSearchDto, pageable);
         }
@@ -36,7 +37,7 @@ public class PublicPostController {
     }
 
     @GetMapping("/{seq}")
-    public ResponseEntity<GenericPostDto> getById(@NotNull @PathVariable Long seq) {
+    public ResponseEntity<SelectPostDto> get(@NotNull @PathVariable Long seq) {
         return ResponseEntity
             .ok(
                 postService.findByKey(seq)

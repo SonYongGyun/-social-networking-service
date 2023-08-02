@@ -8,8 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class SaveFileRequestDto {
 
-
-  private List<String> byteFileList;
-  private GenericPostDto genericPostDto;
+    private List<String> byteFileList;
+    private SelectPostDto selectPostDto;
 
 }

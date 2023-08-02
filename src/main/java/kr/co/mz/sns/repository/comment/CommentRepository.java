@@ -13,15 +13,16 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
     Optional<CommentEntity> findBySeq(Long seq);
 
-    void deleteByPostSeq(Long postSeq);
-
-    List<CommentEntity> findAllByPostSeq(Long postSeq);
+    List<CommentEntity> findAllByPostEntity_Seq(Long postSeq);
 
     @Modifying
-    @Query("delete from CommentEntity c where c.postSeq = :postSeq")
+    @Query("delete from CommentEntity c where c.postEntity.seq = :postSeq")
     void deleteAllByPostSeq(@Param("postSeq") Long postSeq);
 
     @Modifying
     @Query("delete from CommentEntity c where c.seq in :commentSeqs")
     void deleteAllByCommentSeqs(@Param("commentSeqs") List<Long> commentSeqs);
+
+    @Query("SELECT c FROM CommentEntity c JOIN FETCH c.postEntity WHERE c.seq = :commentSeq")
+    Optional<CommentEntity> findBySeqWithPost(@Param("commentSeq") Long commentSeq);
 }

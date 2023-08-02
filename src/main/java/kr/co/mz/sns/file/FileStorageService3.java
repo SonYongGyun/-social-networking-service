@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class FileStorageService {
+public class FileStorageService3 {
 
   public static String createDirectory() {
     var fileDirectory = new File(
