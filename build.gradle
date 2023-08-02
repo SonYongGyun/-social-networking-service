@@ -25,10 +25,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    compileOnly 'org.projectlombok:lombok'
+
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '3.1.1'
     implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.1.1'
@@ -43,8 +44,11 @@ dependencies {
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.1.2'
     testImplementation group: 'org.springframework', name: 'spring-test', version: '6.0.11'
     implementation 'commons-io:commons-io:2.11.0'    /* Apache commons-io */
-    implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
 
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {

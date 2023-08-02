@@ -6,10 +6,11 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 import kr.co.mz.sns.entity.comment.CommentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,10 +39,12 @@ public class PostEntity {
     private String content;
     @Column(name = "likes", nullable = false)
     private Integer likes = 0;
-    @OneToMany(mappedBy = "postEntity")
-    private List<PostFileEntity> postFiles;
-    @OneToMany(mappedBy = "postEntity")
-    private List<CommentEntity> comments;
+    @OneToMany
+    @JoinColumn(name = "post_fk_seq")
+    private Set<PostFileEntity> postFiles;
+    @OneToMany
+    @JoinColumn(name = "post_fk_seq")
+    private Set<CommentEntity> comments;
     @CreatedBy
     @LastModifiedBy
     @Column(name = "create_by", nullable = false)

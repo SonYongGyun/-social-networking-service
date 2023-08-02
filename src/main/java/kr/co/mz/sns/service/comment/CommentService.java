@@ -2,6 +2,8 @@ package kr.co.mz.sns.service.comment;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import kr.co.mz.sns.dto.comment.CommentDto;
 import kr.co.mz.sns.dto.comment.CommentLikeDto;
 import kr.co.mz.sns.entity.comment.CommentEntity;
@@ -28,11 +30,11 @@ public class CommentService {
             .orElseThrow(() -> new NotFoundException("Comment Not Found:" + seq));
     }
 
-    public List<CommentDto> findAllByPostSeq(Long postSeq) {
-        return commentRepository.findAllByPostEntity_Seq(postSeq)
+    public Set<CommentDto> findAllByPostSeq(Long postSeq) {
+        return commentRepository.findAllByPostSeq(postSeq)
             .stream()
             .map(commentEntity -> modelMapper.map(commentEntity, CommentDto.class))
-            .toList();
+            .collect(Collectors.toSet());
     }
 
     @Transactional
@@ -69,9 +71,9 @@ public class CommentService {
 
     @Transactional
     public List<CommentLikeDto> like(Long seq) {
-        return commentRepository.findBySeqWithPost(seq)
+        return commentRepository.findBySeq(seq)
             .map(CommentEntity::increaseCommentLike)
-            .map(commentEntity -> new CommentLikeDto(seq, commentEntity.getPostEntity().getSeq()))
+            .map(commentEntity -> new CommentLikeDto(seq, commentEntity.getPostSeq()))
             .map(commentLikeService::insert)
             .map(commentLikeDto -> commentLikeService.findAll(seq))
             .orElseThrow(() -> new NotFoundException("Comment Not Found: " + seq));
@@ -84,9 +86,9 @@ public class CommentService {
     }
 
     @Transactional
-    public List<CommentDto> deleteAllByPostSeq(Long postSeq) {
+    public Set<CommentDto> deleteAllByPostSeq(Long postSeq) {
 //        commentRepository.deleteAllByPostSeq(postSeq);
-        var commentEntities = commentRepository.findAllByPostEntity_Seq(postSeq);
+        var commentEntities = commentRepository.findAllByPostSeq(postSeq);
 
         commentRepository.deleteAllByPostSeq(postSeq);
         commentRepository.deleteAllByCommentSeqs(
@@ -94,7 +96,7 @@ public class CommentService {
         );
         return commentEntities.stream()
             .map(entity -> modelMapper.map(entity, CommentDto.class))
-            .toList();
+            .collect(Collectors.toSet());
 
         // 리턴해 ... -> DTO로 해야 하는데...
 //        return commentEntities.map(entity -> modelMapper.map(entity, CommentDto.class)).stream().toList();

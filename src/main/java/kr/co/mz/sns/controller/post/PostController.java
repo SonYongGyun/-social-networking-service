@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
+import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.PostLikeDto;
-import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.service.post.PostLikeService;
 import kr.co.mz.sns.service.post.PostService;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +32,9 @@ public class PostController {
     private final PostLikeService postLikeService;
 
     @PostMapping
-    public ResponseEntity<SelectPostDto> insert(
+    public ResponseEntity<GenericPostDto> insert(
         @RequestPart("files") List<MultipartFile> files,
-        @Valid @RequestPart SelectPostDto postDto
+        @Valid @RequestPart GenericPostDto postDto
     ) {
         var selectPostDto = postService.insert(files, postDto);
         return ResponseEntity.created(
@@ -45,17 +45,17 @@ public class PostController {
     }
 
     @DeleteMapping("/{seq}")
-    public ResponseEntity<SelectPostDto> delete(@NotNull @PathVariable Long seq) {
+    public ResponseEntity<GenericPostDto> delete(@NotNull @PathVariable Long seq) {
         return ResponseEntity.ok(
             postService.deleteByKey(seq)
         );
     }
 
     @PutMapping("/{seq}")
-    public ResponseEntity<SelectPostDto> update(@NotNull @PathVariable Long seq,
-        @Valid @RequestBody SelectPostDto selectPostDto) {
-        selectPostDto.setSeq(seq);
-        var updatedPostDto = postService.updateByKey(selectPostDto);
+    public ResponseEntity<GenericPostDto> update(@NotNull @PathVariable Long seq,
+        @Valid @RequestBody GenericPostDto genericPostDto) {
+        genericPostDto.setSeq(seq);
+        var updatedPostDto = postService.updateByKey(genericPostDto);
         return ResponseEntity.ok(updatedPostDto);
     }
 

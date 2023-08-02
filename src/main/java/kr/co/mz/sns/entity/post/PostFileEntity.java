@@ -6,8 +6,6 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Data;
@@ -35,19 +33,13 @@ public class PostFileEntity {
     private Long size;
     @Column(name = "extension", nullable = false)
     private String extension;
-    @ManyToOne
-    @JoinColumn(name = "post_seq", nullable = false)
-    private PostEntity postEntity;
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
     @LastModifiedDate
     @Column(name = "modified_At", nullable = false)
     private LocalDateTime modifiedAt;
-
-    public void setPostEntity(PostEntity postEntity) {
-        this.postEntity = postEntity;
-        postEntity.getPostFiles().add(this);
-    }
+    @Column(name = "post_seq", nullable = false)
+    private Long postSeq;
 
 }
