@@ -7,14 +7,16 @@ import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
 import kr.co.mz.sns.service.user.FriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,10 +34,11 @@ public class FriendController {
     );
   }
 
-  @GetMapping("/request/accept")
-  public ResponseEntity<AcceptFriendRelationshipDto> accept(AcceptFriendRelationshipDto acceptFriendRelationshipDto) {
+  @PutMapping("/request/accept")
+  public ResponseEntity<InsertFriendRelationshipDto> putRelationship(
+      AcceptFriendRelationshipDto acceptFriendRelationshipDto) {
     return ResponseEntity.ok(
-        friendService.accept(acceptFriendRelationshipDto)
+        friendService.putRelationship(acceptFriendRelationshipDto)
     );
   }
 
@@ -43,10 +46,8 @@ public class FriendController {
   @GetMapping("/list/{userSeq}")
   public Page<AFriendDto> findAllFriends(
       @PathVariable Long userSeq,
-      @RequestParam(value = "page", defaultValue = "0") int page,
-      @RequestParam(value = "size", defaultValue = "5") int size
+      @PageableDefault(sort = {"modifiedAt", "status"}, direction = Sort.Direction.DESC) Pageable pageable
   ) {
-    var pageable = PageRequest.of(page, size);
     return friendService.findAllFriendsAsPage(userSeq, pageable);
   }
 

@@ -1,5 +1,8 @@
 package kr.co.mz.sns.service.user;
 
+import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WAITING_PERMIT_REQUEST;
+import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WE_ARE_FRIEND;
+
 import java.util.function.Function;
 import kr.co.mz.sns.dto.user.friend.AFriendDto;
 import kr.co.mz.sns.dto.user.friend.AcceptFriendRelationshipDto;
@@ -52,18 +55,32 @@ public class FriendService {
             entity
                 .userEntity(userService.findBySeq(userSeq))
                 .friendEntity(userService.findBySeq(friendSeq))
+                .status(FR_WAITING_PERMIT_REQUEST)
         ),
         InsertFriendRelationshipDto.class
     );
   }
 
   @Transactional
-  public AcceptFriendRelationshipDto accept(AcceptFriendRelationshipDto acceptFriendRelationshipDto) {
+  public InsertFriendRelationshipDto putRelationship(AcceptFriendRelationshipDto acceptFriendRelationshipDto) {
+    var userSeq = currentUserInfo.getSeq();
+    var friendSeq = acceptFriendRelationshipDto.getFriendSeq();
+    if (friendRelationshipRepository.findByUserEntityAndFriendEntity(userSeq, friendSeq).isEmpty()) {
+      throw new IllegalArgumentException(
+          "The friend request that was sent from User " + userSeq + " to User " + friendSeq
+              + " cannot be updated as it may have been deleted or the user no longer exists."
+      );
+    }
     return mapAndActAndMap(
         acceptFriendRelationshipDto,
         FriendRelationshipEntity.class,
-        friendRelationshipRepository::save,
-        AcceptFriendRelationshipDto.class
+        entity -> friendRelationshipRepository.save(
+            entity
+                .userEntity(userService.findBySeq(userSeq))
+                .friendEntity(userService.findBySeq(friendSeq))
+                .status(FR_WE_ARE_FRIEND)
+        ),
+        InsertFriendRelationshipDto.class
     );
   }
 //

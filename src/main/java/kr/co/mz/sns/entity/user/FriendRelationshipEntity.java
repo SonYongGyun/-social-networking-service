@@ -1,7 +1,5 @@
 package kr.co.mz.sns.entity.user;
 
-import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WAITING_PERMIT_REQUEST;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -52,12 +50,16 @@ public class FriendRelationshipEntity {
 
   public FriendRelationshipEntity userEntity(UserEntity user) {
     this.userEntity = user;
-    this.status = FR_WAITING_PERMIT_REQUEST;
     return this;
   }
 
   public FriendRelationshipEntity friendEntity(UserEntity friend) {
     this.friendEntity = friend;
+    return this;
+  }
+
+  public FriendRelationshipEntity status(String status) {
+    this.status = status;
     return this;
   }
 
