@@ -29,14 +29,18 @@ public class FriendService {
 
   public Page<AFriendDto> findAllFriendsAsPage(Long userSeq, Pageable pageable) {
     return friendRelationshipRepository
-        .findAllByUserSeqAsStream(userSeq, pageable)
+        .findAllByUserSeqAsStream(
+            userSeq,
+            pageable
+        )
         .map(entity -> modelMapper.map(entity, AFriendDto.class));
   }
 
   @Transactional
   public InsertFriendRelationshipDto request(InsertFriendRelationshipDto insertFriendRelationshipDto) {
     return mapAndActAndMap(
-        insertFriendRelationshipDto,
+        insertFriendRelationshipDto
+            .userSeq(currentUserInfo.getSeq()),
         FriendRelationshipEntity.class,
         entity -> friendRelationshipRepository.save(
             entity.userEntity(userService.findBySeq(currentUserInfo.getSeq()))

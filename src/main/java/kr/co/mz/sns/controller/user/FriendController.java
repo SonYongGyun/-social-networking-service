@@ -39,6 +39,7 @@ public class FriendController {
     );
   }
 
+  //todo pageable 바로 받아서 구현하기.
   @GetMapping("/list/{userSeq}")
   public Page<AFriendDto> findAllFriends(
       @PathVariable Long userSeq,
