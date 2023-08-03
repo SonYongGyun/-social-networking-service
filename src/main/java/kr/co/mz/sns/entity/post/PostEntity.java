@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 import kr.co.mz.sns.entity.comment.CommentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,10 +41,10 @@ public class PostEntity {
     private Integer likes = 0;
     @OneToMany
     @JoinColumn(name = "post_fk_seq")
-    private Set<PostFileEntity> postFiles;
+    private List<PostFileEntity> postFiles;
     @OneToMany
     @JoinColumn(name = "post_fk_seq")
-    private Set<CommentEntity> comments;
+    private List<CommentEntity> comments;
     @CreatedBy
     @LastModifiedBy
     @Column(name = "create_by", nullable = false)

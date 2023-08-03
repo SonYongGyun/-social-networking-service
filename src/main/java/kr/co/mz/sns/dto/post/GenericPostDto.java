@@ -3,15 +3,17 @@ package kr.co.mz.sns.dto.post;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 import kr.co.mz.sns.dto.comment.CommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class GenericPostDto {
 
     private Long seq;
@@ -22,6 +24,6 @@ public class GenericPostDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private Long createBy;
-    private Set<CommentDto> comments;
-    private Set<GenericPostFileDto> postFiles;
+    private List<CommentDto> comments;
+    private List<GenericPostFileDto> postFiles;
 }

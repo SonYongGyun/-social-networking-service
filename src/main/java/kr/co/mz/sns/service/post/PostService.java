@@ -3,11 +3,11 @@ package kr.co.mz.sns.service.post;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.PostLikeDto;
 import kr.co.mz.sns.dto.post.PostSearchDto;
 import kr.co.mz.sns.dto.post.SelectPostDto;
+import kr.co.mz.sns.dto.post.SelectPostFileDto;
 import kr.co.mz.sns.entity.post.PostEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.file.FileStorageService;
@@ -38,7 +38,12 @@ public class PostService {
     public List<SelectPostDto> findByKeyword(PostSearchDto postSearchDto, Pageable pageable) {
         return postRepository.findByContentContaining(postSearchDto.getKeyword(), pageable)
             .stream()
-            .map(post -> modelMapper.map(post, SelectPostDto.class))
+            .map(post -> {
+                var selectPostDto = modelMapper.map(post, SelectPostDto.class);
+                var selectPostFile = post.getPostFiles().get(0);
+                selectPostDto.setSelectPostFileDto(modelMapper.map(selectPostFile, SelectPostFileDto.class));
+                return selectPostDto;
+            })
             .toList();
     }
 
@@ -102,7 +107,7 @@ public class PostService {
                 );
                 return postFile;
             }
-        ).collect(Collectors.toSet());
+        ).toList();
         var deletedComments = commentService.deleteAllByPostSeq(seq);
         var deletedPostDto = postRepository.findById(seq)
             .map(entity -> {

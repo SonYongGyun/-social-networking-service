@@ -15,7 +15,6 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -35,10 +34,6 @@ public class FriendRelationshipEntity {
   @Column(name = "status", nullable = false)
   private String status;
 
-  @CreatedBy
-  @Column(name = "friend_seq", nullable = false)
-  private Long friendSeq;
-
   @CreatedDate
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
@@ -47,14 +42,24 @@ public class FriendRelationshipEntity {
   @Column(name = "modified_at")
   private LocalDateTime modifiedAt;
 
-
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_seq")
   private UserEntity userEntity;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "friend_seq")
+  private UserEntity friendEntity;
 
   public FriendRelationshipEntity userEntity(UserEntity user) {
     this.userEntity = user;
     this.status = FR_WAITING_PERMIT_REQUEST;
     return this;
   }
+
+  public FriendRelationshipEntity friendEntity(UserEntity friend) {
+    this.friendEntity = friend;
+    return this;
+  }
+
+
 }

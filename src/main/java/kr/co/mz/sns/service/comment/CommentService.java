@@ -1,5 +1,8 @@
 package kr.co.mz.sns.service.comment;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import kr.co.mz.sns.dto.comment.CommentDto;
 import kr.co.mz.sns.dto.comment.CommentLikeDto;
 import kr.co.mz.sns.entity.comment.CommentEntity;
@@ -14,11 +17,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -32,26 +30,26 @@ public class CommentService {
 
     public CommentDto findBySeq(Long seq) {
         return commentRepository.findBySeq(seq)
-                .map(entity -> modelMapper.map(entity, CommentDto.class))
-                .orElseThrow(() -> new NotFoundException("Comment Not Found:" + seq));
+            .map(entity -> modelMapper.map(entity, CommentDto.class))
+            .orElseThrow(() -> new NotFoundException("Comment Not Found:" + seq));
     }
 
-    public Set<CommentDto> findAllByPostSeq(Long postSeq) {
-        return commentRepository.findAllByPostEntity_Seq(postSeq)
-                .stream()
-                .map(commentEntity -> modelMapper.map(commentEntity, CommentDto.class))
-                .collect(Collectors.toSet());
+    public List<CommentDto> findAllByPostSeq(Long postSeq) {
+        return commentRepository.findAllByPostSeq(postSeq)
+            .stream()
+            .map(commentEntity -> modelMapper.map(commentEntity, CommentDto.class))
+            .collect(Collectors.toList());
     }
 
     @Transactional
     public CommentDto insert(CommentDto commentDto, List<MultipartFile> multipartFiles) {
         var insertedCommentDto =
-                modelMapperService.mapAndActAndMap(
-                        Optional.of(commentDto).stream(),
-                        CommentEntity.class,
-                        commentRepository::save,
-                        CommentDto.class
-                ).findFirst().orElseThrow();
+            modelMapperService.mapAndActAndMap(
+                Optional.of(commentDto).stream(),
+                CommentEntity.class,
+                commentRepository::save,
+                CommentDto.class
+            ).findFirst().orElseThrow();
         if (multipartFiles != null) {
             var savedFiles = commentFileService.insert(insertedCommentDto, multipartFiles);
             commentDto.setCommentFiles(savedFiles);
@@ -87,26 +85,26 @@ public class CommentService {
 
     @Transactional
     public List<CommentLikeDto> like(Long seq) {
-        return commentRepository.findBySeqWithPost(seq)
-                .map(CommentEntity::increaseCommentLike)
-                .map(commentEntity -> new CommentLikeDto(seq, commentEntity.getPostEntity().getSeq()))
-                .map(commentLikeService::insert)
-                .map(commentLikeDto -> commentLikeService.findAll(seq))
-                .orElseThrow(() -> new NotFoundException("Comment Not Found: " + seq));
+        return commentRepository.findBySeq(seq)
+            .map(CommentEntity::increaseCommentLike)
+            .map(commentEntity -> new CommentLikeDto(seq, commentEntity.getPostSeq()))
+            .map(commentLikeService::insert)
+            .map(commentLikeDto -> commentLikeService.findAll(seq))
+            .orElseThrow(() -> new NotFoundException("Comment Not Found: " + seq));
     }
 
     @Transactional
-    public Set<CommentDto> deleteAllByPostSeq(Long postSeq) {
+    public List<CommentDto> deleteAllByPostSeq(Long postSeq) {
 //        commentRepository.deleteAllByPostSeq(postSeq);
-        var commentEntities = commentRepository.findAllByPostEntity_Seq(postSeq);
+        var commentEntities = commentRepository.findAllByPostSeq(postSeq);
 
         commentRepository.deleteAllByPostSeq(postSeq);
         commentRepository.deleteAllByCommentSeqs(
-                commentEntities.stream().map(CommentEntity::getSeq).toList()
+            commentEntities.stream().map(CommentEntity::getSeq).toList()
         );
         return commentEntities.stream()
-                .map(entity -> modelMapper.map(entity, CommentDto.class))
-                .collect(Collectors.toSet());
+            .map(entity -> modelMapper.map(entity, CommentDto.class))
+            .toList();
 
         // 리턴해 ... -> DTO로 해야 하는데...
 //        return commentEntities.map(entity -> modelMapper.map(entity, CommentDto.class)).stream().toList();

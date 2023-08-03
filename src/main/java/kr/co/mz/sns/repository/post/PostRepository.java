@@ -12,22 +12,29 @@ import org.springframework.data.repository.query.Param;
 
 public interface PostRepository extends JpaRepository<PostEntity, Long> {
 
-    Page<PostEntity> findByContentContaining(String keyword, Pageable pageable);
-    //dto 로 받는 경우가 있는지?
-
     @NotNull Page<PostEntity> findAll(@NotNull Pageable pageable);
 
-    @Query("SELECT DISTINCT p FROM PostEntity p " +
-        "LEFT JOIN FETCH p.postFiles " +
-        "LEFT JOIN FETCH p.comments")
+    @Query("SELECT DISTINCT p FROM PostEntity p "
+        + "LEFT JOIN FETCH p.postFiles pf "
+        + "WHERE pf.id = ("
+        + "    SELECT MIN(pf2.id) FROM PostFileEntity pf2 WHERE pf2.postSeq = p.seq) AND p.content = :keyword")
+    Page<PostEntity> findByContentContaining(String keyword, Pageable pageable);
+
+    @Query("SELECT p FROM PostEntity p "
+        + "LEFT JOIN FETCH p.postFiles pf "
+        + "WHERE pf.id = ("
+        + "    SELECT MIN(pf2.id) FROM PostFileEntity pf2 WHERE pf2.postSeq = p.seq)")
     Page<PostEntity> findAllWithPostFilesAndComments(Pageable pageable);
 
-    @Query("SELECT DISTINCT p FROM PostEntity p " +
-        "LEFT JOIN FETCH p.postFiles " +
-        "LEFT JOIN FETCH p.comments " +
-        "WHERE p.seq = :seq")
+    @Query("SELECT DISTINCT p FROM PostEntity p "
+        + "LEFT JOIN FETCH p.postFiles "
+        + "LEFT JOIN FETCH p.comments "
+        + "WHERE p.seq = :seq ")
     Optional<PostEntity> findBySeqWithPostFilesAndComments(@Param("seq") Long seq);
 
-    @Query("select p from PostEntity p left join fetch p.postFiles left join fetch p.comments")
+    // 테스트용
+    @Query("SELECT p FROM PostEntity p "
+        + "LEFT JOIN FETCH p.postFiles "
+        + "LEFT JOIN FETCH p.comments")
     List<PostEntity> fetchAll();
 }
