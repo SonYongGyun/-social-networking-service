@@ -20,11 +20,11 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Entity
-@EntityListeners(AuditingEntityListener.class)
-@Table(name = "friend_relationship")
 @Data
+@Entity
 @NoArgsConstructor
+@Table(name = "friend_relationship")
+@EntityListeners(AuditingEntityListener.class)
 public class FriendRelationshipEntity {
 
   @Id
