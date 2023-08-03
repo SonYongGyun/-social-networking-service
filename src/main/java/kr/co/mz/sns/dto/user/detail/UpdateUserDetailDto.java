@@ -6,6 +6,10 @@ import lombok.Data;
 public class UpdateUserDetailDto {
 
   private Long userSeq;
-  private String name;
   private String greeting;
+
+  public UpdateUserDetailDto userSeq(Long userSeq) {
+    this.userSeq = userSeq;
+    return this;
+  }
 }

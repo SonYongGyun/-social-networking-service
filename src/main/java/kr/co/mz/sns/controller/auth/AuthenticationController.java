@@ -43,7 +43,7 @@ public class AuthenticationController {
         .ok()
         .headers(headers)
         .body(
-            "Log-In Succeed : ");// + userService.updateLastLogin(customUserDetails.getUserDto().getSeq()).toString());
+            "Log-In Succeed : " + userService.updateLastLogin(customUserDetails.getUserDto().getSeq()).toString());
   }
 
 }

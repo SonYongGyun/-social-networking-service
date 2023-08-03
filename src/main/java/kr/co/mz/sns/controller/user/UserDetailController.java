@@ -63,7 +63,7 @@ public class UserDetailController {
     return ResponseEntity
         .ok(
             userDetailService.updateByUserSeq(
-                updateUserDetailDto
+                updateUserDetailDto.userSeq(currentUserInfo.getSeq())
             )
         );
   }
@@ -71,7 +71,7 @@ public class UserDetailController {
   @DeleteMapping("/{userSeq}")
   public ResponseEntity<CompleteUserDetailDto> delete(@NotNull @PathVariable Long userSeq) {
     return ResponseEntity
-        .status(HttpStatus.NO_CONTENT)
+        .status(HttpStatus.OK)
         .body(
             userDetailService.deleteByUserSeq(userSeq)
         );

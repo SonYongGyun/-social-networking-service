@@ -54,4 +54,9 @@ public class UserDetailEntity {
   @JoinColumn(name = "user_seq")
   protected UserEntity userEntity;
 
+
+  public UserDetailEntity greeting(String greeting) {
+    this.greeting = greeting;
+    return this;
+  }
 }

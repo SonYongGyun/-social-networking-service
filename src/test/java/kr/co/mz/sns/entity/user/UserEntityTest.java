@@ -33,7 +33,7 @@ class UserEntityTest {
 
     var userDetail = new UserDetailEntity();
     userDetail.greeting = "a-greeting";
-//    userDetail.setUserEntity(user);
+    userDetail.setUserEntity(user);
     userDetail.createdAt = now;
     userDetail.modifiedAt = now;
 
