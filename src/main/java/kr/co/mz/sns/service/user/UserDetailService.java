@@ -2,6 +2,7 @@ package kr.co.mz.sns.service.user;
 
 import java.util.List;
 import kr.co.mz.sns.dto.comment.NotificationDto;
+import kr.co.mz.sns.dto.user.WriteUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.CompleteUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UpdateUserDetailDto;
@@ -40,18 +41,12 @@ public class UserDetailService {
         .map(
             userDetailRepository
                 .findById(userSeq)
-                .orElseGet(() -> {
-                      var newUserDetail = new UserDetailEntity();
-//                      newUserDetail.setUserEntity(userRepository.findBySeq(userSeq).get());
-                      newUserDetail.setBlocked(false);
-                      return newUserDetail;
-                    }
-                ),
+                .orElseGet(UserDetailEntity::new),
             CompleteUserDetailDto.class
         );
   }
 
-  //todo user detail 에 name 뺴고 이거에 영향받는 메소드들 고치기 .씨발
+  //todo user detail 에 name 뺴고 이거에 영향받는 메소드들 고치기
 
 
   public UserDetailAndProfileDto findByEmail(String email) {
@@ -71,40 +66,37 @@ public class UserDetailService {
   }
 
   @Transactional
-  public CompleteUserDetailDto insert(InsertUserDetailDto insertUserDetailDto) {
+  public WriteUserDetailDto insert(InsertUserDetailDto insertUserDetailDto) {
 
     var userEntity = userService.findBySeq(insertUserDetailDto.getUserSeq());
     var newUserDetail = new UserDetailEntity();
-    newUserDetail.setDetailSeq(userEntity.getSeq());
-    newUserDetail.setBlocked(false);
-//    newUserDetail.setUserEntity(userEntity);
+    newUserDetail.setGreeting(insertUserDetailDto.getGreeting());
+    userEntity.setUserDetail(newUserDetail);
+    newUserDetail.setUserEntity(userEntity);
     return modelMapper
         .map(
-            userDetailRepository.save(newUserDetail),
-            CompleteUserDetailDto.class);
+            userRepository.save(userEntity),
+            WriteUserDetailDto.class);
   }
 
   @Transactional
   public CompleteUserDetailDto updateByUserSeq(UpdateUserDetailDto updateUserDetailDto) {
-    var optionalUserDetailEntity = userDetailRepository.findByDetailSeq(updateUserDetailDto.getUserSeq());
-    var userDetailEntity = optionalUserDetailEntity.orElseThrow(
-        () -> new NotFoundException("Oops! No existing detail! Insert your detail first!"));
-    userDetailEntity.setGreeting(updateUserDetailDto.getGreeting());
-    //todo fileEntity가 필요하네..?
-//    var userDetailEntity = modelMapper.map(updateUserDetailDto, UserDetailEntity.class);
-    var updatedEntity = userDetailRepository.save(userDetailEntity);
-
+    var updatedEntity = userDetailRepository.findByDetailSeq(updateUserDetailDto.getUserSeq())
+        .map(entity -> entity.greeting(updateUserDetailDto.getGreeting()))
+        .map(userDetailRepository::save)
+        .orElseThrow(() -> new NotFoundException("Oops! No existing detail! Insert your detail first!"));
     return modelMapper
         .map(updatedEntity, CompleteUserDetailDto.class);
   }
 
-  //나는 삭제만 할거라고 알고 있다. 근데 다른 사람이 이녀석을 쓸 때, 트랜잭션 걸고할껏.
-  //일단 트랜잭션공부가 더 필요.
   @Transactional
   public CompleteUserDetailDto deleteByUserSeq(Long userSeq) {
+    var findUser = userRepository.findBySeq(userSeq).orElseThrow();
+    var deletedEntity = userDetailRepository.findByUserEntity(findUser);
+    userDetailRepository.deleteByDetailSeq(userSeq);
     return modelMapper
         .map(
-            userDetailRepository.deleteByDetailSeq(userSeq), CompleteUserDetailDto.class
+            deletedEntity, CompleteUserDetailDto.class
         );
   }
 

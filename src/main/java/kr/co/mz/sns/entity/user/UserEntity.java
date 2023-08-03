@@ -3,6 +3,7 @@ package kr.co.mz.sns.entity.user;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,13 +18,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "user", schema = "sns")
-//@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(AuditingEntityListener.class)
 public class UserEntity {
 
   @Id
@@ -45,10 +47,10 @@ public class UserEntity {
   @Column(name = "modified_at")
   protected LocalDateTime modifiedAt;
 
-  @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "userEntity", fetch = FetchType.LAZY)
   protected UserDetailEntity userDetail;
 
-  @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
   protected List<FriendRelationshipEntity> friendRelationships;
 
 }

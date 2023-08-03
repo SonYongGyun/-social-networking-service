@@ -1,7 +1,9 @@
 package kr.co.mz.sns.entity.user;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
@@ -25,7 +28,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "user_detail", schema = "sns")
 public class UserDetailEntity {
 
@@ -47,8 +50,13 @@ public class UserDetailEntity {
   protected LocalDateTime modifiedAt;
 
   @MapsId
-  @OneToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "user_seq")
   protected UserEntity userEntity;
 
+
+  public UserDetailEntity greeting(String greeting) {
+    this.greeting = greeting;
+    return this;
+  }
 }

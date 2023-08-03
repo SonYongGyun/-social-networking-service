@@ -1,6 +1,7 @@
 package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.constraints.NotNull;
+import kr.co.mz.sns.dto.user.WriteUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.CompleteUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.InsertUserDetailDto;
 import kr.co.mz.sns.dto.user.detail.UpdateUserDetailDto;
@@ -46,7 +47,7 @@ public class UserDetailController {
   }
 
   @PostMapping
-  public ResponseEntity<CompleteUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
+  public ResponseEntity<WriteUserDetailDto> insert(@RequestBody InsertUserDetailDto insertUserDetailDto) {
     insertUserDetailDto.setUserSeq(currentUserInfo.getSeq());
     return ResponseEntity
         .status(HttpStatus.CREATED)
@@ -62,7 +63,7 @@ public class UserDetailController {
     return ResponseEntity
         .ok(
             userDetailService.updateByUserSeq(
-                updateUserDetailDto
+                updateUserDetailDto.userSeq(currentUserInfo.getSeq())
             )
         );
   }
@@ -70,7 +71,7 @@ public class UserDetailController {
   @DeleteMapping("/{userSeq}")
   public ResponseEntity<CompleteUserDetailDto> delete(@NotNull @PathVariable Long userSeq) {
     return ResponseEntity
-        .status(HttpStatus.NO_CONTENT)
+        .status(HttpStatus.OK)
         .body(
             userDetailService.deleteByUserSeq(userSeq)
         );

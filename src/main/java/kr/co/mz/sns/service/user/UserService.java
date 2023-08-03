@@ -55,32 +55,6 @@ public class UserService {
     return userEntity.getSeq();
   }
 
-
-  //  @Transactional
-//  public LocalDateTime updateLastLogin(Long seq) {
-//    var now = LocalDateTime.now();
-//    var user = userRepository.findBySeq(seq).orElseThrow();
-//    var userDetail = userDetailRepository.findByDetailSeq(seq)
-//        .orElseGet(() -> {
-//          UserDetailEntity newUserDetail = UserDetailEntity.builder()
-//              .detailSeq(seq)
-//              .user(user)
-//              .blocked(false)
-//              .lastLoginAt(now)
-//              .createdAt(now)
-//              .build();
-//
-//          user.setUserDetail(newUserDetail);
-//          System.out.println(newUserDetail.getDetailSeq());
-//          return newUserDetail;
-//        });
-//
-//    user.setUserDetail(userDetail);
-//    userRepository.save(user);
-//
-//    return now;
-//
-//  }
   @Transactional
   public LocalDateTime updateLastLogin(Long seq) {
     var now = LocalDateTime.now();
@@ -88,11 +62,14 @@ public class UserService {
         .orElseThrow(() -> new EntityNotFoundException("User not found with seq: " + seq));
     log.debug(user.toString());
     var userDetail = Optional.ofNullable(user.getUserDetail()).orElseGet(() -> {
-      var newUserDetail = new UserDetailEntity();
-//      newUserDetail.setUserEntity(user);
-      newUserDetail.setBlocked(false);
-      newUserDetail.setLastLoginAt(now);
-      newUserDetail.setCreatedAt(now);
+      var newUserDetail = UserDetailEntity.builder()
+          .detailSeq(seq)
+          .userEntity(user)
+          .blocked(false)
+          .lastLoginAt(now)
+          .createdAt(now)
+          .build();
+      user.setUserDetail(newUserDetail);
       return newUserDetail;
     });
 

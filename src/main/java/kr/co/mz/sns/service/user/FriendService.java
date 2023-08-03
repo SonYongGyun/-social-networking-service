@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+//todo friend paging, detail u,d
 @Service
 @RequiredArgsConstructor
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -19,15 +20,17 @@ public class FriendService {
 
   private final FriendRelationshipRepository friendRelationshipRepository;
   private final ModelMapper modelMapper;
-  private final UserDetailService userDetailService;
   private final CurrentUserInfo currentUserInfo;
+  private final UserService userService;
 
   @Transactional
   public InsertFriendRelationshipDto request(InsertFriendRelationshipDto insertFriendRelationshipDto) {
     return mapAndActAndMap(
         insertFriendRelationshipDto,
         FriendRelationshipEntity.class,
-        entity -> friendRelationshipRepository.save(entity.requestedBy(currentUserInfo.getSeq())),
+        entity -> friendRelationshipRepository.save(
+            entity.userEntity(userService.findBySeq(currentUserInfo.getSeq()))
+        ),
         InsertFriendRelationshipDto.class
     );
   }
