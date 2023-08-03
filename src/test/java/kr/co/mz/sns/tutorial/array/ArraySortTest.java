@@ -1,4 +1,4 @@
-package kr.co.mz.sns.post;
+package kr.co.mz.sns.tutorial.array;
 
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
