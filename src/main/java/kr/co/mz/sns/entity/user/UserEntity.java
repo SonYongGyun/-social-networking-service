@@ -47,7 +47,7 @@ public class UserEntity {
   @Column(name = "modified_at")
   protected LocalDateTime modifiedAt;
 
-  @OneToOne(mappedBy = "userEntity", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @OneToOne(mappedBy = "userEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   protected UserDetailEntity userDetail;
 
   @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,6 +1,6 @@
 package kr.co.mz.sns.service.user;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import kr.co.mz.sns.repository.user.UserDetailRepository;
 import kr.co.mz.sns.repository.user.UserRepository;
@@ -20,9 +20,11 @@ public class UserDetailServiceTest {
 
   @Test
   void detailUpdateAndDeleteTest() {
-    var findUser = userRepository.findBySeq(6L).get();
+    var findUser = userRepository.findBySeq(19L).get();
     var existDetail = userDetailRepository.findByUserEntity(findUser);
-    assertNotNull(existDetail);
+    userDetailRepository.delete(existDetail.get());
+    var existDetailforReal = userDetailRepository.findByUserEntity(findUser);
+    assertTrue(existDetailforReal.isEmpty());
 
   }
 }

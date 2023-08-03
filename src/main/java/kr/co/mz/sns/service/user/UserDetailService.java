@@ -46,8 +46,6 @@ public class UserDetailService {
         );
   }
 
-  //todo user detail 에 name 뺴고 이거에 영향받는 메소드들 고치기
-
 
   public UserDetailAndProfileDto findByEmail(String email) {
     var userSeq = userService.findByUserEmail(email).getSeq();
@@ -92,8 +90,10 @@ public class UserDetailService {
   @Transactional
   public CompleteUserDetailDto deleteByUserSeq(Long userSeq) {
     var findUser = userRepository.findBySeq(userSeq).orElseThrow();
-    var deletedEntity = userDetailRepository.findByUserEntity(findUser);
-    userDetailRepository.deleteByDetailSeq(userSeq);
+    var deletedEntity = userDetailRepository.findByUserEntity(findUser).orElseThrow();
+    findUser.setUserDetail(null);
+    userRepository.save(findUser);
+    userDetailRepository.delete(deletedEntity);
     return modelMapper
         .map(
             deletedEntity, CompleteUserDetailDto.class

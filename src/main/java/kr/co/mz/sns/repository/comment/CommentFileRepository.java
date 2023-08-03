@@ -4,7 +4,8 @@ import kr.co.mz.sns.entity.comment.CommentFileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentFileRepository extends JpaRepository<CommentFileEntity, Long> {
-    void deleteByCommentSeq(Long commentSeq);
+
+  void deleteByCommentEntity_Seq(Long commentSeq);
 
 
 }

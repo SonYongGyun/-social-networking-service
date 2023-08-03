@@ -16,7 +16,7 @@ public interface UserDetailRepository extends JpaRepository<UserDetailEntity, Lo
 
   @Modifying
   @Transactional
-  Long deleteByDetailSeq(Long userSeq);
+  Long deleteByUserEntity(UserEntity userEntity);
 
 
 }
