@@ -65,7 +65,7 @@ public class UserDetailService {
     return findUserDetailDto;
   }
 
-  @Transactional
+  @Transactional//로그인하면 인서트가 굳이 필요없이 바로 그냥 로그인시각업데이트되면서 인서트되버림.
   public WriteUserDetailDto insert(InsertUserDetailDto insertUserDetailDto) {
 
     var userEntity = userService.findBySeq(insertUserDetailDto.getUserSeq());
