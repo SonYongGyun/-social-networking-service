@@ -50,7 +50,7 @@ public class UserDetailEntity {
   protected LocalDateTime modifiedAt;
 
   @MapsId
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinColumn(name = "user_seq")
   protected UserEntity userEntity;
 

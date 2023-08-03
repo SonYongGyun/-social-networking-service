@@ -46,8 +46,6 @@ public class UserDetailService {
         );
   }
 
-  //todo user detail 에 name 뺴고 이거에 영향받는 메소드들 고치기
-
 
   public UserDetailAndProfileDto findByEmail(String email) {
     var userSeq = userService.findByUserEmail(email).getSeq();
@@ -65,7 +63,7 @@ public class UserDetailService {
     return findUserDetailDto;
   }
 
-  @Transactional
+  @Transactional//로그인하면 인서트가 굳이 필요없이 바로 그냥 로그인시각업데이트되면서 인서트되버림.
   public WriteUserDetailDto insert(InsertUserDetailDto insertUserDetailDto) {
 
     var userEntity = userService.findBySeq(insertUserDetailDto.getUserSeq());
@@ -92,8 +90,10 @@ public class UserDetailService {
   @Transactional
   public CompleteUserDetailDto deleteByUserSeq(Long userSeq) {
     var findUser = userRepository.findBySeq(userSeq).orElseThrow();
-    var deletedEntity = userDetailRepository.findByUserEntity(findUser);
-    userDetailRepository.deleteByDetailSeq(userSeq);
+    var deletedEntity = userDetailRepository.findByUserEntity(findUser).orElseThrow();
+    findUser.setUserDetail(null);
+    userRepository.save(findUser);
+    userDetailRepository.delete(deletedEntity);
     return modelMapper
         .map(
             deletedEntity, CompleteUserDetailDto.class
