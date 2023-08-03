@@ -41,6 +41,6 @@ public class CommentFileService {
 
     @Transactional
     public void delete(Long commentSeq) {
-        commentFileRepository.deleteByCommentSeq(commentSeq);
+        commentFileRepository.deleteByCommentEntity_Seq(commentSeq);
     }
 }
