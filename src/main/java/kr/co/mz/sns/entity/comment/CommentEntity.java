@@ -1,7 +1,15 @@
 package kr.co.mz.sns.entity.comment;
 
-import jakarta.persistence.*;
-import kr.co.mz.sns.entity.post.PostEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
@@ -9,9 +17,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -30,12 +35,10 @@ public class CommentEntity {
     @LastModifiedBy
     @Column(name = "create_by", nullable = false)
     private Long createBy;
-    @OneToMany
-    @JoinColumn(name = "comment_seq", nullable = false)
+    @OneToMany(mappedBy = "commentEntity")
     private List<CommentFileEntity> commentFiles;
-    @ManyToOne
-    @JoinColumn(name = "post_seq", nullable = false)
-    private PostEntity postEntity;
+    @Column(name = "post_seq")
+    private Long postSeq;
     @Column(name = "comment_like", nullable = false)
     private Long commentLike;
     @CreatedDate
@@ -44,11 +47,6 @@ public class CommentEntity {
     @LastModifiedDate
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
-
-    public void setPostEntity(PostEntity postEntity) {
-        this.postEntity = postEntity;
-        postEntity.getComments().add(this);
-    }
 
     public CommentEntity increaseCommentLike() {
         this.commentLike += 1;
