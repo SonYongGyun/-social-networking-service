@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InsertFriendRelationshipDto {
 
+  private Long seq;
   private Long userSeq;
   private String status;
   private Long friendSeq;

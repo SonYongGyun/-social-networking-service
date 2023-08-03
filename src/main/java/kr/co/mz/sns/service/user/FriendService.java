@@ -35,11 +35,19 @@ public class FriendService {
 
   @Transactional
   public InsertFriendRelationshipDto request(InsertFriendRelationshipDto insertFriendRelationshipDto) {
+    var userSeq = currentUserInfo.getSeq();
+    var friendSeq = insertFriendRelationshipDto.getFriendSeq();
+    if (friendRelationshipRepository.findByUserEntityAndFriendEntity(userSeq, friendSeq).isPresent()) {
+      throw new IllegalArgumentException(
+          "A friend request from user " + userSeq + " to user " + friendSeq + " already exists.");
+    }
     return mapAndActAndMap(
         insertFriendRelationshipDto,
         FriendRelationshipEntity.class,
         entity -> friendRelationshipRepository.save(
-            entity.userEntity(userService.findBySeq(currentUserInfo.getSeq()))
+            entity
+                .userEntity(userService.findBySeq(userSeq))
+                .friendEntity(userService.findBySeq(friendSeq))
         ),
         InsertFriendRelationshipDto.class
     );
