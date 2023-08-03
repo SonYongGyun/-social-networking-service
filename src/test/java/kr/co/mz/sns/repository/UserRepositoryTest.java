@@ -1,12 +1,12 @@
 package kr.co.mz.sns.repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import kr.co.mz.sns.repository.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class UserRepositoryTest {
@@ -18,7 +18,6 @@ class UserRepositoryTest {
     void testGetUserByEmail() {
         var user1 = userRepository.findByEmail("naver@google.com");
         assertTrue(user1.isEmpty());
-
         var user2Optional = userRepository.findByEmail("naver@naver.com");
         assertTrue(user2Optional.isPresent());
         var user2 = user2Optional.get();
