@@ -1,12 +1,13 @@
 package kr.co.mz.sns.repository.comment;
 
-import java.util.List;
-import java.util.Optional;
 import kr.co.mz.sns.entity.comment.CommentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
 
 
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
@@ -25,4 +26,5 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
 
     @Query("SELECT c FROM CommentEntity c JOIN FETCH c.postEntity WHERE c.seq = :commentSeq")
     Optional<CommentEntity> findBySeqWithPost(@Param("commentSeq") Long commentSeq);
+
 }

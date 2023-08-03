@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class SnsApplication {
 
     public static void main(String[] args) {
+
         SpringApplication.run(SnsApplication.class, args);
+        
     }
 }

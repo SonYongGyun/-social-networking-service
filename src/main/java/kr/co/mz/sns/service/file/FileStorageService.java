@@ -1,22 +1,8 @@
 package kr.co.mz.sns.file;
 
-import static kr.co.mz.sns.file.FileConstants.BASIC_DIRECTORY;
-import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
-
 import jakarta.annotation.Nullable;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
-import kr.co.mz.sns.dto.post.SelectPostDto;
+import kr.co.mz.sns.dto.comment.CommentDto;
+import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto;
 import kr.co.mz.sns.exception.FileWriteException;
 import org.springframework.stereotype.Service;
@@ -29,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
+import static kr.co.mz.sns.service.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
 
 @Service
 public class FileStorageService {
