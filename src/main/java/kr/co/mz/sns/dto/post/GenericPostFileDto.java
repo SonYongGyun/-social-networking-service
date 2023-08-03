@@ -4,8 +4,6 @@ import static kr.co.mz.sns.file.FileStorageService.createPostDirectory;
 import static kr.co.mz.sns.file.FileStorageService.getFileExtension;
 
 import java.time.LocalDateTime;
-import java.util.Set;
-import kr.co.mz.sns.dto.comment.CommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,8 +24,6 @@ public class GenericPostFileDto {
     private String extension;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private Set<GenericPostFileDto> postFiles;
-    private Set<CommentDto> comments;
 
     public static GenericPostFileDto from(MultipartFile file) {
         var createdDirectory = createPostDirectory();

@@ -34,7 +34,7 @@ public class PostFileService {
     }
 
     @Transactional
-    public Set<GenericPostFileDto> insertAll(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
+    public List<GenericPostFileDto> insertAll(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
         var fileList = fileStorageService.convertTo(multipartFiles, GenericPostFileDto::from)
             .stream()
             .map(postFile -> {
@@ -45,7 +45,7 @@ public class PostFileService {
             .toList();
         return postFileRepository.saveAll(fileList).stream()
             .map(entity -> modelMapper.map(entity, GenericPostFileDto.class))
-            .collect(Collectors.toSet());
+            .toList();
     }
 
     @Transactional
