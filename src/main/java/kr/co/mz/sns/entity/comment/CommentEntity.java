@@ -6,8 +6,11 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import kr.co.mz.sns.entity.post.PostEntity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
@@ -33,6 +36,9 @@ public class CommentEntity {
     @LastModifiedBy
     @Column(name = "create_by", nullable = false)
     private Long createBy;
+    @ManyToOne
+    @JoinColumn(name = "post_seq", nullable = false)
+    private PostEntity postEntity;
     @Column(name = "comment_like", nullable = false)
     private Long commentLike;
     @CreatedDate
@@ -41,8 +47,11 @@ public class CommentEntity {
     @LastModifiedDate
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
-    @Column(name = "post_seq", nullable = false)
-    private Long postSeq;
+
+    public void setPostEntity(PostEntity postEntity) {
+        this.postEntity = postEntity;
+        postEntity.getComments().add(this);
+    }
 
     public CommentEntity increaseCommentLike() {
         this.commentLike += 1;
