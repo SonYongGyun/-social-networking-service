@@ -1,4 +1,4 @@
-package kr.co.mz.sns.file;
+package kr.co.mz.sns.service.file;
 
 public class FileConstants {
 

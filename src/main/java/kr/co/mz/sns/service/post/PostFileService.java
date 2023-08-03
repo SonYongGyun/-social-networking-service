@@ -1,10 +1,10 @@
 package kr.co.mz.sns.service.post;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.GenericPostFileDto;
-import kr.co.mz.sns.dto.post.SelectPostDto;
-import kr.co.mz.sns.entity.post.PostEntity;
 import kr.co.mz.sns.entity.post.PostFileEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.file.FileStorageService;
@@ -28,48 +28,46 @@ public class PostFileService {
     private final ModelMapperService modelMapperService;
 
     public List<GenericPostFileDto> findAllByPostSeq(Long postSeq) {
-        return postFileRepository.findAllByPostEntity_Seq(postSeq).stream()
+        return postFileRepository.findAllByPostSeq(postSeq).stream()
             .map(entity -> modelMapper.map(entity, GenericPostFileDto.class))
             .toList();
     }
 
     @Transactional
-    public List<GenericPostFileDto> insertAll(List<MultipartFile> multipartFiles, SelectPostDto selectPostDto) {
+    public Set<GenericPostFileDto> insertAll(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
         var fileList = fileStorageService.convertTo(multipartFiles, GenericPostFileDto::from)
             .stream()
             .map(postFile -> {
                 var postFileEntity = modelMapper.map(postFile, PostFileEntity.class);
-                postFileEntity.setPostEntity(
-                    PostEntity.builder().seq(selectPostDto.getSeq()).postFiles(new ArrayList<>())
-                        .build());
+                postFileEntity.setPostSeq(genericPostDto.getSeq());
                 return postFileEntity;
             })
             .toList();
         return postFileRepository.saveAll(fileList).stream()
             .map(entity -> modelMapper.map(entity, GenericPostFileDto.class))
-            .toList();
+            .collect(Collectors.toSet());
     }
 
     @Transactional
-    public GenericPostFileDto insert(List<MultipartFile> multipartFiles, SelectPostDto selectPostDto) {
+    public GenericPostFileDto insert(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
         var insertedPostFileDto = fileStorageService.convertTo(multipartFiles, GenericPostFileDto::from)
             .stream()
             .map(postFile -> {
                 var postFileEntity = modelMapper.map(postFile, PostFileEntity.class);
-                postFileEntity.setPostEntity(PostEntity.builder().seq(selectPostDto.getSeq()).build());
+                postFileEntity.setPostSeq(genericPostDto.getSeq());
                 return postFileRepository.save(postFileEntity);
             })
             .map(entity -> modelMapper.map(entity, GenericPostFileDto.class))
             .findFirst().orElseThrow();
-        fileStorageService.saveFile(multipartFiles, selectPostDto);
+        fileStorageService.saveFile(multipartFiles, genericPostDto);
 
         return insertedPostFileDto;
     }
 
     @Transactional
-    public GenericPostFileDto delete(SelectPostDto selectPostDto, GenericPostFileDto genericPostFileDto) {
+    public GenericPostFileDto delete(GenericPostDto genericPostDto, GenericPostFileDto genericPostFileDto) {
         return postFileRepository.findByPostSeqAndName(
-                selectPostDto.getSeq(),
+                genericPostDto.getSeq(),
                 genericPostFileDto.getName()
             ).map(entity -> {
                 var fileDto = modelMapper.map(entity, GenericPostFileDto.class);
@@ -80,10 +78,10 @@ public class PostFileService {
     }
 
     @Transactional
-    public List<GenericPostFileDto> deleteAllByPostSeq(Long postSeq) {
-        var deletedPostFiles = postFileRepository.findAllByPostEntity_Seq(postSeq).stream()
+    public Set<GenericPostFileDto> deleteAllByPostSeq(Long postSeq) {
+        var deletedPostFiles = postFileRepository.findAllByPostSeq(postSeq).stream()
             .map(entity -> modelMapper.map(entity, GenericPostFileDto.class))
-            .toList();
+            .collect(Collectors.toSet());
         if (!deletedPostFiles.isEmpty()) {
             postFileRepository.deleteAllByPostSeq(postSeq);
         }

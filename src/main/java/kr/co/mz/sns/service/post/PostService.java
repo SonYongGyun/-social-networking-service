@@ -3,6 +3,8 @@ package kr.co.mz.sns.service.post;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.PostLikeDto;
 import kr.co.mz.sns.dto.post.PostSearchDto;
 import kr.co.mz.sns.dto.post.SelectPostDto;
@@ -46,11 +48,11 @@ public class PostService {
             .toList();
     }
 
-    public SelectPostDto findByKey(Long seq) {
+    public GenericPostDto findByKey(Long seq) {
         return postRepository.findBySeqWithPostFilesAndComments(seq)
             .map(
                 entity -> {
-                    var postDto = modelMapper.map(entity, SelectPostDto.class);
+                    var postDto = modelMapper.map(entity, GenericPostDto.class);
                     postDto.setComments(commentService.findAllByPostSeq(seq));
                     return postDto;
                 })
@@ -58,12 +60,12 @@ public class PostService {
     }
 
     @Transactional
-    public SelectPostDto insert(List<MultipartFile> multipartFiles, SelectPostDto selectPostDto) {
+    public GenericPostDto insert(List<MultipartFile> multipartFiles, GenericPostDto genericPostDto) {
         var insertedPostDto = modelMapperService.mapAndActAndMap(
-            Optional.of(selectPostDto).stream(),
+            Optional.of(genericPostDto).stream(),
             PostEntity.class,
             postRepository::save,
-            SelectPostDto.class
+            GenericPostDto.class
         ).findFirst().orElseThrow();
 
         // insert POST_FILE into Database
@@ -77,19 +79,19 @@ public class PostService {
     }
 
     @Transactional
-    public SelectPostDto updateByKey(SelectPostDto postDto) {
+    public GenericPostDto updateByKey(GenericPostDto postDto) {
         return postRepository.findById(postDto.getSeq())
             .map(entity -> {
                 entity.setContent(postDto.getContent());
                 return entity;
             })
             .map(postRepository::save)
-            .map(entity -> modelMapper.map(entity, SelectPostDto.class))
+            .map(entity -> modelMapper.map(entity, GenericPostDto.class))
             .orElseThrow(() -> new NotFoundException("Post with ID " + postDto.getSeq() + "not found"));
     }
 
     @Transactional
-    public SelectPostDto deleteByKey(Long seq) {
+    public GenericPostDto deleteByKey(Long seq) {
         var deletedPostFiles = postFileService.deleteAllByPostSeq(seq).stream().map(
             postFile -> {
                 System.out.println(postFile.getPath() + File.separator
@@ -100,12 +102,12 @@ public class PostService {
                 );
                 return postFile;
             }
-        ).toList();
+        ).collect(Collectors.toSet());
         var deletedComments = commentService.deleteAllByPostSeq(seq);
         var deletedPostDto = postRepository.findById(seq)
             .map(entity -> {
                 postRepository.delete(entity);
-                return modelMapper.map(entity, SelectPostDto.class);
+                return modelMapper.map(entity, GenericPostDto.class);
             })
             .orElseThrow(() -> new NotFoundException("Post with ID " + seq + "not found"));
 

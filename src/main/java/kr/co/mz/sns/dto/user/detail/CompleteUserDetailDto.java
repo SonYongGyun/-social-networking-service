@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class CompleteUserDetailDto {
 
+  private Long detailSeq;
   private Long userSeq;
   private Boolean blocked;
   private String greeting;

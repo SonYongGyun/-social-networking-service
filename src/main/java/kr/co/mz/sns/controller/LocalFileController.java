@@ -1,6 +1,6 @@
 package kr.co.mz.sns.controller;
 
-import static kr.co.mz.sns.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
+import static kr.co.mz.sns.service.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import kr.co.mz.sns.dto.LocalFileResponseDto;
-import kr.co.mz.sns.dto.post.SelectPostDto;
+import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.file.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -50,12 +50,12 @@ public class LocalFileController {
     @PostMapping("/posts")
     public ResponseEntity<LocalFileResponseDto> insertFileIntoLocal(
         @RequestBody List<MultipartFile> multipartFilesList,
-        @RequestBody SelectPostDto selectPostDto
+        @RequestBody GenericPostDto genericPostDto
     ) {
         var fileResponses = new ArrayList<LocalFileResponseDto>();
 
         String message = "Saved into localDirectory.";
-        fileStorageService.saveFile(multipartFilesList, selectPostDto);
+        fileStorageService.saveFile(multipartFilesList, genericPostDto);
         return ResponseEntity.ok(new LocalFileResponseDto("filepath", message));
     }
 }

@@ -3,8 +3,8 @@ package kr.co.mz.sns.controller.post;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
+import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.GenericPostFileDto;
-import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.service.post.PostFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class PostFileController {
         @RequestPart("files") List<MultipartFile> files,
         @NotNull @PathVariable Long seq
     ) {
-        var insertedPostFileDto = postFileService.insert(files, new SelectPostDto(seq));
+        var insertedPostFileDto = postFileService.insert(files, GenericPostDto.builder().seq(seq).build());
         return ResponseEntity.
             created(URI.create("/api/auth/posts/" + seq + "/file/" + insertedPostFileDto.getSeq()))
             .body(insertedPostFileDto);
@@ -52,7 +52,7 @@ public class PostFileController {
         @RequestBody GenericPostFileDto postFileDto
     ) {
         return ResponseEntity.ok(
-            postFileService.delete(new SelectPostDto(seq), postFileDto)
+            postFileService.delete(GenericPostDto.builder().seq(seq).build(), postFileDto)
         );
     }
 
