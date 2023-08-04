@@ -18,8 +18,21 @@ public interface FriendRelationshipRepository extends JpaRepository<FriendRelati
 
   Optional<FriendRelationshipEntity> findBySeq(Long seq);
 
-  @Query("SELECT f FROM FriendRelationshipEntity f JOIN FETCH f.userEntity u WHERE u.seq = :userSeq")
-  Page<FriendRelationshipEntity> findAllByUserSeqAsPage(@Param("userSeq") Long userSeq, Pageable pageable);
+  @Query("""
+      select new kr.co.mz.sns.dto.user.friend.FriendDetailDto (
+          f.seq,
+          f.userEntity.seq,
+          f.status,
+          f.createdAt,
+          f.friendEntity.seq,
+          f.friendEntity.name,
+          f.friendEntity.userDetail.greeting,
+          f.friendEntity.userDetail.lastLoginAt
+      )
+      FROM FriendRelationshipEntity f
+      WHERE f.userEntity.seq = :userSeq
+      """)
+  Page<FriendDetailDto> findAllByUserSeqAsPage(@Param("userSeq") Long userSeq, Pageable pageable);
 
   Optional<FriendRelationshipEntity> findByUserEntity_SeqAndFriendEntity_Seq(Long userSeq, Long friendSeq);
 
@@ -28,19 +41,22 @@ public interface FriendRelationshipRepository extends JpaRepository<FriendRelati
 
   @Query("""
       select new kr.co.mz.sns.dto.user.friend.FriendDetailDto (
-          f.seq , 
-          f.userEntity.seq, 
-          f.status ,
+          f.seq,
+          f.userEntity.seq,
+          f.status,
           f.createdAt,
           f.friendEntity.seq,
-          f.friendEntity.name , 
+          f.friendEntity.name,
           f.friendEntity.userDetail.greeting,
-          f.friendEntity.userDetail.lastLoginAt 
-      ) 
-      from FriendRelationshipEntity f 
-      where f.friendEntity.name = :friendName and f.status = :status
+          f.friendEntity.userDetail.lastLoginAt
+      )
+      from FriendRelationshipEntity f
+      where f.userEntity.seq = :userSeq and f.friendEntity.name = :friendName and f.status = :status
       """)
-  List<FriendDetailDto> findByFriendEntity_NameAndStatus(@Param("friendName") String friendName,
-      @Param("status") String status);
+  List<FriendDetailDto> findByUserEntity_SeqAndFriendEntity_NameAndStatus(
+      @Param("userSeq") Long userSeq,
+      @Param("friendName") String friendName,
+      @Param("status") String status
+  );
 }
 

@@ -57,4 +57,7 @@ public class UserEntity {
   @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
   protected List<FriendRelationshipEntity> friendRelationships;
 
+  @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  protected List<UserProfileEntity> userProfileEntityList;
+
 }

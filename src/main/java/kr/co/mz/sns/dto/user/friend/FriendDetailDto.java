@@ -28,4 +28,13 @@ public class FriendDetailDto {
     this.greeting = greeting;
     this.lastLoginAt = lastLoginAt;
   }
+
+  public FriendDetailDto(Long seq, Long userSeq, String status, LocalDateTime createdAt, Long friendSeq, String name) {
+    this.seq = seq;
+    this.userSeq = userSeq;
+    this.status = status;
+    this.createdAt = createdAt;
+    this.friendSeq = friendSeq;
+    this.name = name;
+  }
 }

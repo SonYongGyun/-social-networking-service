@@ -86,9 +86,8 @@ public class FriendService {
 
   @Transactional
   public List<FriendDetailDto> findByFriendName(String friendName) {
-    List<FriendDetailDto> complexFriendDetailDtos = friendRelationshipRepository.findByFriendEntity_NameAndStatus(
-        friendName, FR_WE_ARE_FRIEND);
-    return complexFriendDetailDtos;
+    return friendRelationshipRepository.findByUserEntity_SeqAndFriendEntity_NameAndStatus(
+        currentUserInfo.getSeq(), friendName, FR_WE_ARE_FRIEND);
   }
 
 
