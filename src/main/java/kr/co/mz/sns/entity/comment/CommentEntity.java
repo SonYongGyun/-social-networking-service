@@ -39,8 +39,8 @@ public class CommentEntity {
     private List<CommentFileEntity> commentFiles;
     @Column(name = "post_seq")
     private Long postSeq;
-    @Column(name = "comment_like", nullable = false)
-    private Long commentLike;
+    @Column(name = "likes", nullable = false)
+    private Long likes;
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -49,7 +49,7 @@ public class CommentEntity {
     private LocalDateTime modifiedAt;
 
     public CommentEntity increaseCommentLike() {
-        this.commentLike += 1;
+        this.likes += 1;
         return this;
     }
 

@@ -16,12 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class GenericPostFileDto {
 
+
     private Long seq;
-    private GenericPostDto genericPostDto;
     private String name;
     private String path;
     private Long size;
     private String extension;
+    private Long postSeq;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
