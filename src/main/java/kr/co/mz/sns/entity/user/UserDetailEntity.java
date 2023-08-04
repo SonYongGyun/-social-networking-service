@@ -10,9 +10,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,6 +55,9 @@ public class UserDetailEntity {
   @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinColumn(name = "user_seq")
   protected UserEntity userEntity;
+
+  @OneToMany(mappedBy = "userDetailEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  protected List<UserProfileEntity> userProfileEntityList;
 
 
   public UserDetailEntity greeting(String greeting) {

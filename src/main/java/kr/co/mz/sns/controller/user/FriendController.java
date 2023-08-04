@@ -53,7 +53,7 @@ public class FriendController {
   }
 
   @GetMapping("/search/{friendName}")
-  public List<FriendDetailDto> findBy(@PathVariable String friendName) {
+  public List<FriendDetailDto> findByName(@PathVariable String friendName) {
     return friendService.findByFriendName(friendName);
   }
 

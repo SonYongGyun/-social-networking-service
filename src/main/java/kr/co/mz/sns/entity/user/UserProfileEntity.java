@@ -48,5 +48,5 @@ public class UserProfileEntity {
 
   @ManyToOne
   @JoinColumn(name = "user_seq")
-  private UserEntity userEntity;
+  private UserDetailEntity userDetailEntity;
 }

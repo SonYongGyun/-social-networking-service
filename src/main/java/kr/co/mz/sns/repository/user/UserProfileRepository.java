@@ -15,10 +15,10 @@ public interface UserProfileRepository extends JpaRepository<UserProfileEntity, 
   @Transactional
   UserProfileEntity deleteBySeq(Long fileSeq);
 
-  List<UserProfileEntity> findAllByUserSeq(Long userSeq);
+  List<UserProfileEntity> findAllByUserEntity_Seq(Long userSeq);
 
   @Modifying
   @Transactional
-  @Query("DELETE FROM UserProfileEntity f WHERE f.userSeq = :userSeq")
+  @Query("DELETE FROM UserProfileEntity f WHERE f.userEntity.seq = :userSeq")
   int deleteAllByUserSeq(Long userSeq);
 }

@@ -73,16 +73,29 @@ public class FriendService {
     var responder = userService.findBySeq(currentUserInfo.getSeq());
     var requester = userService.findBySeq(requestedRelationshipDto.getRequesterSeq());
 
-    var relationship = friendRelationshipRepository
+    friendRelationshipRepository
         .findByUserEntity_SeqAndFriendEntity_Seq(
-            requester.getSeq(),
-            responder.getSeq()
+            responder.getSeq(),
+            requester.getSeq()
         )
-        .orElseThrow(() -> new IllegalArgumentException("상대방이 탈퇴한 회원인 것 같아요."))
-        .status(requestedRelationshipDto.getStatus());
+        .ifPresent(
+            friendRelationshipEntity -> friendRelationshipEntity.status(requestedRelationshipDto.getStatus())
+        );
 
-    return modelMapper.map(relationship, ResponseRelationshipDto.class);
+    return modelMapper.map(
+        friendRelationshipRepository
+            .findByUserEntity_SeqAndFriendEntity_Seq(
+                requester.getSeq(),
+                responder.getSeq()
+            )
+            .orElseThrow(() -> new IllegalArgumentException("상대방이 탈퇴한 회원인 것 같아요."))
+            .status(requestedRelationshipDto.getStatus())
+        , ResponseRelationshipDto.class
+    );
   }
+
+//  @Transactional
+//  public List<>
 
   @Transactional
   public List<FriendDetailDto> findByFriendName(String friendName) {
