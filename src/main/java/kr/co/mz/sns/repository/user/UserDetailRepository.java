@@ -21,9 +21,6 @@ public interface UserDetailRepository extends JpaRepository<UserDetailEntity, Lo
   @Transactional
   Long deleteByUserEntity(UserEntity userEntity);
 
-//  @Query("SELECT d FROM UserDetailEntity d WHERE d.userEntity.seq IN :seqs")
-//  List<UserDetailEntity> findAllByUserSeqIn(@Param("seqs") List<Long> seqs);
-
   @Query("select d from UserDetailEntity d where d.userEntity.seq in :userSeqs")
   List<UserDetailEntity> findAllByUserEntity_SeqIn(@Param("userSeqs") List<Long> userSeqs);
 }

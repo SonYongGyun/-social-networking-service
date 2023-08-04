@@ -67,5 +67,15 @@ public class FriendRelationshipEntity {
     return this;
   }
 
+  public FriendRelationshipEntity requesterEntity(UserEntity user) {
+    this.userEntity = user;
+    return this;
+  }
+
+  public FriendRelationshipEntity responderEntity(UserEntity friend) {
+    this.friendEntity = friend;
+    return this;
+  }
+
 
 }

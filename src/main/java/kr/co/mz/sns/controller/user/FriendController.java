@@ -1,9 +1,12 @@
 package kr.co.mz.sns.controller.user;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import kr.co.mz.sns.dto.user.friend.AFriendDto;
-import kr.co.mz.sns.dto.user.friend.AcceptFriendRelationshipDto;
+import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
 import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
+import kr.co.mz.sns.dto.user.friend.RequestedRelationshipDto;
+import kr.co.mz.sns.dto.user.friend.ResponseRelationshipDto;
 import kr.co.mz.sns.service.user.FriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,15 +37,14 @@ public class FriendController {
     );
   }
 
-  @PutMapping("/request/accept")
-  public ResponseEntity<InsertFriendRelationshipDto> putRelationship(
-      AcceptFriendRelationshipDto acceptFriendRelationshipDto) {
+  @PutMapping("/request/response")
+  public ResponseEntity<ResponseRelationshipDto> putRelationship(
+      @RequestBody RequestedRelationshipDto requestedRelationshipDto) {
     return ResponseEntity.ok(
-        friendService.putRelationship(acceptFriendRelationshipDto)
+        friendService.putRelationship(requestedRelationshipDto)
     );
   }
 
-  //todo pageable 바로 받아서 구현하기.
   @GetMapping("/list")
   public Page<AFriendDto> findAllFriends(
       @PageableDefault(sort = {"modifiedAt", "status"}, direction = Sort.Direction.DESC) Pageable pageable
@@ -49,13 +52,9 @@ public class FriendController {
     return friendService.findAllFriendsAsPage(pageable);
   }
 
-//  @GetMapping("/search")
-//  public List<FriendDetailDto> findBy(@RequestParam String friendName) {
-//    return friendService.findByFriendName(friendName);
-//  }
-//  @GetMapping("/list")
-//  public ResponseEntity<List<ListFriendDto>> showAll() {
-//    return ResponseEntity.ok(friendService.findAll(currentUserInfo.getSeq()));
-//  }
+  @GetMapping("/search/{friendName}")
+  public List<FriendDetailDto> findBy(@PathVariable String friendName) {
+    return friendService.findByFriendName(friendName);
+  }
 
 }

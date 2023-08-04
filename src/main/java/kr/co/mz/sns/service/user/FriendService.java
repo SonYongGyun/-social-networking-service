@@ -3,12 +3,17 @@ package kr.co.mz.sns.service.user;
 import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WAITING_PERMIT_REQUEST;
 import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WE_ARE_FRIEND;
 
+import java.util.List;
 import java.util.function.Function;
 import kr.co.mz.sns.dto.user.friend.AFriendDto;
-import kr.co.mz.sns.dto.user.friend.AcceptFriendRelationshipDto;
+import kr.co.mz.sns.dto.user.friend.FriendDetailDto;
 import kr.co.mz.sns.dto.user.friend.InsertFriendRelationshipDto;
+import kr.co.mz.sns.dto.user.friend.RequestedRelationshipDto;
+import kr.co.mz.sns.dto.user.friend.ResponseRelationshipDto;
 import kr.co.mz.sns.entity.user.FriendRelationshipEntity;
 import kr.co.mz.sns.repository.user.FriendRelationshipRepository;
+import kr.co.mz.sns.repository.user.UserDetailRepository;
+import kr.co.mz.sns.repository.user.UserRepository;
 import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -28,6 +33,8 @@ public class FriendService {
   private final ModelMapper modelMapper;
   private final CurrentUserInfo currentUserInfo;
   private final UserService userService;
+  private final UserRepository userRepository;
+  private final UserDetailRepository userDetailRepository;
 
 
   public Page<AFriendDto> findAllFriendsAsPage(Pageable pageable) {
@@ -62,36 +69,28 @@ public class FriendService {
   }
 
   @Transactional
-  public InsertFriendRelationshipDto putRelationship(AcceptFriendRelationshipDto acceptFriendRelationshipDto) {
-    var userSeq = currentUserInfo.getSeq();
-    var friendSeq = acceptFriendRelationshipDto.getFriendSeq();
-    if (friendRelationshipRepository.findByUserEntity_SeqAndFriendEntity_Seq(userSeq, friendSeq).isEmpty()) {
-      throw new IllegalArgumentException(
-          "The friend request that was sent from User " + userSeq + " to User " + friendSeq
-              + " cannot be updated as it may have been deleted or the user no longer exists."
-      );
-    }
-    return mapAndActAndMap(
-        acceptFriendRelationshipDto,
-        FriendRelationshipEntity.class,
-        entity -> friendRelationshipRepository.save(
-            entity
-                .userEntity(userService.findBySeq(userSeq))
-                .friendEntity(userService.findBySeq(friendSeq))
-                .status(FR_WE_ARE_FRIEND)
-        ),
-        InsertFriendRelationshipDto.class
-    );
+  public ResponseRelationshipDto putRelationship(RequestedRelationshipDto requestedRelationshipDto) {
+    var responder = userService.findBySeq(currentUserInfo.getSeq());
+    var requester = userService.findBySeq(requestedRelationshipDto.getRequesterSeq());
+
+    var relationship = friendRelationshipRepository
+        .findByUserEntity_SeqAndFriendEntity_Seq(
+            requester.getSeq(),
+            responder.getSeq()
+        )
+        .orElseThrow(() -> new IllegalArgumentException("상대방이 탈퇴한 회원인 것 같아요."))
+        .status(requestedRelationshipDto.getStatus());
+
+    return modelMapper.map(relationship, ResponseRelationshipDto.class);
   }
-//
-//  public List<FriendDetailDto> findByFriendName(String friendName) {
-//    List<FriendRelationshipEntity> friendEntities = friendRelationshipRepository.findByFriendName(friendName);
-//    return friendEntities.stream()
-//        .filter(friend -> !friend.getStatus().equals(FR_BLOCKED))
-//        .map(FriendRelationshipEntity::getUserDetailEntity)
-//        .map(userDetailEntity -> modelMapper.map(userDetailEntity, FriendDetailDto.class))
-//        .collect(Collectors.toList());
-//  }
+
+  @Transactional
+  public List<FriendDetailDto> findByFriendName(String friendName) {
+    List<FriendDetailDto> complexFriendDetailDtos = friendRelationshipRepository.findByFriendEntity_NameAndStatus(
+        friendName, FR_WE_ARE_FRIEND);
+    return complexFriendDetailDtos;
+  }
+
 
   private <FIRST, SECOND, THIRD> THIRD mapAndActAndMap(
       FIRST source, Class<SECOND> secondType, Function<SECOND, SECOND> function, Class<THIRD> thirdType
