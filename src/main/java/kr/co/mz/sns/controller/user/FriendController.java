@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,12 +42,11 @@ public class FriendController {
   }
 
   //todo pageable 바로 받아서 구현하기.
-  @GetMapping("/list/{userSeq}")
+  @GetMapping("/list")
   public Page<AFriendDto> findAllFriends(
-      @PathVariable Long userSeq,
       @PageableDefault(sort = {"modifiedAt", "status"}, direction = Sort.Direction.DESC) Pageable pageable
   ) {
-    return friendService.findAllFriendsAsPage(userSeq, pageable);
+    return friendService.findAllFriendsAsPage(pageable);
   }
 
 //  @GetMapping("/search")

@@ -30,10 +30,10 @@ public class FriendService {
   private final UserService userService;
 
 
-  public Page<AFriendDto> findAllFriendsAsPage(Long userSeq, Pageable pageable) {
+  public Page<AFriendDto> findAllFriendsAsPage(Pageable pageable) {
     return friendRelationshipRepository
-        .findAllByUserSeqAsStream(
-            userSeq,
+        .findAllByUserSeqAsPage(
+            currentUserInfo.getSeq(),
             pageable
         )
         .map(entity -> modelMapper.map(entity, AFriendDto.class));
@@ -43,7 +43,7 @@ public class FriendService {
   public InsertFriendRelationshipDto request(InsertFriendRelationshipDto insertFriendRelationshipDto) {
     var userSeq = currentUserInfo.getSeq();
     var friendSeq = insertFriendRelationshipDto.getFriendSeq();
-    if (friendRelationshipRepository.findByUserEntityAndFriendEntity(userSeq, friendSeq).isPresent()) {
+    if (friendRelationshipRepository.findByUserEntity_SeqAndFriendEntity_Seq(userSeq, friendSeq).isPresent()) {
       throw new IllegalArgumentException(
           "A friend request from user " + userSeq + " to user " + friendSeq + " already exists.");
     }
@@ -65,7 +65,7 @@ public class FriendService {
   public InsertFriendRelationshipDto putRelationship(AcceptFriendRelationshipDto acceptFriendRelationshipDto) {
     var userSeq = currentUserInfo.getSeq();
     var friendSeq = acceptFriendRelationshipDto.getFriendSeq();
-    if (friendRelationshipRepository.findByUserEntityAndFriendEntity(userSeq, friendSeq).isEmpty()) {
+    if (friendRelationshipRepository.findByUserEntity_SeqAndFriendEntity_Seq(userSeq, friendSeq).isEmpty()) {
       throw new IllegalArgumentException(
           "The friend request that was sent from User " + userSeq + " to User " + friendSeq
               + " cannot be updated as it may have been deleted or the user no longer exists."
