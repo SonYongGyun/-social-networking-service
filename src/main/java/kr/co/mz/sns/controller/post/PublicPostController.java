@@ -3,9 +3,9 @@ package kr.co.mz.sns.controller.post;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import kr.co.mz.sns.dto.post.FindAllPostDto;
 import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.PostSearchDto;
-import kr.co.mz.sns.dto.post.SelectPostDto;
 import kr.co.mz.sns.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -24,14 +24,14 @@ public class PublicPostController {
     private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<List<SelectPostDto>> getAll(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<List<FindAllPostDto>> getAll(@RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size, @Nullable @RequestParam String keyword) {
-        List<SelectPostDto> posts;
+        List<FindAllPostDto> posts;
         var pageable = PageRequest.of(page, size);
         if (keyword == null) {
             posts = postService.findAll(pageable);
         } else {
-            posts = postService.findByKeyword(new PostSearchDto(keyword), pageable);
+            posts = postService.findAllByKeyword(new PostSearchDto(keyword), pageable);
         }
         return ResponseEntity
             .ok(posts);

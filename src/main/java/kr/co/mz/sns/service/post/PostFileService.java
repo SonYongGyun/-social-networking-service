@@ -3,6 +3,7 @@ package kr.co.mz.sns.service.post;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.post.GenericPostFileDto;
 import kr.co.mz.sns.entity.post.PostFileEntity;
@@ -31,6 +32,10 @@ public class PostFileService {
         return postFileRepository.findAllByPostSeq(postSeq).stream()
             .map(entity -> modelMapper.map(entity, GenericPostFileDto.class))
             .toList();
+    }
+
+    public Stream<GenericPostFileDto> findAllByPostSeqs(List<Long> postSeqs) {
+        return postFileRepository.findAllByPostSeqs(postSeqs);
     }
 
     @Transactional
