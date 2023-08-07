@@ -40,7 +40,7 @@ public class UserProfileController {
 
   @PostMapping
   public ResponseEntity<List<CompleteUserProfileDto>> upload(
-      @Valid @RequestParam List<MultipartFile> files
+      @Valid @RequestParam("files") List<MultipartFile> files
   ) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
@@ -59,7 +59,7 @@ public class UserProfileController {
   }
 
   @DeleteMapping
-  public ResponseEntity<Integer> deleteAll() {
+  public ResponseEntity<List<Long>> deleteAll() {
     return ResponseEntity
         .status(HttpStatus.NO_CONTENT)
         .body(

@@ -12,10 +12,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface UserDetailRepository extends JpaRepository<UserDetailEntity, Long> {
 
-  Optional<UserDetailEntity> findByDetailSeq(Long detailSeq);
+  @Transactional
+  Optional<UserDetailEntity> findByUserEntity_Seq(Long userSeq);
 
-  //  Optional<UserDetailEntity> findByName(String userName);
-  Optional<UserDetailEntity> findByUserEntity(UserEntity userEntity);
+//  @Transactional
+//  @Query("""
+//      select new kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto (
+//      )
+//      from UserDetailEntity ud
+//      join fetch UserProfileEntity
+//      """)
+//  Optional<UserDetailEntity> findUserDetailAndProfileByUserEntity_Seq(Long userSeq);
+
+  @Transactional
+  Optional<UserDetailEntity> findByUserEntity_Name(String userName);
 
   @Modifying
   @Transactional

@@ -78,7 +78,7 @@ public class UserDetailService {
 
   @Transactional
   public CompleteUserDetailDto updateByUserSeq(UpdateUserDetailDto updateUserDetailDto) {
-    var updatedEntity = userDetailRepository.findByDetailSeq(updateUserDetailDto.getUserSeq())
+    var updatedEntity = userDetailRepository.findByUserEntity_Seq(updateUserDetailDto.getUserSeq())
         .map(entity -> entity.greeting(updateUserDetailDto.getGreeting()))
         .map(userDetailRepository::save)
         .orElseThrow(() -> new NotFoundException("Oops! No existing detail! Insert your detail first!"));
@@ -89,7 +89,7 @@ public class UserDetailService {
   @Transactional
   public CompleteUserDetailDto deleteByUserSeq(Long userSeq) {
     var findUser = userRepository.findBySeq(userSeq).orElseThrow();
-    var deletedEntity = userDetailRepository.findByUserEntity(findUser).orElseThrow();
+    var deletedEntity = userDetailRepository.findByUserEntity_Seq(userSeq).orElseThrow();
     findUser.setUserDetail(null);
     userRepository.save(findUser);
     userDetailRepository.delete(deletedEntity);
