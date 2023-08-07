@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AcceptedFriendRelationshipDto {
+public class ResponseRelationshipDto {
 
   private Long userSeq;
   private String status;

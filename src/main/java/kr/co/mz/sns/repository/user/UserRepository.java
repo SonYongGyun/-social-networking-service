@@ -1,5 +1,6 @@
 package kr.co.mz.sns.repository.user;
 
+import java.util.List;
 import java.util.Optional;
 import kr.co.mz.sns.entity.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
   @Query("SELECT u FROM UserEntity u LEFT JOIN FETCH u.userDetail WHERE u.email = :email")
   Optional<UserEntity> findByEmailWithUserDetail(@Param("email") String email);
+
+  @Query("select u from UserEntity u where u.seq in :seqs")
+  List<UserEntity> findAllBySeqIn(@Param("seqs") List<Long> seqs);
 
   boolean existsByEmail(String email);
 

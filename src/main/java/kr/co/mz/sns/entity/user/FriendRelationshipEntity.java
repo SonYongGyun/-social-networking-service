@@ -1,7 +1,5 @@
 package kr.co.mz.sns.entity.user;
 
-import static kr.co.mz.sns.entity.user.constant.FriendRelationshipConst.FR_WAITING_PERMIT_REQUEST;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -13,6 +11,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,7 +21,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "friend_relationship")
 @EntityListeners(AuditingEntityListener.class)
 public class FriendRelationshipEntity {
@@ -52,11 +54,25 @@ public class FriendRelationshipEntity {
 
   public FriendRelationshipEntity userEntity(UserEntity user) {
     this.userEntity = user;
-    this.status = FR_WAITING_PERMIT_REQUEST;
     return this;
   }
 
   public FriendRelationshipEntity friendEntity(UserEntity friend) {
+    this.friendEntity = friend;
+    return this;
+  }
+
+  public FriendRelationshipEntity status(String status) {
+    this.status = status;
+    return this;
+  }
+
+  public FriendRelationshipEntity requesterEntity(UserEntity user) {
+    this.userEntity = user;
+    return this;
+  }
+
+  public FriendRelationshipEntity responderEntity(UserEntity friend) {
     this.friendEntity = friend;
     return this;
   }
