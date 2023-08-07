@@ -19,7 +19,10 @@ import java.util.stream.Collectors;
 import kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto;
 import kr.co.mz.sns.entity.user.UserProfileEntity;
 import kr.co.mz.sns.exception.FileWriteException;
+import kr.co.mz.sns.exception.NotFoundException;
+import kr.co.mz.sns.repository.user.UserDetailRepository;
 import kr.co.mz.sns.repository.user.UserProfileRepository;
+import kr.co.mz.sns.util.CurrentUserInfo;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -36,6 +39,8 @@ public class UserProfileService {
 
   private final UserProfileRepository userProfileRepository;
   private final ModelMapper modelMapper;
+  private final CurrentUserInfo currentUserInfo;
+  private final UserDetailRepository userDetailRepository;
 
   @Transactional
   public List<CompleteUserProfileDto> insert(List<MultipartFile> files) {
@@ -46,16 +51,25 @@ public class UserProfileService {
     var requiredUuids = getUuidList(files.size());
     var dtos = convertToDtos(files, requiredUuids);
     this.saveIntoLocal(files, requiredUuids);
+    var userDetail = userDetailRepository
+        .findByUserEntity_Seq(currentUserInfo.getSeq())
+        .orElseThrow(() -> new NotFoundException("없는 사용자입니다."));
     return dtos
         .stream()
-        .map(dto -> userProfileRepository.save(modelMapper.map(dto, UserProfileEntity.class)))
+        .map(dto -> modelMapper
+            .map(
+                dto,
+                UserProfileEntity.class
+            )
+            .userDetailEntity(userDetail))
+        .map(userProfileRepository::save)
         .map(entity -> modelMapper.map(entity, CompleteUserProfileDto.class))
         .toList();
   }
 
   @Transactional
   public Set<CompleteUserProfileDto> findAll(Long userSeq) {
-    return userProfileRepository.findAllByUserEntity_Seq(userSeq)
+    return userProfileRepository.findAllByUserDetailEntity_UserEntity_Seq(userSeq)
         .stream()
         .map(entity -> modelMapper.map(entity, CompleteUserProfileDto.class))
         .collect(Collectors.toSet());
@@ -68,8 +82,13 @@ public class UserProfileService {
   }
 
   @Transactional
-  public Integer deleteAll(Long userSeq) {
-    return userProfileRepository.deleteAllByUserSeq(userSeq);
+  public List<Long> deleteAll(Long userSeq) {
+    var profileSeqList = userProfileRepository.findAllUserProfileSeqsByUserEntity_Seq(userSeq);
+    userProfileRepository
+        .deleteAllByUserSeq(
+            profileSeqList
+        );
+    return profileSeqList;
   }
 
   public InputStream downloadFile(CompleteUserProfileDto profileDto) {

@@ -5,6 +5,7 @@ import kr.co.mz.sns.entity.user.UserProfileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface UserProfileRepository extends JpaRepository<UserProfileEntity, Long> {
@@ -15,10 +16,16 @@ public interface UserProfileRepository extends JpaRepository<UserProfileEntity, 
   @Transactional
   UserProfileEntity deleteBySeq(Long fileSeq);
 
-  List<UserProfileEntity> findAllByUserEntity_Seq(Long userSeq);
+  @Transactional
+  List<UserProfileEntity> findAllByUserDetailEntity_UserEntity_Seq(Long userSeq);
+
+
+  @Transactional
+  @Query("select p.seq from UserProfileEntity p where p.userDetailEntity.userEntity.seq = :userSeq")
+  List<Long> findAllUserProfileSeqsByUserEntity_Seq(@Param("userSeq") Long userSeq);
 
   @Modifying
   @Transactional
-  @Query("DELETE FROM UserProfileEntity f WHERE f.userEntity.seq = :userSeq")
-  int deleteAllByUserSeq(Long userSeq);
+  @Query("delete from UserProfileEntity p where p.seq in :userProfileSeqs")
+  int deleteAllByUserSeq(@Param("userProfileSeqs") List<Long> userProfileSeqs);
 }

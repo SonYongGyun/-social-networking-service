@@ -49,4 +49,9 @@ public class UserProfileEntity {
   @ManyToOne
   @JoinColumn(name = "user_seq")
   private UserDetailEntity userDetailEntity;
+
+  public UserProfileEntity userDetailEntity(UserDetailEntity userDetail) {
+    this.userDetailEntity = userDetail;
+    return this;
+  }
 }

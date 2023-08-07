@@ -30,4 +30,8 @@ public class CompleteUserProfileDto {
     this.name = name;
   }
 
+  public CompleteUserProfileDto userSeq(Long seq) {
+    this.userSeq = seq;
+    return this;
+  }
 }
