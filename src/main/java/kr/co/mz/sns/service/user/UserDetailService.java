@@ -47,23 +47,21 @@ public class UserDetailService {
 
 
   public UserDetailAndProfileDto findByEmail(String email) {
-    var userSeq = userService.findByUserEmail(email).getSeq();
-
     var findUserDetailDto = modelMapper
         .map(
             userDetailRepository
-                .findById(userSeq)
+                .findByUserEntity_Email(email)
                 .orElseThrow(
                     () -> new NotFoundException("등록된 상세 정보가 없습니다. 지금 바로 작성 해 보세 요!")
                 ),
             UserDetailAndProfileDto.class);
 
-    findUserDetailDto.setUserProfileDtoSet(userProfileService.findAllByUserSeqAsSet(userSeq));
+    findUserDetailDto.setUserProfileDtoSet(userProfileService.findAllByUserEmailAsSet(email));
 
     return findUserDetailDto;
   }
 
-  @Transactional//로그인하면 인서트가 굳이 필요없이 바로 그냥 로그인시각업데이트되면서 인서트되버림.
+  @Transactional
   public WriteUserDetailDto insert(InsertUserDetailDto insertUserDetailDto) {
 
     var userEntity = userService.findBySeq(insertUserDetailDto.getUserSeq());

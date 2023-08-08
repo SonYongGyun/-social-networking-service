@@ -36,6 +36,24 @@ public interface UserProfileRepository extends JpaRepository<UserProfileEntity, 
       """)
   Set<CompleteUserProfileDto> findAllByUserDetailEntity_UserEntity_SeqAsSet(@Param("userSeq") Long userSeq);
 
+  @Transactional
+  @Query("""
+          select new kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto(
+              p.seq,
+              p.userDetailEntity.userEntity.seq,
+              p.uuid,
+              p.name,
+              p.path,
+              p.size,
+              p.extension,
+              p.createdAt,
+              p.modifiedAt
+          )
+          from UserProfileEntity p
+          where p.userDetailEntity.userEntity.email = :email
+      """)
+  Set<CompleteUserProfileDto> findAllByUserDetailEntity_UserEntity_EmailAsSet(@Param("email") String email);
+
 
   @Transactional
   @Query("select p.seq from UserProfileEntity p where p.userDetailEntity.userEntity.seq = :userSeq")
