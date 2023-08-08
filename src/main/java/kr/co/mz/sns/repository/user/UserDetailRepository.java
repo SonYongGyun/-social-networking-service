@@ -2,6 +2,7 @@ package kr.co.mz.sns.repository.user;
 
 import java.util.List;
 import java.util.Optional;
+import kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto;
 import kr.co.mz.sns.entity.user.UserDetailEntity;
 import kr.co.mz.sns.entity.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,14 +16,19 @@ public interface UserDetailRepository extends JpaRepository<UserDetailEntity, Lo
   @Transactional
   Optional<UserDetailEntity> findByUserEntity_Seq(Long userSeq);
 
-//  @Transactional
-//  @Query("""
-//      select new kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto (
-//      )
-//      from UserDetailEntity ud
-//      join fetch UserProfileEntity
-//      """)
-//  Optional<UserDetailEntity> findUserDetailAndProfileByUserEntity_Seq(Long userSeq);
+  @Transactional
+  @Query("""
+      select new kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto (
+            d.detailSeq,
+            d.userEntity.seq,
+            d.blocked,
+            d.greeting,
+            d.createdAt,
+            d.modifiedAt
+      )
+      from UserDetailEntity d
+      """)
+  Optional<UserDetailAndProfileDto> findUserDetailByUserEntity_Seq(Long userSeq);
 
   @Transactional
   Optional<UserDetailEntity> findByUserEntity_Name(String userName);

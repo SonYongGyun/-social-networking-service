@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,7 +29,7 @@ public class UserProfileEntity {
   private Long seq;
 
   @Column(name = "uuid", nullable = false)
-  private String uuid = UUID.randomUUID().toString();
+  private String uuid;
   @Column(name = "name", nullable = false)
   private String name;
   @Column(name = "path", nullable = false)

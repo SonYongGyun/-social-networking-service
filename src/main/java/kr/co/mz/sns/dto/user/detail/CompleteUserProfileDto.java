@@ -1,10 +1,14 @@
 package kr.co.mz.sns.dto.user.detail;
 
 import java.time.LocalDateTime;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 public class CompleteUserProfileDto {
 
@@ -24,6 +28,19 @@ public class CompleteUserProfileDto {
     this.path = path;
     this.size = size;
     this.extension = extension;
+  }
+
+  public CompleteUserProfileDto(Long seq, Long userSeq, String uuid, String name, String path, Long size,
+      String extension, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    this.seq = seq;
+    this.userSeq = userSeq;
+    this.uuid = uuid;
+    this.name = name;
+    this.path = path;
+    this.size = size;
+    this.extension = extension;
+    this.createdAt = createdAt;
+    this.modifiedAt = modifiedAt;
   }
 
   public CompleteUserProfileDto(String name) {

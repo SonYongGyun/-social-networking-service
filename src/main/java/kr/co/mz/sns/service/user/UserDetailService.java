@@ -57,7 +57,8 @@ public class UserDetailService {
                     () -> new NotFoundException("등록된 상세 정보가 없습니다. 지금 바로 작성 해 보세 요!")
                 ),
             UserDetailAndProfileDto.class);
-    findUserDetailDto.setUserDetailFileDtoSet(userProfileService.findAll(userSeq));
+
+    findUserDetailDto.setUserProfileDtoSet(userProfileService.findAllByUserSeqAsSet(userSeq));
 
     return findUserDetailDto;
   }

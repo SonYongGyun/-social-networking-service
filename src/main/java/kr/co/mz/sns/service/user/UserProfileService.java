@@ -68,8 +68,8 @@ public class UserProfileService {
   }
 
   @Transactional
-  public Set<CompleteUserProfileDto> findAll(Long userSeq) {
-    return userProfileRepository.findAllByUserDetailEntity_UserEntity_Seq(userSeq)
+  public Set<CompleteUserProfileDto> findAllByUserSeqAsSet(Long userSeq) {
+    return userProfileRepository.findAllByUserDetailEntity_UserEntity_SeqAsSet(userSeq)
         .stream()
         .map(entity -> modelMapper.map(entity, CompleteUserProfileDto.class))
         .collect(Collectors.toSet());
