@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class GenericPostDto {
 
     private Long seq;
@@ -26,4 +27,5 @@ public class GenericPostDto {
     private Long createBy;
     private List<CommentDto> comments;
     private List<GenericPostFileDto> postFiles;
+    private String postVisibility;
 }

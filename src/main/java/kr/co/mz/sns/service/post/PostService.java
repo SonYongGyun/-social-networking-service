@@ -82,11 +82,9 @@ public class PostService {
         return postRepository.findBySeqWithPostFilesAndComments(seq)
                 .map(
                         entity -> {
-
                             var postDto = modelMapper.map(entity, GenericPostDto.class);
                             postDto.setComments(commentService.findAllByPostSeq(seq));
                             return postDto;
-
                         }
                 )
                 .orElseThrow(

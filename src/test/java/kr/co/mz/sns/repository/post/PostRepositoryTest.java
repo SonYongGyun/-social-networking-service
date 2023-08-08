@@ -8,7 +8,6 @@ import kr.co.mz.sns.dto.post.complex.ComplexPostDto;
 import kr.co.mz.sns.dto.post.test.PostTestDto;
 import kr.co.mz.sns.repository.comment.CommentRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +27,6 @@ class PostRepositoryTest {
     @Autowired
     private CommentRepository commentRepository;
 
-
     //    @Test
     void testFetchJoin() {
         var postWithFiles = postRepository.fetchAll();
@@ -42,12 +40,18 @@ class PostRepositoryTest {
 
         postDtoList.forEach(entity -> {
             System.out.print(entity.getSeq());
-            System.out.println(entity.getPostFiles());
+//            System.out.println(entity.getPostFiles());
         });
     }
 
+    //    @Test
+    void testConverter() {
+        var postEntity = postRepository.findById(74L).get();
+        System.out.println(postEntity.getPostVisibility());
+    }
+
     @Transactional
-    @Test
+//    @Test
     void testFindAllUsedMap() {
         var postSeqs = new ArrayList<Long>();
         var pageable = PageRequest.of(0, 10);
