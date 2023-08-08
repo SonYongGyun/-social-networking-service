@@ -2,17 +2,17 @@ package kr.co.mz.sns.dto.post;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import kr.co.mz.sns.dto.post.file.SelectPostFileDto;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @Builder
-public class SelectPostDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PostWithOneFileDto {
 
     private Long seq;
     @NotEmpty

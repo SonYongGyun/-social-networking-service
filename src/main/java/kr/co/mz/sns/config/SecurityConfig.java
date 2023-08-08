@@ -20,20 +20,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests(
-                authorize -> authorize
-                    .requestMatchers("/api/unauth/*").permitAll()
-                    .requestMatchers("/api/auth/*").hasAuthority("MEMBER")
-                    .anyRequest().authenticated()
-            );
+                .csrf(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(
+                        authorize -> authorize
+                                .requestMatchers("/api/unauth/*").permitAll()
+                                .requestMatchers("/api/auth/*").hasAuthority("MEMBER")
+                                .anyRequest().authenticated()
+                );
         return http.build();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(
-        AuthenticationConfiguration authenticationConfiguration
+            AuthenticationConfiguration authenticationConfiguration
     ) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }

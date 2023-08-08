@@ -1,19 +1,19 @@
 package kr.co.mz.sns.dto.post;
 
-import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import kr.co.mz.sns.dto.post.file.GenericPostFileDto;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FindAllPostDto {
 
     public FindAllPostDto(Long seq, String content, Integer likes, LocalDateTime createdAt, LocalDateTime modifiedAt,
-        Long createBy) {
+                          Long createBy) {
         this.seq = seq;
         this.content = content;
         this.likes = likes;
@@ -28,6 +28,6 @@ public class FindAllPostDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private Long createBy;
+    private GenericPostFileDto postFile;
 
-    private GenericPostFileDto postFiles;
 }

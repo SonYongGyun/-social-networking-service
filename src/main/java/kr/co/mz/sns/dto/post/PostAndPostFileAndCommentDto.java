@@ -16,7 +16,6 @@ public interface PostAndPostFileAndCommentDto {
 
     LocalDateTime getPostModifiedAt();
 
-
     Long getFileSeq();
 
     String getFileName();

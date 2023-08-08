@@ -1,33 +1,28 @@
 package kr.co.mz.sns.file;
 
-import static kr.co.mz.sns.service.file.FileConstants.BASIC_DIRECTORY;
-import static kr.co.mz.sns.service.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
-
 import jakarta.annotation.Nullable;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
 import kr.co.mz.sns.dto.post.GenericPostDto;
 import kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto;
 import kr.co.mz.sns.exception.FileWriteException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Function;
+
+import static kr.co.mz.sns.service.file.FileConstants.BASIC_DIRECTORY;
+import static kr.co.mz.sns.service.file.FileConstants.SALVE_LOCAL_PUBLIC_DIRECTORY;
+
 @Service
 public class FileStorageService3 {
 
     public static String createDirectory() {
         var fileDirectory = new File(
-            SALVE_LOCAL_PUBLIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString().substring(0, 10));
+                SALVE_LOCAL_PUBLIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString().substring(0, 10));
         if (!fileDirectory.mkdirs()) {
             System.out.println("경로가 존재합니다.");
         }
@@ -36,7 +31,7 @@ public class FileStorageService3 {
 
     public static String createPostDirectory() {
         var fileDirectory = new File(
-            BASIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString().substring(0, 10));
+                BASIC_DIRECTORY + LocalDateTime.now().toLocalDate().toString().substring(0, 10));
         if (!fileDirectory.mkdirs()) {
             System.out.println("경로가 존재합니다.");
         }
@@ -56,8 +51,8 @@ public class FileStorageService3 {
 
     public void saveFile(List<MultipartFile> fileList, GenericPostDto insertedPostDto) {
         var uuidList = insertedPostDto.getPostFiles().stream()
-            .map(fileDto -> insertedPostDto.getSeq() + "_" + fileDto.getName())
-            .toList();
+                .map(fileDto -> insertedPostDto.getSeq() + "_" + fileDto.getName())
+                .toList();
 
         var index = 0;
         var uuidArray = uuidList.toArray();
@@ -66,8 +61,8 @@ public class FileStorageService3 {
                 var filePath = createPostDirectory();
                 var fileFullPath = filePath + File.separator + uuidArray[index];
                 try (
-                    var bos = new BufferedOutputStream(new FileOutputStream(fileFullPath));
-                    var is = new BufferedInputStream(file.getInputStream())
+                        var bos = new BufferedOutputStream(new FileOutputStream(fileFullPath));
+                        var is = new BufferedInputStream(file.getInputStream())
                 ) {
                     var buffer = new byte[4096];
                     int bytesRead;
@@ -112,9 +107,9 @@ public class FileStorageService3 {
         }
 
         return fileList.stream()
-            .filter(file -> !file.isEmpty() && file.getOriginalFilename() != null)
-            .map(function)
-            .toList();
+                .filter(file -> !file.isEmpty() && file.getOriginalFilename() != null)
+                .map(function)
+                .toList();
     }
 
     public boolean delete(String filePath) {

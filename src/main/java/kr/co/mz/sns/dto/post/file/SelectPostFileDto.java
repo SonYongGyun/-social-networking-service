@@ -1,15 +1,15 @@
-package kr.co.mz.sns.dto.post;
+package kr.co.mz.sns.dto.post.file;
+
+import kr.co.mz.sns.dto.post.GenericPostDto;
+import lombok.*;
 
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class SelectPostFileDto {
 
     private Long seq;

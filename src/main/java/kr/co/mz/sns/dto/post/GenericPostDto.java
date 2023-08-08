@@ -2,18 +2,18 @@ package kr.co.mz.sns.dto.post;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import kr.co.mz.sns.dto.comment.CommentDto;
+import kr.co.mz.sns.dto.post.file.GenericPostFileDto;
+import lombok.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
-import kr.co.mz.sns.dto.comment.CommentDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class GenericPostDto {
 
     private Long seq;
