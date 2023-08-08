@@ -1,6 +1,8 @@
 package kr.co.mz.sns.repository.user;
 
 import java.util.List;
+import java.util.Set;
+import kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto;
 import kr.co.mz.sns.entity.user.UserProfileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,7 +19,22 @@ public interface UserProfileRepository extends JpaRepository<UserProfileEntity, 
   UserProfileEntity deleteBySeq(Long fileSeq);
 
   @Transactional
-  List<UserProfileEntity> findAllByUserDetailEntity_UserEntity_Seq(Long userSeq);
+  @Query("""
+          select new kr.co.mz.sns.dto.user.detail.CompleteUserProfileDto(
+              p.seq,
+              p.userDetailEntity.userEntity.seq,
+              p.uuid,
+              p.name,
+              p.path,
+              p.size,
+              p.extension,
+              p.createdAt,
+              p.modifiedAt
+          )
+          from UserProfileEntity p
+          where p.userDetailEntity.userEntity.seq = :userSeq
+      """)
+  Set<CompleteUserProfileDto> findAllByUserDetailEntity_UserEntity_SeqAsSet(@Param("userSeq") Long userSeq);
 
 
   @Transactional

@@ -32,7 +32,7 @@ public class UserProfileController {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(
-            userProfileService.findAll(currentUserInfo.getSeq())
+            userProfileService.findAllByUserSeqAsSet(currentUserInfo.getSeq())
         );
   }
 

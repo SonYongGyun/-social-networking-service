@@ -20,37 +20,37 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "Comment")
+@Table(name = "comment")
 @Data
 @NoArgsConstructor
 public class CommentEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "seq")
-    private Long seq;
-    @Column(name = "content", nullable = false)
-    private String content;
-    @CreatedBy
-    @LastModifiedBy
-    @Column(name = "create_by", nullable = false)
-    private Long createBy;
-    @OneToMany(mappedBy = "commentEntity")
-    private List<CommentFileEntity> commentFiles;
-    @Column(name = "post_seq")
-    private Long postSeq;
-    @Column(name = "likes", nullable = false)
-    private Long likes;
-    @CreatedDate
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-    @LastModifiedDate
-    @Column(name = "modified_at")
-    private LocalDateTime modifiedAt;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "seq")
+  private Long seq;
+  @Column(name = "content", nullable = false)
+  private String content;
+  @CreatedBy
+  @LastModifiedBy
+  @Column(name = "create_by", nullable = false)
+  private Long createBy;
+  @OneToMany(mappedBy = "commentEntity")
+  private List<CommentFileEntity> commentFiles;
+  @Column(name = "post_seq")
+  private Long postSeq;
+  @Column(name = "likes", nullable = false)
+  private Long likes;
+  @CreatedDate
+  @Column(name = "created_at", nullable = false)
+  private LocalDateTime createdAt;
+  @LastModifiedDate
+  @Column(name = "modified_at")
+  private LocalDateTime modifiedAt;
 
-    public CommentEntity increaseCommentLike() {
-        this.likes += 1;
-        return this;
-    }
+  public CommentEntity increaseCommentLike() {
+    this.likes += 1;
+    return this;
+  }
 
 }

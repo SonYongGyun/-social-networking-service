@@ -26,4 +26,13 @@ class UserProfileRepositoryTest {
 
     }
   }
+
+  @Test
+  void selectProfileSet() {
+    var profileSet = userProfileRepository.findAllByUserDetailEntity_UserEntity_SeqAsSet(19L);
+    log.info(String.valueOf(profileSet.size()));
+    log.info(profileSet.toString());
+
+
+  }
 }
