@@ -1,12 +1,12 @@
-package kr.co.mz.sns.dto.post;
+package kr.co.mz.sns.dto.post.complex;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ComplexCommentDto {

@@ -1,17 +1,17 @@
-package kr.co.mz.sns.dto.post;
+package kr.co.mz.sns.dto.post.complex;
+
+import kr.co.mz.sns.dto.post.PostAndPostFileAndCommentDto;
+import lombok.*;
+import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.modelmapper.ModelMapper;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,11 +36,11 @@ public class ComplexPostDto {
             var flatPostDto = dtoMap.get(seq).get(0);
 
             var complexCommentDtos = dtoMap.get(seq).stream()
-                .map(flatPost -> mapper.map(flatPost, ComplexCommentDto.class))
-                .toList();
+                    .map(flatPost -> mapper.map(flatPost, ComplexCommentDto.class))
+                    .toList();
             var complexPostFileDtos = dtoMap.get(seq).stream()
-                .map(flatPost -> mapper.map(flatPost, ComplexPostFileDto.class))
-                .toList();
+                    .map(flatPost -> mapper.map(flatPost, ComplexPostFileDto.class))
+                    .toList();
 
             var complexPostDto = mapper.map(flatPostDto, ComplexPostDto.class);
             complexPostDto.setCommentDtoList(complexCommentDtos);

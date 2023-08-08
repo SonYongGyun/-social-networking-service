@@ -1,28 +1,18 @@
 package kr.co.mz.sns.entity.post;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.List;
+import jakarta.persistence.*;
+import kr.co.mz.sns.converter.PostVisibilityConverter;
 import kr.co.mz.sns.entity.comment.CommentEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import kr.co.mz.sns.enums.PostVisibility;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -43,6 +33,9 @@ public class PostEntity {
     private String content;
     @Column(name = "likes", nullable = false)
     private Integer likes = 0;
+    @Convert(converter = PostVisibilityConverter.class)
+    @Column(name = "visibility", length = 3, nullable = false)
+    private PostVisibility postVisibility;
     @OneToMany
     @JoinColumn(name = "post_fk_seq")
     private List<PostFileEntity> postFiles;

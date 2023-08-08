@@ -1,23 +1,17 @@
 package kr.co.mz.sns.controller.post;
 
 import jakarta.validation.constraints.NotNull;
-import java.net.URI;
-import java.util.List;
 import kr.co.mz.sns.dto.post.GenericPostDto;
-import kr.co.mz.sns.dto.post.GenericPostFileDto;
+import kr.co.mz.sns.dto.post.file.GenericPostFileDto;
 import kr.co.mz.sns.service.post.PostFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.net.URI;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -29,30 +23,30 @@ public class PostFileController {
 
     @GetMapping("/{seq}/file/{fileSeq}")
     public ResponseEntity<String> select(
-        @NotNull @PathVariable Long seq,
-        @NotNull @PathVariable Long fileSeq
+            @NotNull @PathVariable Long seq,
+            @NotNull @PathVariable Long fileSeq
     ) {
         return null;
     }
 
     @PostMapping("/{seq}/file")
     public ResponseEntity<GenericPostFileDto> insert(
-        @RequestPart("files") List<MultipartFile> files,
-        @NotNull @PathVariable Long seq
+            @RequestPart("files") List<MultipartFile> files,
+            @NotNull @PathVariable Long seq
     ) {
         var insertedPostFileDto = postFileService.insert(files, GenericPostDto.builder().seq(seq).build());
         return ResponseEntity.
-            created(URI.create("/api/auth/posts/" + seq + "/file/" + insertedPostFileDto.getSeq()))
-            .body(insertedPostFileDto);
+                created(URI.create("/api/auth/posts/" + seq + "/file/" + insertedPostFileDto.getSeq()))
+                .body(insertedPostFileDto);
     }
 
     @DeleteMapping("/{seq}/file")
     public ResponseEntity<GenericPostFileDto> delete(
-        @NotNull @PathVariable Long seq,
-        @RequestBody GenericPostFileDto postFileDto
+            @NotNull @PathVariable Long seq,
+            @RequestBody GenericPostFileDto postFileDto
     ) {
         return ResponseEntity.ok(
-            postFileService.delete(GenericPostDto.builder().seq(seq).build(), postFileDto)
+                postFileService.delete(GenericPostDto.builder().seq(seq).build(), postFileDto)
         );
     }
 
