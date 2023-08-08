@@ -76,6 +76,14 @@ public class UserProfileService {
   }
 
   @Transactional
+  public Set<CompleteUserProfileDto> findAllByUserEmailAsSet(String email) {
+    return userProfileRepository.findAllByUserDetailEntity_UserEntity_EmailAsSet(email)
+        .stream()
+        .map(entity -> modelMapper.map(entity, CompleteUserProfileDto.class))
+        .collect(Collectors.toSet());
+  }
+
+  @Transactional
   public CompleteUserProfileDto delete(Long fileSeq) {
     return modelMapper
         .map(userProfileRepository.deleteBySeq(fileSeq), CompleteUserProfileDto.class);

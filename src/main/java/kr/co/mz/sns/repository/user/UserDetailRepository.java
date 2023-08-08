@@ -17,6 +17,9 @@ public interface UserDetailRepository extends JpaRepository<UserDetailEntity, Lo
   Optional<UserDetailEntity> findByUserEntity_Seq(Long userSeq);
 
   @Transactional
+  Optional<UserDetailEntity> findByUserEntity_Email(String email);
+
+  @Transactional
   @Query("""
       select new kr.co.mz.sns.dto.user.detail.UserDetailAndProfileDto (
             d.detailSeq,
