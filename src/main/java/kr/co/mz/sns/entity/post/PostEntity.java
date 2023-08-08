@@ -12,7 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -37,11 +37,9 @@ public class PostEntity {
     @Column(name = "visibility", length = 3, nullable = false)
     private PostVisibility postVisibility;
     @OneToMany
-    @JoinColumn(name = "post_fk_seq")
-    private List<PostFileEntity> postFiles;
+    private Set<PostFileEntity> postFiles;
     @OneToMany
-    @JoinColumn(name = "post_fk_seq")
-    private List<CommentEntity> comments;
+    private Set<CommentEntity> comments;
     @CreatedBy
     @LastModifiedBy
     @Column(name = "create_by", nullable = false)
