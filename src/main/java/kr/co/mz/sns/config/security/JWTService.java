@@ -1,23 +1,97 @@
 package kr.co.mz.sns.config.security;
 
-import static kr.co.mz.sns.config.security.SecurityConstants.JWT_EXPIRATION;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import java.util.Date;
-import java.util.Map;
-import javax.crypto.SecretKey;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.Date;
+import java.util.Map;
+
+import static kr.co.mz.sns.config.security.SecurityConstants.JWT_EXPIRATION;
+
 @Component
 public class JWTService {
 
-    // 토큰은 3가지 부분으로 나눠지기 떄문에 필요한 부분들 작성하는거 만들어줬다.
-    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    @Value("${private.key.path}")
+    private String privateKeyPemPath;
+    @Value("${public.key.path}")
+    private String publicKeyPemPath;
 
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
+
+//    public static KeyPair loadKeyPair(String privateKeyPemPath, String publicKeyPemPath) throws Exception {
+//        var privateKeyPem = new File(privateKeyPemPath);
+//        var publicKeyPem = new File(publicKeyPemPath);
+//        try (
+//                var privateFileInputStream = new FileInputStream(privateKeyPem);
+//                var publicFileInputStream = new FileInputStream(publicKeyPem);
+//                var privateByteArrayOutputStream = convertFileWithBufferToBArrayOutputStream(privateFileInputStream);
+//                var publicByteArrayOutputStream = convertFileWithBufferToBArrayOutputStream(publicFileInputStream);
+//        ) {
+//            var privateKeyBytesString = privateByteArrayOutputStream.toString();
+//            var publicKeyBytesString = publicByteArrayOutputStream.toString();
+//            var readPrivateKey = pemToPrivateKey(privateKeyBytesString);
+//            var readPublicKey = pemToPublicKey(publicKeyBytesString);
+//
+//            return new KeyPair(readPublicKey, readPrivateKey);
+//        }
+//    }
+//
+//    public static PrivateKey pemToPrivateKey(String privateKeyPem) throws Exception {
+//        PemReader pemReader = new PemReader(new StringReader(privateKeyPem));
+//        PemObject pemObject = pemReader.readPemObject();
+//        pemReader.close();
+//
+//        byte[] privateKeyBytes = pemObject.getContent();
+//        PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+//        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+//
+//        return keyFactory.generatePrivate(privateKeySpec);
+//    }
+//
+//    public static PublicKey pemToPublicKey(String publicKeyPem) throws Exception {
+//        var pemReader = new PemReader(new StringReader(publicKeyPem));
+//        var pemObject = pemReader.readPemObject();
+//        pemReader.close();
+//
+//        var publicKeyBytes = pemObject.getContent();
+//        var publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+//        var keyFactory = KeyFactory.getInstance("RSA");
+//
+//        return keyFactory.generatePublic(publicKeySpec);
+//    }
+//
+//    private static ByteArrayOutputStream convertFileWithBufferToBArrayOutputStream(FileInputStream fileInputStream)
+//            throws Exception {
+//        byte[] buffer = new byte[1024];
+//        int readBytes;
+//        var byteArrayOutputStream = new ByteArrayOutputStream();
+//        while ((readBytes = fileInputStream.read(buffer)) != -1) {
+//            byteArrayOutputStream.write(buffer);
+//        }
+//
+//        return byteArrayOutputStream;
+//    }
+
+    @PostConstruct
+    private void init() {
+        try {
+            KeyPair keyPair = KeyPairLoader.loadKeyPair(privateKeyPemPath, publicKeyPemPath);
+            privateKey = keyPair.getPrivate();
+            publicKey = keyPair.getPublic();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to Key Load", e);
+        }
+
+    }
 
     public String generateToken(Authentication authentication) {
         var customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -30,12 +104,12 @@ public class JWTService {
         var expireDate = new Date(currentDate.getTime() + JWT_EXPIRATION);
 
         return Jwts.builder()
-            .setSubject(email)
-            .addClaims(Map.of("seq", seq, "email", email, "name", name))
-            .setIssuedAt(new Date())
-            .setExpiration(expireDate)
-            .signWith(key)
-            .compact();
+                .setSubject(email)
+                .addClaims(Map.of("seq", seq, "email", email, "name", name))
+                .setIssuedAt(new Date())
+                .setExpiration(expireDate)
+                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .compact();
     }
 
 
@@ -53,16 +127,16 @@ public class JWTService {
      * @return
      */
     public String getEmailJWT(String token) {
-        var claims = Jwts.parserBuilder().setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
+        var claims = Jwts.parserBuilder().setSigningKey(publicKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
         return claims.getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(publicKey).build().parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             throw new AuthenticationCredentialsNotFoundException("JWT was expired or incorrect");
