@@ -17,6 +17,7 @@ public class LoginService {
     private final RestTemplate restTemplate;
 
     public ResponseEntity<String> authenticate(LoginDto loginDto) {
+
         return restTemplate.postForEntity(AUTH_URL, loginDto, String.class);
     }
 }

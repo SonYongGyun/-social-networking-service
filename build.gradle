@@ -55,6 +55,14 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
+    implementation group: 'org.jboss.resteasy', name: 'resteasy-jaxrs', version: '4.0.0.Beta5'
+    implementation group: 'org.jboss.resteasy', name: 'resteasy-jaxrs-services', version: '4.0.0.Beta5'
+    implementation group: 'javax.xml.ws', name: 'jaxws-api', version: '2.3.1'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.70'
+
 }
 
 tasks.named('test') {

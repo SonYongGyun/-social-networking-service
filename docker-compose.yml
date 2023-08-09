@@ -1,0 +1,8 @@
+version: '3'
+services:
+  redis:
+    image: 'redis:latest'
+    ports:
+      - '6379:6379'
+
+# 이 설정은 Redis의 최신 이미지를 사용하고 호스트의 6379 포트와 컨테이너의 6379 포트를 바인딩합니다.

@@ -1,49 +1,38 @@
 package kr.co.mz.sns.controller.auth;
 
 import jakarta.validation.Valid;
-import kr.co.mz.sns.config.security.CustomUserDetails;
-import kr.co.mz.sns.config.security.JWTService;
 import kr.co.mz.sns.dto.login.LoginDto;
 import kr.co.mz.sns.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/unauth")
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JWTService jwtService;
+    private static final String JWT_URL = "http://172.90.4.143/api/unauth/jwt";//todo jwt generator
     private final UserService userService;
+    private final RestTemplate restTemplate;
 
     @PostMapping("/authenticate")
     public ResponseEntity<String> login(@Valid @RequestBody LoginDto loginDto) {
-        var authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDto.getEmail(), loginDto.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        var token = jwtService.generateToken(authentication);
+        var responsedJwt = restTemplate.postForEntity(JWT_URL, loginDto, String.class);
+        var token = responsedJwt.getBody();
         var headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
-
-        var customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
         return ResponseEntity
                 .ok()
                 .headers(headers)
                 .body(
-                        "Log-In Succeed : " + userService.updateLastLogin(customUserDetails.getUserDto().getSeq()).toString());
+                        "Log-In Succeed : " + userService.updateLastLogin().toString());
     }
 
 }

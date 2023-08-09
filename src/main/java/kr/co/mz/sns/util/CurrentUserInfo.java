@@ -2,28 +2,36 @@ package kr.co.mz.sns.util;
 
 import kr.co.mz.sns.config.security.CustomUserDetails;
 import kr.co.mz.sns.dto.user.GenericUserDto;
-import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class CurrentUserInfo {
+    private Authentication authentication;
 
-  private GenericUserDto currentUserDto() {
-    var authentication = SecurityContextHolder.getContext().getAuthentication();
-    return ((CustomUserDetails) authentication.getPrincipal()).getUserDto();
-  }
+    public void setAuth(Authentication authentication) {
+        this.authentication = authentication;
+    }
 
-  public String getEmail() {
-    return currentUserDto().getEmail();
-  }
+    private GenericUserDto currentUserDto() {
+        return ((CustomUserDetails) authentication.getPrincipal()).getUserDto();
 
-  public String getName() {
-    return currentUserDto().getName();
-  }
 
-  public Long getSeq() {
-    return currentUserDto().getSeq();
-  }
+    }
+
+    public String getEmail() {
+        return currentUserDto().getEmail();
+    }
+
+    public String getName() {
+        return currentUserDto().getName();
+    }
+
+    public Long getSeq() {
+        return currentUserDto().getSeq();
+    }
 
 
 }
