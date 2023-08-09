@@ -4,6 +4,7 @@ import kr.co.mz.sns.config.security.CustomUserDetails;
 import kr.co.mz.sns.dto.user.GenericUserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -16,10 +17,16 @@ public class CurrentUserInfo {
     }
 
     private GenericUserDto currentUserDto() {
+        var authInSecurity = SecurityContextHolder.getContext().getAuthentication();
+        if (this.authentication == null) {
+            log.info("Principal in SecurityContext");
+            return ((CustomUserDetails) authInSecurity.getPrincipal()).getUserDto();
+        }
+        log.info("Principal in Jwt Controller");
         return ((CustomUserDetails) authentication.getPrincipal()).getUserDto();
-
-
     }
+    // 로그인하고 그 토큰 쓰면 계속 jwt controller에 있는 auth 사용
+    // 서버 껏다키면 계속 security context안에 있는 auth 사용. 왜..?
 
     public String getEmail() {
         return currentUserDto().getEmail();

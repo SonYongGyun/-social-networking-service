@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/api/unauth")
 public class AuthenticationController {
 
-    private static final String JWT_URL = "http://172.90.4.143/api/unauth/jwt";//todo jwt generator
+    private static final String JWT_URL = "http://172.90.4.143:8080/api/unauth/jwt";//todo jwt generator
     private final UserService userService;
     private final RestTemplate restTemplate;
 
