@@ -16,3 +16,11 @@ spring:
 
 logging.level:
   java.sql: debug
+
+
+private:
+  key:
+    path: /Users/mz01-omega/private_key.pem
+public:
+  key:
+    path: /Users/mz01-omega/public_key.pem
