@@ -81,6 +81,10 @@ dependencies {
     // Bouncy Castle
     implementation "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
     implementation "org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion"
+
+    //Java Faker
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+
 }
 
 
