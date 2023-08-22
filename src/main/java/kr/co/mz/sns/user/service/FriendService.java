@@ -1,7 +1,7 @@
 package kr.co.mz.sns.service.user;
 
 import kr.co.mz.sns.dto.user.friend.*;
-import kr.co.mz.sns.entity.user.FriendRelationshipEntity;
+import kr.co.mz.sns.entity.friend.FriendRelationshipEntity;
 import kr.co.mz.sns.exception.NotFoundException;
 import kr.co.mz.sns.repository.user.FriendRelationshipRepository;
 import kr.co.mz.sns.repository.user.UserDetailRepository;
@@ -36,7 +36,7 @@ public class FriendService {
 
     public Page<AFriendDto> findAllFriendsAsPage(Pageable pageable) {
         return friendRelationshipRepository
-                .findAllByUserSeqAsPage(
+                .findAllByUserIdAsPage(
                         currentUserInfo.getSeq(),
                         pageable
                 )
@@ -96,7 +96,7 @@ public class FriendService {
 
     @Transactional
     public List<FriendDetailDto> findByFriendName(String friendName) {
-        return friendRelationshipRepository.findByUserEntity_SeqAndFriendEntity_NameAndStatus(
+        return friendRelationshipRepository.findByUserIdAndFriendNameAndStatus(
                 currentUserInfo.getSeq(), friendName, FR_WE_ARE_FRIEND);
     }
 

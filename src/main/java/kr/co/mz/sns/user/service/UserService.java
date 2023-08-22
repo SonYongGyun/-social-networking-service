@@ -38,7 +38,7 @@ public class UserService {
     }
 
     public UserEntity findBySeq(Long seq) {
-        return userRepository.findBySeq(seq)
+        return userRepository.findById(seq)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + seq));
     }
 
@@ -59,7 +59,7 @@ public class UserService {
     @Transactional
     public LocalDateTime updateLastLogin() {
         var now = LocalDateTime.now();
-        var user = userRepository.findBySeq(currentUserInfo.getSeq())
+        var user = userRepository.findById(currentUserInfo.getSeq())
                 .orElseThrow(() -> new EntityNotFoundException("User not found with seq: " + currentUserInfo.getSeq()));
         log.debug(user.toString());
         var userDetail = Optional.ofNullable(user.getUserDetail()).orElseGet(() -> {

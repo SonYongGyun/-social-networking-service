@@ -1,6 +1,7 @@
-package kr.co.mz.sns.entity.user;
+package kr.co.mz.sns.entity.friend;
 
 import jakarta.persistence.*;
+import kr.co.mz.sns.entity.user.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

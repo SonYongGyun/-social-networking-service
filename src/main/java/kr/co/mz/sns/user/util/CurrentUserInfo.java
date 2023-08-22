@@ -1,7 +1,7 @@
 package kr.co.mz.sns.util;
 
 import kr.co.mz.sns.config.security.CustomUserDetails;
-import kr.co.mz.sns.dto.user.GenericUserDto;
+import kr.co.mz.sns.user.dto.GenericUserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
