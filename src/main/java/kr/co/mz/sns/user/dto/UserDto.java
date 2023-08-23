@@ -1,4 +1,4 @@
-package kr.co.mz.sns.dto.user;
+package kr.co.mz.sns.user.dto;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class UserDto1 {
 
     private Long seq;
     private String email;
